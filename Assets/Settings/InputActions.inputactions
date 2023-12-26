@@ -1,5 +1,5 @@
 {
-    "name": "InputsManager",
+    "name": "InputActions",
     "maps": [
         {
             "name": "Player",
@@ -9,6 +9,15 @@
                     "name": "Move",
                     "type": "Value",
                     "id": "5ff97501-eae3-492b-b518-f698d5e5cbce",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Rotate",
+                    "type": "Value",
+                    "id": "47bc4d5d-a53b-4850-aa5d-5aa7970b2df4",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
@@ -27,6 +36,24 @@
                     "name": "InteractAlt",
                     "type": "Button",
                     "id": "624a704e-793d-4d8e-9d40-ab9159f01d1b",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Pause",
+                    "type": "Button",
+                    "id": "45127ade-3922-4426-a5cc-3955e70036ef",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Camera",
+                    "type": "Button",
+                    "id": "3db1aa56-92e4-4b4d-aadb-6d20021a3d76",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -163,6 +190,72 @@
                     "processors": "",
                     "groups": "",
                     "action": "InteractAlt",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "59104d3f-0244-40b9-b534-e70a40f60632",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "68e53c3a-4bdc-4116-99ac-1e51369620d6",
+                    "path": "<Gamepad>/start",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Pause",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "88d7f77e-7869-4c00-8d7d-bb222bba421d",
+                    "path": "<Keyboard>/v",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Camera",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "aa35d522-f106-418b-a434-75eb691a5b91",
+                    "path": "<Gamepad>/rightStickPress",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Camera",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "3bfc5d09-be91-49ab-941f-a59aadcff76a",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotate",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8eec1517-078e-4edf-a243-71cb5e76243b",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Rotate",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
