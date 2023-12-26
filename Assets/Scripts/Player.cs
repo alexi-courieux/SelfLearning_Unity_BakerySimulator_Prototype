@@ -9,19 +9,17 @@ public class Player : MonoBehaviour
     private const float MaxInteractionDistance = 2f;
     
     [SerializeField] private float movementSpeed = 6f;
-    [SerializeField] private float rotationSpeedH = 250f;
-    [SerializeField] private float rotationSpeedV = 1.5f;
+   
     [SerializeField] private float characterRotationSpeed = 5f;
     [SerializeField] private float idleCharacterRotationSpeed = 1f;
+    [SerializeField] private Transform visualTransform;
     [SerializeField] private Transform interactionRaycastSpawnPoint;
     
     private CharacterController _characterController;
-    private CinemachineFreeLook _cameraFreelook;
 
     private void Awake()
     {
         _characterController = GetComponent<CharacterController>();
-        _cameraFreelook = FindObjectOfType<CinemachineFreeLook>();
     }
 
     private void Start()
@@ -35,11 +33,6 @@ public class Player : MonoBehaviour
         InputManager.Instance.OnInteract -= InputManager_OnInteract;
     }
 
-    private void Update()
-    {
-        Rotate();
-    }
-
     private void FixedUpdate()
     {
         Move();
@@ -49,7 +42,8 @@ public class Player : MonoBehaviour
     {
         Vector2 movementInput = InputManager.Instance.GetMovementVectorNormalized();
         Transform cameraTransform = Camera.main!.transform;
-        Vector3 moveDirection = (cameraTransform.forward * movementInput.y) + (cameraTransform.right * movementInput.x);
+        Vector3 moveDirection = Vector3.ProjectOnPlane(cameraTransform.forward, Vector3.up).normalized * movementInput.y +
+                                Vector3.ProjectOnPlane(cameraTransform.right, Vector3.up).normalized * movementInput.x;
         const float minimalMovementMagnitude = 0.1f;
         if (movementInput.magnitude >= minimalMovementMagnitude)
         {
@@ -59,37 +53,16 @@ public class Player : MonoBehaviour
             
             // Rotate towards the movement direction
             Quaternion targetRotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(moveDirection, Vector3.up), Vector3.up);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, characterRotationSpeed * Time.fixedDeltaTime);
+            visualTransform.rotation = Quaternion.Lerp(visualTransform.rotation, targetRotation, characterRotationSpeed * Time.fixedDeltaTime);
         }
         else
         {
             // Slowly rotate towards the camera direction
             Quaternion targetRotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(cameraTransform.forward, Vector3.up), Vector3.up);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, idleCharacterRotationSpeed * Time.fixedDeltaTime);
+            visualTransform.rotation = Quaternion.Lerp(visualTransform.rotation, targetRotation, idleCharacterRotationSpeed * Time.fixedDeltaTime);
         }
         
     }
-
-    private void Rotate()
-    {
-        Vector2 rotationVector = InputManager.Instance.GetRotationVectorNormalized();
-        _cameraFreelook.m_XAxis.Value += rotationVector.x * rotationSpeedH * Time.deltaTime;
-        _cameraFreelook.m_YAxis.Value += -rotationVector.y * rotationSpeedV * Time.deltaTime;
-    }
-    
-    // TODO Might be useful later during interactable highlights, use on Update function    
-    /*private void SearchForInteraction()
-    {
-        Transform cameraTransform = Camera.main!.transform;
-        
-        if (!Physics.Raycast(transform.position, cameraTransform.forward, out RaycastHit hitInfo,
-                MaxInteractionDistance)) return;
-        
-        if(hitInfo.transform.TryGetComponent(out ICanBeInteracted interactableComponent))
-        {
-                OnFocusInteractableItem?.Invoke(this, interactableComponent);
-        }
-    }*/
     
     private void InputManager_OnInteract(object sender, EventArgs e)
     {
