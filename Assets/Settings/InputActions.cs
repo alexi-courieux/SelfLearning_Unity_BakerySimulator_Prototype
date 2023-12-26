@@ -275,7 +275,7 @@ public partial class @InputActions: IInputActionCollection2, IDisposable
                     ""id"": ""8eec1517-078e-4edf-a243-71cb5e76243b"",
                     ""path"": ""<Gamepad>/rightStick"",
                     ""interactions"": """",
-                    ""processors"": """",
+                    ""processors"": ""StickDeadzone"",
                     ""groups"": """",
                     ""action"": ""Rotate"",
                     ""isComposite"": false,
