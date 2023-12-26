@@ -1,10 +1,11 @@
 using System;
-using Cinemachine;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public EventHandler<ICanBeInteracted> OnFocusInteractableItem;
+    public static Player Instance { get; private set; }
+
+    public PlayerHoldSystem HoldSystem { get; private set; }
     
     private const float MaxInteractionDistance = 2f;
     
@@ -19,7 +20,9 @@ public class Player : MonoBehaviour
 
     private void Awake()
     {
+        Instance = this;
         _characterController = GetComponent<CharacterController>();
+        HoldSystem = GetComponent<PlayerHoldSystem>();
     }
 
     private void Start()
@@ -71,6 +74,11 @@ public class Player : MonoBehaviour
         if(hitInfo.transform.TryGetComponent(out ICanBeInteracted interactableComponent))
         {
             interactableComponent.Interact();
+        }
+
+        if(!HoldSystem.IsHoldingSomething() && hitInfo.transform.TryGetComponent(out ICanBeHold holdableComponent))
+        {
+            HoldSystem.Take(hitInfo.transform);
         }
     }
     

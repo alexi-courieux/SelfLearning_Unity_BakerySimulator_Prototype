@@ -8,6 +8,7 @@ public class InputManager : MonoBehaviour
     
     public EventHandler OnInteract;
     public EventHandler OnInteractAlt;
+    public EventHandler OnDrop;
     public EventHandler OnCameraSwitch;
     
     private InputActions _inputActions;
@@ -22,6 +23,7 @@ public class InputManager : MonoBehaviour
         _inputActions.Player.InteractAlt.performed += InteractAlt_OnPerformed;
         _inputActions.Player.Pause.performed += Pause_OnPerformed;
         _inputActions.Player.Camera.performed += Camera_OnPerformed;
+        _inputActions.Player.Drop.performed += Drop_OnPerformed;
     }
 
     private void OnDestroy()
@@ -30,6 +32,7 @@ public class InputManager : MonoBehaviour
         _inputActions.Player.InteractAlt.performed -= InteractAlt_OnPerformed;
         _inputActions.Player.Pause.performed -= Pause_OnPerformed;
         _inputActions.Player.Camera.performed -= Camera_OnPerformed;
+        _inputActions.Player.Drop.performed -= Drop_OnPerformed;
         
         _inputActions.Dispose();
     }
@@ -62,5 +65,10 @@ public class InputManager : MonoBehaviour
     private void Camera_OnPerformed(InputAction.CallbackContext obj)
     {
         OnCameraSwitch?.Invoke(this, EventArgs.Empty);
+    }
+    
+    private void Drop_OnPerformed(InputAction.CallbackContext obj)
+    {
+        OnDrop?.Invoke(this, EventArgs.Empty);
     }
 }
