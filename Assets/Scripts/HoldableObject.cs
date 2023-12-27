@@ -3,7 +3,14 @@
 public class HoldableObject : MonoBehaviour, ICanBeInteracted
 {
     private ICanHold _parent;
-    
+
+    public static HoldableObject SpawnHoldableObject(HoldableObjectSo holdableObjectSo, ICanHold parent)
+    {
+        Transform holdableObjectTransform = Instantiate(holdableObjectSo.prefab);
+        HoldableObject holdableObject = holdableObjectTransform.GetComponent<HoldableObject>();
+        holdableObject.SetParent(parent);
+        return holdableObject;
+    }
     public void SetParent(ICanHold targetParent)
     {
         if (targetParent != null && targetParent.IsHoldingItem() && targetParent.GetHeldItem() != this)
