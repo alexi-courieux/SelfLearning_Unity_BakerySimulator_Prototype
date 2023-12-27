@@ -76,7 +76,6 @@ public class Player : MonoBehaviour
     {
         if (!CheckForRaycastHit(out RaycastHit hitInfo)) return;
 
-        Debug.Log("Trying to interact with " + hitInfo.transform.name + "");
         if(hitInfo.transform.TryGetComponent(out ICanBeInteracted interactableComponent))
         {
             interactableComponent.Interact();
