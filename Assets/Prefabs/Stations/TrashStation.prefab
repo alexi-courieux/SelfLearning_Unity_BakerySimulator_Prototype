@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 8013546060589189271}
   - component: {fileID: 1441135460292753789}
   - component: {fileID: 9091896243944778576}
-  m_Layer: 0
-  m_Name: TrashCounter
+  m_Layer: 7
+  m_Name: TrashStation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -78,7 +78,12 @@ PrefabInstance:
     - target: {fileID: 4589716710238282922, guid: c4e141bc61e807b4b832b850d92f5fd7,
         type: 3}
       propertyPath: m_Name
-      value: TrashCounter_Visual
+      value: TrashStation_Visual
+      objectReference: {fileID: 0}
+    - target: {fileID: 4589716710238282922, guid: c4e141bc61e807b4b832b850d92f5fd7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 4589716710238282923, guid: c4e141bc61e807b4b832b850d92f5fd7,
         type: 3}
@@ -129,6 +134,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7880980075579474333, guid: c4e141bc61e807b4b832b850d92f5fd7,
+        type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

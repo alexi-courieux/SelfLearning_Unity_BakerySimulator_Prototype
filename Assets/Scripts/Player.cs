@@ -43,6 +43,7 @@ public class Player : MonoBehaviour
 
     private void Move()
     {
+        Vector3 finalMovement = Vector3.zero;
         Vector2 movementInput = InputManager.Instance.GetMovementVectorNormalized();
         Transform cameraTransform = Camera.main!.transform;
         Vector3 moveDirection = Vector3.ProjectOnPlane(cameraTransform.forward, Vector3.up).normalized * movementInput.y +
@@ -52,7 +53,7 @@ public class Player : MonoBehaviour
         {
             // Translate towards the camera direction
             moveDirection.y = 0;
-            _characterController.Move(moveDirection * (movementSpeed * Time.fixedDeltaTime));
+            finalMovement += moveDirection * (movementSpeed * Time.fixedDeltaTime);
             
             // Rotate towards the movement direction
             Quaternion targetRotation = Quaternion.LookRotation(Vector3.ProjectOnPlane(moveDirection, Vector3.up), Vector3.up);
@@ -65,6 +66,10 @@ public class Player : MonoBehaviour
             visualTransform.rotation = Quaternion.Lerp(visualTransform.rotation, targetRotation, idleCharacterRotationSpeed * Time.fixedDeltaTime);
         }
         
+        // Apply simplified gravity
+        finalMovement += Physics.gravity * Time.fixedDeltaTime;
+        
+        _characterController.Move(finalMovement);
     }
     
     private void InputManager_OnInteract(object sender, EventArgs e)
@@ -89,8 +94,13 @@ public class Player : MonoBehaviour
 
     private bool CheckForRaycastHit(out RaycastHit hitInfo)
     {
+        const string layerStation = "Station";
+        const string layerHoldable = "Holdable";
+        
         Transform cameraTransform = Camera.main!.transform;
+        int stationMask = LayerMask.GetMask(layerStation);
+        int holdableMask = LayerMask.GetMask(layerHoldable);
         return Physics.Raycast(interactionRaycastSpawnPoint.position, cameraTransform.forward, out hitInfo,
-            MaxInteractionDistance);
+            MaxInteractionDistance, stationMask | holdableMask);
     }
 }

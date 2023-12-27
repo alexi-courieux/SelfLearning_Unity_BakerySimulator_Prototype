@@ -4,8 +4,10 @@ using UnityEngine.UI;
 
 public class PlayerHoldSystem: MonoBehaviour, ICanHold
 {
+    private const int ignoreRaycastLayer = 1 << 1;
     [SerializeField] private Transform holdPoint;
     private HoldableObject _holdableObject;
+    private int _defaultHoldableObjectsLayer;
 
     private void Start()
     {
@@ -26,6 +28,8 @@ public class PlayerHoldSystem: MonoBehaviour, ICanHold
     public void SetHeldItem(HoldableObject holdableObject)
     {
         _holdableObject = holdableObject;
+        _defaultHoldableObjectsLayer = _holdableObject.gameObject.layer;
+        holdableObject.gameObject.layer = ignoreRaycastLayer;
     }
 
     public HoldableObject GetHeldItem()
@@ -35,7 +39,9 @@ public class PlayerHoldSystem: MonoBehaviour, ICanHold
 
     public void ClearHeldItem()
     {
+        _holdableObject.gameObject.layer = _defaultHoldableObjectsLayer;
         _holdableObject = null;
+        _defaultHoldableObjectsLayer = 0;
     }
 
     public bool IsHoldingItem()

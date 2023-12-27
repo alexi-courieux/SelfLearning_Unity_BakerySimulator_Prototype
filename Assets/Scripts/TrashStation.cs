@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TrashCounter : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt
+public class TrashStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt
 {
     public void Interact()
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ClearCounter : MonoBehaviour, ICanBeInteracted, ICanHold
+public class ClearStation : MonoBehaviour, ICanBeInteracted, ICanHold
 {
     [SerializeField] private Transform holdPoint;
     private HoldableObject _holdItem;
