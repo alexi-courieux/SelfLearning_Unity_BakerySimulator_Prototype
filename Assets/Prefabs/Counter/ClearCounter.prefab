@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2493040473499356722}
   - component: {fileID: 6650286730452613655}
+  - component: {fileID: 7250972872600473937}
   m_Layer: 0
   m_Name: ClearCounter
   m_TagString: Untagged
@@ -31,6 +32,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 8854768245184814029}
+  - {fileID: 4124010638674522492}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &6650286730452613655
@@ -54,6 +56,68 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.471201, y: 1.2544405, z: 1.4244405}
   m_Center: {x: 0.0017986298, y: 0.63079417, z: 0.032372534}
+--- !u!114 &7250972872600473937
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8306604921623047004}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 73e46cad32365fe4f89da01383ca9795, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  holdPoint: {fileID: 0}
+--- !u!1 &8625638014526239821
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4124010638674522492}
+  - component: {fileID: 2603176890489523203}
+  m_Layer: 0
+  m_Name: HoldPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4124010638674522492
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8625638014526239821}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.25, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2493040473499356722}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2603176890489523203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8625638014526239821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd2f362c895419647beea801e1d6e157, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetToSyncWith: {fileID: 0}
+  rotationMode: 1
+  syncXAxis: 0
+  syncYAxis: 1
+  syncZAxis: 0
 --- !u!1001 &4995485714340331366
 PrefabInstance:
   m_ObjectHideFlags: 0

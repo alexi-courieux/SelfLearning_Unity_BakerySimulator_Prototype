@@ -1,10 +1,11 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class PlayerHoldSystem: MonoBehaviour
+public class PlayerHoldSystem: MonoBehaviour, ICanHold
 {
     [SerializeField] private Transform holdPoint;
-    private Transform _heldObject;
+    private HoldableObject _holdableObject;
 
     private void Start()
     {
@@ -16,43 +17,34 @@ public class PlayerHoldSystem: MonoBehaviour
         Drop();
     }
 
-    public void Take(Transform target)
-    {
-        Debug.Log("Take");
-        if (_heldObject != null) throw new Exception("Already holding something");
-        _heldObject = target;
-        _heldObject.SetParent(holdPoint);
-        _heldObject.localPosition = Vector3.zero;
-        _heldObject.localRotation = Quaternion.identity;
-        
-        _heldObject.TryGetComponent(out Rigidbody rb);
-        if (rb != null)
-        {
-            rb.isKinematic = true;
-        }
-    }
-
     private void Drop()
     {
-        if (_heldObject == null) return;
-        _heldObject.SetParent(null);
-        
-        _heldObject.TryGetComponent(out Rigidbody rb);
-        if (rb != null)
-        {
-            rb.isKinematic = false;
-        }
-        
-        _heldObject = null;
+        if (_holdableObject == null) return;
+        _holdableObject.SetParent(null);
     }
 
-    public void Depose()
+    public void SetHeldItem(HoldableObject holdableObject)
     {
-        throw new System.NotImplementedException();
+        _holdableObject = holdableObject;
+    }
+
+    public HoldableObject GetHeldItem()
+    {
+        return _holdableObject;
+    }
+
+    public void ClearHeldItem()
+    {
+        _holdableObject = null;
+    }
+
+    public bool IsHoldingItem()
+    {
+        return _holdableObject != null;
     }
     
-    public bool IsHoldingSomething()
+    public Transform GetHoldPoint()
     {
-        return _heldObject != null;
+        return holdPoint;
     }
 }

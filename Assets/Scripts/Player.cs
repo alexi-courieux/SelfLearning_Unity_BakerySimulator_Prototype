@@ -71,21 +71,16 @@ public class Player : MonoBehaviour
     {
         if (!CheckForRaycastHit(out RaycastHit hitInfo)) return;
 
+        Debug.Log("Trying to interact with " + hitInfo.transform.name + "");
         if(hitInfo.transform.TryGetComponent(out ICanBeInteracted interactableComponent))
         {
             interactableComponent.Interact();
-        }
-
-        if(!HoldSystem.IsHoldingSomething() && hitInfo.transform.TryGetComponent(out ICanBeHold holdableComponent))
-        {
-            HoldSystem.Take(hitInfo.transform);
         }
     }
     
     private void InputManager_OnInteractAlt(object sender, EventArgs e)
     {
         if (!CheckForRaycastHit(out RaycastHit hitInfo)) return;
-
         if(hitInfo.transform.TryGetComponent(out ICanBeInteractedAlt interactableComponent))
         {
             interactableComponent.InteractAlt();
