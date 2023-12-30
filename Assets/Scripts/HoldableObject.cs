@@ -1,7 +1,11 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class HoldableObject : MonoBehaviour, ICanBeInteracted
 {
+    public HoldableObjectSo HoldableObjectSo => holdableObjectSo;
+
+    [SerializeField] private HoldableObjectSo holdableObjectSo;
     private ICanHold _parent;
 
     public static HoldableObject SpawnHoldableObject(HoldableObjectSo holdableObjectSo, ICanHold parent)
@@ -11,6 +15,7 @@ public class HoldableObject : MonoBehaviour, ICanBeInteracted
         holdableObject.SetParent(parent);
         return holdableObject;
     }
+
     public void SetParent(ICanHold targetParent)
     {
         if (targetParent != null && targetParent.IsHoldingItem() && targetParent.GetHeldItem() != this)

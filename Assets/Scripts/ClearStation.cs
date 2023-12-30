@@ -26,7 +26,7 @@ public class ClearStation : MonoBehaviour, ICanBeInteracted, ICanHold
         }
     }
 
-   /// Must be called by the holdable object to set the reference in the parent 
+  
    public void SetHeldItem(HoldableObject holdableObject)
     {
         _holdItem = holdableObject;
@@ -36,8 +36,7 @@ public class ClearStation : MonoBehaviour, ICanBeInteracted, ICanHold
     {
         return _holdItem;
     }
-
-    /// Must be called by the holdable object to clear the reference in the parent
+    
     public void ClearHeldItem()
     {
         _holdItem = null;
