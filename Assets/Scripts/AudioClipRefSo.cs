@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "AudioClip_new", menuName = "ScriptableObject/AudioClipRef", order = 0)]
+[CreateAssetMenu(fileName = "AudioClip_new", menuName = "ScriptableObject/AudioClipRef")]
 public class AudioClipRefSo : ScriptableObject
 {
     public AudioClip[] audioClips;

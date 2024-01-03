@@ -16,7 +16,7 @@ public class OvenStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt,
     }
     
     [SerializeField] private Transform holdPoint;
-    [SerializeField] private OvenRecipesDictionarySo ovenRecipesDictionarySo;
+    [SerializeField] private RecipesDictionarySo recipesDictionarySo;
     [SerializeField] private HoldableObjectSo trashObject;
     private HoldableObject _holdItem;
     private bool _active;
@@ -103,7 +103,7 @@ public class OvenStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt,
 
     private void CheckForRecipe()
     {
-        OvenRecipeSo recipe = ovenRecipesDictionarySo.recipes.FirstOrDefault(r => r.input == GetHeldItem().HoldableObjectSo);
+        OvenRecipeSo recipe = recipesDictionarySo.ovenRecipes.FirstOrDefault(r => r.input == GetHeldItem().HoldableObjectSo);
         if (recipe != null)
         {
             CurrentState = State.Processing;

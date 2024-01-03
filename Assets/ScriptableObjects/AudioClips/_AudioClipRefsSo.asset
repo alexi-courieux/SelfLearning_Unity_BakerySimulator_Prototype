@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: _AudioClipRefsSo
   m_EditorClassIdentifier: 
   oven: {fileID: 11400000, guid: cae327d7dea9c7647971288eab0bea0b, type: 2}
+  blender: {fileID: 11400000, guid: ad752f6d8f377c04eb5a34757c7c7153, type: 2}

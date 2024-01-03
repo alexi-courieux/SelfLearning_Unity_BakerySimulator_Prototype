@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a966cb99649b4aa19ee7dca1b36794d3, type: 3}
+  m_Name: BlenderRecipe_Dough
+  m_EditorClassIdentifier: 
+  input: {fileID: 11400000, guid: 08b38a3b5277a944c81c5a2fe520eedc, type: 2}
+  output: {fileID: 11400000, guid: c93cf7768c544964d86c1ff5610cbb77, type: 2}
+  timeToProcess: 10
