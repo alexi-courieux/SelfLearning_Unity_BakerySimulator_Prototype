@@ -42,7 +42,7 @@ public class OvenStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt,
                 _timeToProcess -= Time.deltaTime;
                 if (_timeToProcess <= 0f)
                 {
-                    GetHeldItem().DestroySelf();
+                    GetHoldable().DestroySelf();
                     if (_ovenRecipeSo.burnt)
                     {
                         CurrentState = State.Burning;
@@ -65,9 +65,9 @@ public class OvenStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt,
     public void Interact()
     {
         if (CurrentState is not State.Idle) return;
-        if (IsHoldingItem())
+        if (HaveHoldable())
         {
-            if (!Player.Instance.HoldSystem.IsHoldingItem())
+            if (!Player.Instance.HoldSystem.HaveHoldable())
             {
                 _holdItem.SetParent(Player.Instance.HoldSystem);
                 OnTakeOut?.Invoke(this, EventArgs.Empty);
@@ -75,9 +75,9 @@ public class OvenStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt,
         }
         else
         {
-            if (Player.Instance.HoldSystem.IsHoldingItem())
+            if (Player.Instance.HoldSystem.HaveHoldable())
             {
-                Player.Instance.HoldSystem.GetHeldItem().SetParent(this);
+                Player.Instance.HoldSystem.GetHoldable().SetParent(this);
                 OnPutIn?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -85,7 +85,7 @@ public class OvenStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt,
 
     public void InteractAlt()
     {
-        if (GetHeldItem() != null)
+        if (HaveHoldable())
         {
             if (CurrentState is State.Idle)
             {
@@ -101,8 +101,8 @@ public class OvenStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt,
 
     private void CheckForRecipe()
     {
-        OvenRecipeSo recipe = recipesDictionarySo.ovenRecipes.FirstOrDefault(r => r.input == GetHeldItem().HoldableObjectSo);
-        if (recipe != null)
+        OvenRecipeSo recipe = recipesDictionarySo.ovenRecipes.FirstOrDefault(r => r.input == GetHoldable().HoldableObjectSo);
+        if (recipe is not null)
         {
             CurrentState = State.Processing;
             _timeToProcess = recipe.timeToProcess;
@@ -114,22 +114,22 @@ public class OvenStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt,
         }
     }
 
-    public void SetHeldItem(HoldableObject holdableObject)
+    public void SetHoldable(HoldableObject holdableObject)
     {
         _holdItem = holdableObject;
     }
 
-    public HoldableObject GetHeldItem()
+    public HoldableObject GetHoldable()
     {
         return _holdItem;
     }
     
-    public void ClearHeldItem()
+    public void ClearHoldable()
     {
         _holdItem = null;
     }
 
-    public bool IsHoldingItem()
+    public bool HaveHoldable()
     {
         return _holdItem != null;
     }

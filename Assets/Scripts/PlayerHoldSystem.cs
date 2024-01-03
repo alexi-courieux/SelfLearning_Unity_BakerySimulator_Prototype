@@ -1,10 +1,9 @@
 ﻿using System;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class PlayerHoldSystem: MonoBehaviour, ICanHold
 {
-    private const int ignoreRaycastLayer = 1 << 1;
+    private const int IgnoreRaycastLayer = 1 << 1;
     [SerializeField] private Transform holdPoint;
     private HoldableObject _holdableObject;
     private int _defaultHoldableObjectsLayer;
@@ -21,30 +20,30 @@ public class PlayerHoldSystem: MonoBehaviour, ICanHold
 
     private void Drop()
     {
-        if (_holdableObject == null) return;
+        if (!HaveHoldable()) return;
         _holdableObject.SetParent(null);
     }
 
-    public void SetHeldItem(HoldableObject holdableObject)
+    public void SetHoldable(HoldableObject holdableObject)
     {
         _holdableObject = holdableObject;
         _defaultHoldableObjectsLayer = _holdableObject.gameObject.layer;
-        holdableObject.gameObject.layer = ignoreRaycastLayer;
+        holdableObject.gameObject.layer = IgnoreRaycastLayer;
     }
 
-    public HoldableObject GetHeldItem()
+    public HoldableObject GetHoldable()
     {
         return _holdableObject;
     }
 
-    public void ClearHeldItem()
+    public void ClearHoldable()
     {
         _holdableObject.gameObject.layer = _defaultHoldableObjectsLayer;
         _holdableObject = null;
         _defaultHoldableObjectsLayer = 0;
     }
 
-    public bool IsHoldingItem()
+    public bool HaveHoldable()
     {
         return _holdableObject != null;
     }

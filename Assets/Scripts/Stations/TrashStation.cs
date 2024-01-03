@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class TrashStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt
@@ -27,15 +25,15 @@ public class TrashStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt
     public void Interact()
     {
         if (_trashAmount >= trashAmountMax) return;
-        if (!Player.Instance.HoldSystem.IsHoldingItem()) return;
-        Player.Instance.HoldSystem.GetHeldItem().DestroySelf();
+        if (!Player.Instance.HoldSystem.HaveHoldable()) return;
+        Player.Instance.HoldSystem.GetHoldable().DestroySelf();
         TrashAmount++;
     }
 
     public void InteractAlt()
     {
-        if (_trashAmount == 0) return;
-        if (Player.Instance.HoldSystem.IsHoldingItem()) return;
+        if (_trashAmount is 0) return;
+        if (Player.Instance.HoldSystem.HaveHoldable()) return;
         TrashAmount = 0;
     }
     

@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ContainerStation : MonoBehaviour, ICanBeInteracted
 {
@@ -12,7 +11,7 @@ public class ContainerStation : MonoBehaviour, ICanBeInteracted
 
     public void Interact()
     {
-        if (Player.Instance.HoldSystem.IsHoldingItem()) return;
+        if (Player.Instance.HoldSystem.HaveHoldable()) return;
         HoldableObject.SpawnHoldableObject(holdableObjectSo, Player.Instance.HoldSystem);
     }
 }

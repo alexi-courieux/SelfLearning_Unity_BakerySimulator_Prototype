@@ -40,7 +40,7 @@ public class BlenderStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedA
                 _timeToProcess -= Time.deltaTime;
                 if (_timeToProcess <= 0f)
                 {
-                    GetHeldItem().DestroySelf();
+                    GetHoldable().DestroySelf();
                     HoldableObject.SpawnHoldableObject(_blenderRecipeSo.output, this);
                     CheckForRecipe();
                 }
@@ -53,9 +53,9 @@ public class BlenderStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedA
     public void Interact()
     {
         if (CurrentState is not State.Idle) return;
-        if (IsHoldingItem())
+        if (HaveHoldable())
         {
-            if (!Player.Instance.HoldSystem.IsHoldingItem())
+            if (!Player.Instance.HoldSystem.HaveHoldable())
             {
                 _holdItem.SetParent(Player.Instance.HoldSystem);
                 OnTakeOut?.Invoke(this, EventArgs.Empty);
@@ -63,9 +63,9 @@ public class BlenderStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedA
         }
         else
         {
-            if (Player.Instance.HoldSystem.IsHoldingItem())
+            if (Player.Instance.HoldSystem.HaveHoldable())
             {
-                Player.Instance.HoldSystem.GetHeldItem().SetParent(this);
+                Player.Instance.HoldSystem.GetHoldable().SetParent(this);
                 OnPutIn?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -73,7 +73,7 @@ public class BlenderStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedA
 
     public void InteractAlt()
     {
-        if (IsHoldingItem())
+        if (HaveHoldable())
         {
             if (CurrentState == State.Idle)
             {
@@ -89,7 +89,7 @@ public class BlenderStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedA
 
     private void CheckForRecipe()
     {
-        BlenderRecipeSo recipe = recipesDictionarySo.blenderRecipes.FirstOrDefault(r => r.input == GetHeldItem().HoldableObjectSo);
+        BlenderRecipeSo recipe = recipesDictionarySo.blenderRecipes.FirstOrDefault(r => r.input == GetHoldable().HoldableObjectSo);
         if (recipe != null)
         {
             CurrentState = State.Processing;
@@ -102,22 +102,22 @@ public class BlenderStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedA
         }
     }
 
-    public void SetHeldItem(HoldableObject holdableObject)
+    public void SetHoldable(HoldableObject holdableObject)
     {
         _holdItem = holdableObject;
     }
 
-    public HoldableObject GetHeldItem()
+    public HoldableObject GetHoldable()
     {
         return _holdItem;
     }
     
-    public void ClearHeldItem()
+    public void ClearHoldable()
     {
         _holdItem = null;
     }
 
-    public bool IsHoldingItem()
+    public bool HaveHoldable()
     {
         return _holdItem != null;
     }

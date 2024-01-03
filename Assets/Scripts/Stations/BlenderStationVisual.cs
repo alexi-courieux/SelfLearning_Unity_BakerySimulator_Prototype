@@ -1,10 +1,9 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BlenderStationVisual : MonoBehaviour
     {
         private static readonly int Processing = Animator.StringToHash("Processing");
-        
+
         [SerializeField] private BlenderStation blenderStation;
         private Animator _animator;
 
@@ -22,7 +21,4 @@ public class BlenderStationVisual : MonoBehaviour
         {
             _animator.SetBool(Processing, state == BlenderStation.State.Processing);
         }
-
-        
-        
     }

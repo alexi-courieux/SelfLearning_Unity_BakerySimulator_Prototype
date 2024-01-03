@@ -6,9 +6,9 @@ public class ClearStation : MonoBehaviour, ICanBeInteracted, ICanHold
     private HoldableObject _holdItem;
    public void Interact()
     {
-        if (IsHoldingItem())
+        if (HaveHoldable())
         {
-            if (Player.Instance.HoldSystem.IsHoldingItem())
+            if (Player.Instance.HoldSystem.HaveHoldable())
             {
                 Debug.Log("Player can't hold more than one item at a time!");
             }
@@ -19,30 +19,30 @@ public class ClearStation : MonoBehaviour, ICanBeInteracted, ICanHold
         }
         else
         {
-            if (Player.Instance.HoldSystem.IsHoldingItem())
+            if (Player.Instance.HoldSystem.HaveHoldable())
             {
-                Player.Instance.HoldSystem.GetHeldItem().SetParent(this);
+                Player.Instance.HoldSystem.GetHoldable().SetParent(this);
             }
         }
     }
 
   
-   public void SetHeldItem(HoldableObject holdableObject)
+   public void SetHoldable(HoldableObject holdableObject)
     {
         _holdItem = holdableObject;
     }
 
-    public HoldableObject GetHeldItem()
+    public HoldableObject GetHoldable()
     {
         return _holdItem;
     }
     
-    public void ClearHeldItem()
+    public void ClearHoldable()
     {
         _holdItem = null;
     }
 
-    public bool IsHoldingItem()
+    public bool HaveHoldable()
     {
         return _holdItem != null;
     }
