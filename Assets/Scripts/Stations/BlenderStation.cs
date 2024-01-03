@@ -109,7 +109,6 @@ public class BlenderStation : MonoBehaviour, IInteractable, IInteractableAlt, IH
         }
         else
         {
-            Debug.Log("No recipe found");
             CurrentState = State.Idle;
         }
     }
