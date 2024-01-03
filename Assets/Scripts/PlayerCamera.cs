@@ -59,9 +59,9 @@ public class PlayerCamera : MonoBehaviour
         cameraFollowTarget.Rotate(Vector3.left, rotationV, Space.Self);
         
         // Clamp the vertical rotation
-        var angles = cameraFollowTarget.localEulerAngles;
+        Vector3 angles = cameraFollowTarget.localEulerAngles;
         angles.z = 0;
-        var angle = angles.x;
+        float angle = angles.x;
         if (angle > 180)
         {
             angle -= 360;

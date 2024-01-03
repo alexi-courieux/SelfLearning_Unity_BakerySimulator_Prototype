@@ -4984,7 +4984,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6537060714905147067}
   m_Layer: 7
-  m_Name: HoldPoint
+  m_Name: ItemSlot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5074,7 +5074,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e3e30916204c8b844bc7092c223d74d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  holdPoint: {fileID: 6537060714905147067}
+  itemSlot: {fileID: 6537060714905147067}
   recipesDictionarySo: {fileID: 11400000, guid: 55e6f01085b2f864b90d35f2972893fe,
     type: 2}
   trashObject: {fileID: 11400000, guid: 91eb9bd5fa4bbc64fa2c2c4babed68f7, type: 2}

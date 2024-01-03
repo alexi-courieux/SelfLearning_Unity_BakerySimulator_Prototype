@@ -10,7 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d0fb53c489634a3e8b0275ab9c596350, type: 3}
-  m_Name: Flour
+  m_Name: Water
   m_EditorClassIdentifier: 
-  prefab: {fileID: 3036039211888260285, guid: d47a515ee3bfe034897a18972b5cd354, type: 3}
-  sprite: {fileID: 21300000, guid: 23d86883505e12e4eba588103511e8a2, type: 3}
+  prefab: {fileID: 2574118022918292818, guid: 76a44bf5b6291cd4c82a21b1d5afcef3, type: 3}
+  sprite: {fileID: 21300000, guid: cfbf94fe71eb45d4b80cb540fdd99664, type: 3}
+  itemName: Water

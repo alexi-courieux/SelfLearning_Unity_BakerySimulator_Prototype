@@ -14,3 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 8097709733323586053, guid: 9f7d8547f99aee44d9ac1072dca54305, type: 3}
   sprite: {fileID: 0}
+  itemName: Trash

@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 367064406825612950}
   - component: {fileID: 8262230962148993827}
   m_Layer: 0
-  m_Name: HoldPoint
+  m_Name: ItemSlot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -196,7 +196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e99ed65e0c84e05abead43814548f0a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  holdPoint: {fileID: 367064406825612950}
+  itemSlot: {fileID: 367064406825612950}
 --- !u!143 &3245505137495757686
 CharacterController:
   m_ObjectHideFlags: 0

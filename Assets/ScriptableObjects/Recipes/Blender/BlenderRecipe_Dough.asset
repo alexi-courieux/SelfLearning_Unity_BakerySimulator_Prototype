@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a966cb99649b4aa19ee7dca1b36794d3, type: 3}
   m_Name: BlenderRecipe_Dough
   m_EditorClassIdentifier: 
-  input: {fileID: 11400000, guid: 08b38a3b5277a944c81c5a2fe520eedc, type: 2}
+  inputs:
+  - {fileID: 11400000, guid: 08b38a3b5277a944c81c5a2fe520eedc, type: 2}
+  - {fileID: 11400000, guid: 21a404efc6ca1c5429e3c1fd55fdde5f, type: 2}
   output: {fileID: 11400000, guid: c93cf7768c544964d86c1ff5610cbb77, type: 2}
   timeToProcess: 10

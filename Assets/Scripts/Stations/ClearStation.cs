@@ -1,54 +1,59 @@
 using UnityEngine;
 
-public class ClearStation : MonoBehaviour, ICanBeInteracted, ICanHold
+public class ClearStation : MonoBehaviour, IInteractable, IHandleItems
 {
-    [SerializeField] private Transform holdPoint;
-    private HoldableObject _holdItem;
+    [SerializeField] private Transform itemSlot;
+    private HandleableItem _item;
    public void Interact()
     {
-        if (HaveHoldable())
+        if (HaveItems())
         {
-            if (Player.Instance.HoldSystem.HaveHoldable())
+            if (Player.Instance.HandleSystem.HaveItems())
             {
                 Debug.Log("Player can't hold more than one item at a time!");
             }
             else
             {
-                _holdItem.SetParent(Player.Instance.HoldSystem);
+                _item.SetParent(Player.Instance.HandleSystem);
             }
         }
         else
         {
-            if (Player.Instance.HoldSystem.HaveHoldable())
+            if (Player.Instance.HandleSystem.HaveItems())
             {
-                Player.Instance.HoldSystem.GetHoldable().SetParent(this);
+                Player.Instance.HandleSystem.GetItem().SetParent(this);
             }
         }
     }
 
   
-   public void SetHoldable(HoldableObject holdableObject)
+   public void AddItem(HandleableItem handleableItem)
     {
-        _holdItem = holdableObject;
+        _item = handleableItem;
     }
 
-    public HoldableObject GetHoldable()
+    public HandleableItem[] GetItems()
     {
-        return _holdItem;
+        return new[] {_item};
     }
     
-    public void ClearHoldable()
+    public void ClearItem(HandleableItem item)
     {
-        _holdItem = null;
+        _item = null;
     }
 
-    public bool HaveHoldable()
+    public bool HaveItems()
     {
-        return _holdItem != null;
+        return _item != null;
     }
     
-    public Transform GetHoldPoint()
+    public Transform GetAvailableItemSlot()
     {
-        return holdPoint;
+        return itemSlot;
+    }
+
+    public bool HasAvailableSlot()
+    {
+        return _item is null;
     }
 }

@@ -47,7 +47,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e520fab0c8074b98b16c8bdea1d3974e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  holdableObjectSo: {fileID: 11400000, guid: 620df60cc6f3a0a4db3a7611e399b988, type: 2}
+  handleableItemSo: {fileID: 11400000, guid: 620df60cc6f3a0a4db3a7611e399b988, type: 2}
 --- !u!65 &2591765439755417635
 BoxCollider:
   m_ObjectHideFlags: 0

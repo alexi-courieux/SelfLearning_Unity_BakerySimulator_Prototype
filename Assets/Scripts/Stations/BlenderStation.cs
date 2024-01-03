@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class BlenderStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt, ICanHold
+public class BlenderStation : MonoBehaviour, IInteractable, IInteractableAlt, IHandleItems
 {
     public EventHandler OnPutIn;
     public EventHandler OnTakeOut;
@@ -14,9 +15,9 @@ public class BlenderStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedA
         Processing
     }
     
-    [SerializeField] private Transform holdPoint;
+    [SerializeField] private Transform itemSlot;
     [SerializeField] private RecipesDictionarySo recipesDictionarySo;
-    private HoldableObject _holdItem;
+    private readonly StackList<HandleableItem> _items = new();
     private State _state;
     private State CurrentState
     {
@@ -40,8 +41,8 @@ public class BlenderStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedA
                 _timeToProcess -= Time.deltaTime;
                 if (_timeToProcess <= 0f)
                 {
-                    GetHoldable().DestroySelf();
-                    HoldableObject.SpawnHoldableObject(_blenderRecipeSo.output, this);
+                    _items.ToList().ForEach(i => i.DestroySelf());
+                    HandleableItem.SpawnItem(_blenderRecipeSo.output, this);
                     CheckForRecipe();
                 }
                 break;
@@ -53,27 +54,26 @@ public class BlenderStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedA
     public void Interact()
     {
         if (CurrentState is not State.Idle) return;
-        if (HaveHoldable())
+
+        if (Player.Instance.HandleSystem.HaveItems())
         {
-            if (!Player.Instance.HoldSystem.HaveHoldable())
-            {
-                _holdItem.SetParent(Player.Instance.HoldSystem);
-                OnTakeOut?.Invoke(this, EventArgs.Empty);
-            }
+            Player.Instance.HandleSystem.GetItem().SetParent(this);
+            OnPutIn?.Invoke(this, EventArgs.Empty);
         }
         else
         {
-            if (Player.Instance.HoldSystem.HaveHoldable())
+            if (_items.Count > 0) 
             {
-                Player.Instance.HoldSystem.GetHoldable().SetParent(this);
-                OnPutIn?.Invoke(this, EventArgs.Empty);
+                HandleableItem item = _items.Pop();
+                item.SetParent(Player.Instance.HandleSystem);
+                OnTakeOut?.Invoke(this, EventArgs.Empty);
             }
         }
     }
 
     public void InteractAlt()
     {
-        if (HaveHoldable())
+        if (_items.Count > 0)
         {
             if (CurrentState == State.Idle)
             {
@@ -89,7 +89,18 @@ public class BlenderStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedA
 
     private void CheckForRecipe()
     {
-        BlenderRecipeSo recipe = recipesDictionarySo.blenderRecipes.FirstOrDefault(r => r.input == GetHoldable().HoldableObjectSo);
+        string[] itemsSo = GetItems()
+            .Select((i) => i.HandleableItemSo.itemName)
+            .OrderBy(n => n)
+            .ToArray();
+        BlenderRecipeSo recipe = recipesDictionarySo.blenderRecipes.FirstOrDefault(r =>
+        {
+            string[] recipeItemsSo = r.inputs
+                .Select(i => i.itemName)
+                .OrderBy(n => n)
+                .ToArray();
+            return itemsSo.SequenceEqual(recipeItemsSo);
+        });
         if (recipe != null)
         {
             CurrentState = State.Processing;
@@ -98,32 +109,38 @@ public class BlenderStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedA
         }
         else
         {
+            Debug.Log("No recipe found");
             CurrentState = State.Idle;
         }
     }
 
-    public void SetHoldable(HoldableObject holdableObject)
+    public void AddItem(HandleableItem item)
     {
-        _holdItem = holdableObject;
+        _items.Push(item);
     }
 
-    public HoldableObject GetHoldable()
+    public HandleableItem[] GetItems()
     {
-        return _holdItem;
+        return _items.ToArray();
     }
     
-    public void ClearHoldable()
+    public void ClearItem(HandleableItem item)
     {
-        _holdItem = null;
+        _items.RemoveAll(i => i == item);
     }
 
-    public bool HaveHoldable()
+    public bool HaveItems()
     {
-        return _holdItem != null;
+        return _items.Count > 0 ;
     }
 
-    public Transform GetHoldPoint()
+    public Transform GetAvailableItemSlot()
     {
-        return holdPoint;
+        return itemSlot;
+    }
+
+    public bool HasAvailableSlot()
+    {
+        return true;
     }
 }

@@ -1,17 +1,17 @@
 ﻿using UnityEngine;
 
-public class ContainerStation : MonoBehaviour, ICanBeInteracted
+public class ContainerStation : MonoBehaviour, IInteractable
 {
-    [SerializeField] private HoldableObjectSo holdableObjectSo;
+    [SerializeField] private HandleableItemSo handleableItemSo;
     [SerializeField] private SpriteRenderer containerSprite;
     private void Start()
     {
-        containerSprite.sprite = holdableObjectSo.sprite;
+        containerSprite.sprite = handleableItemSo.sprite;
     }
 
     public void Interact()
     {
-        if (Player.Instance.HoldSystem.HaveHoldable()) return;
-        HoldableObject.SpawnHoldableObject(holdableObjectSo, Player.Instance.HoldSystem);
+        if (Player.Instance.HandleSystem.HaveItems()) return;
+        HandleableItem.SpawnItem(handleableItemSo, Player.Instance.HandleSystem);
     }
 }

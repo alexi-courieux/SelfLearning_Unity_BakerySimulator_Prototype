@@ -3,9 +3,11 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    private const string LayerStation = "Station";
+    private const string LayerHoldable = "HandleableItem";
     public static Player Instance { get; private set; }
 
-    public PlayerHoldSystem HoldSystem { get; private set; }
+    public PlayerItemHandlingSystem HandleSystem { get; private set; }
     
     private const float MaxInteractionDistance = 2f;
     
@@ -22,7 +24,7 @@ public class Player : MonoBehaviour
     {
         Instance = this;
         _characterController = GetComponent<CharacterController>();
-        HoldSystem = GetComponent<PlayerHoldSystem>();
+        HandleSystem = GetComponent<PlayerItemHandlingSystem>();
     }
 
     private void Start()
@@ -76,7 +78,7 @@ public class Player : MonoBehaviour
     {
         if (!CheckForRaycastHit(out RaycastHit hitInfo)) return;
 
-        if(hitInfo.transform.TryGetComponent(out ICanBeInteracted interactableComponent))
+        if(hitInfo.transform.TryGetComponent(out IInteractable interactableComponent))
         {
             interactableComponent.Interact();
         }
@@ -85,7 +87,7 @@ public class Player : MonoBehaviour
     private void InputManager_OnInteractAlt(object sender, EventArgs e)
     {
         if (!CheckForRaycastHit(out RaycastHit hitInfo)) return;
-        if(hitInfo.transform.TryGetComponent(out ICanBeInteractedAlt interactableComponent))
+        if(hitInfo.transform.TryGetComponent(out IInteractableAlt interactableComponent))
         {
             interactableComponent.InteractAlt();
         }
@@ -93,12 +95,9 @@ public class Player : MonoBehaviour
 
     private bool CheckForRaycastHit(out RaycastHit hitInfo)
     {
-        const string layerStation = "Station";
-        const string layerHoldable = "Holdable";
-        
         Transform cameraTransform = Camera.main!.transform;
-        int stationMask = LayerMask.GetMask(layerStation);
-        int holdableMask = LayerMask.GetMask(layerHoldable);
+        int stationMask = LayerMask.GetMask(LayerStation);
+        int holdableMask = LayerMask.GetMask(LayerHoldable);
         return Physics.Raycast(interactionRaycastSpawnPoint.position, cameraTransform.forward, out hitInfo,
             MaxInteractionDistance, stationMask | holdableMask);
     }

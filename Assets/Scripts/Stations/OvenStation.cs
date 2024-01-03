@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-public class OvenStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt, ICanHold
+public class OvenStation : MonoBehaviour, IInteractable, IInteractableAlt, IHandleItems
 {
     public EventHandler OnPutIn;
     public EventHandler OnTakeOut;
@@ -15,10 +15,10 @@ public class OvenStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt,
         Burning
     }
     
-    [SerializeField] private Transform holdPoint;
+    [SerializeField] private Transform itemSlot;
     [SerializeField] private RecipesDictionarySo recipesDictionarySo;
-    [SerializeField] private HoldableObjectSo trashObject;
-    private HoldableObject _holdItem;
+    [SerializeField] private HandleableItemSo trashObject;
+    private HandleableItem _item;
     private State _state;
     private State CurrentState
     {
@@ -42,15 +42,18 @@ public class OvenStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt,
                 _timeToProcess -= Time.deltaTime;
                 if (_timeToProcess <= 0f)
                 {
-                    GetHoldable().DestroySelf();
+                    foreach (HandleableItem item in GetItems())
+                    {
+                        item.DestroySelf();
+                    }
                     if (_ovenRecipeSo.burnt)
                     {
                         CurrentState = State.Burning;
-                        HoldableObject.SpawnHoldableObject(trashObject, this);
+                        HandleableItem.SpawnItem(trashObject, this);
                     }
                     else
                     {
-                        HoldableObject.SpawnHoldableObject(_ovenRecipeSo.output, this);
+                        HandleableItem.SpawnItem(_ovenRecipeSo.output, this);
                         CheckForRecipe();
                     }
                 }
@@ -65,19 +68,19 @@ public class OvenStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt,
     public void Interact()
     {
         if (CurrentState is not State.Idle) return;
-        if (HaveHoldable())
+        if (_item is not null)
         {
-            if (!Player.Instance.HoldSystem.HaveHoldable())
+            if (!Player.Instance.HandleSystem.HaveItems())
             {
-                _holdItem.SetParent(Player.Instance.HoldSystem);
+                _item.SetParent(Player.Instance.HandleSystem);
                 OnTakeOut?.Invoke(this, EventArgs.Empty);
             }
         }
         else
         {
-            if (Player.Instance.HoldSystem.HaveHoldable())
+            if (Player.Instance.HandleSystem.HaveItems())
             {
-                Player.Instance.HoldSystem.GetHoldable().SetParent(this);
+                Player.Instance.HandleSystem.GetItem().SetParent(this);
                 OnPutIn?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -85,7 +88,7 @@ public class OvenStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt,
 
     public void InteractAlt()
     {
-        if (HaveHoldable())
+        if (_item is not null)
         {
             if (CurrentState is State.Idle)
             {
@@ -101,7 +104,7 @@ public class OvenStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt,
 
     private void CheckForRecipe()
     {
-        OvenRecipeSo recipe = recipesDictionarySo.ovenRecipes.FirstOrDefault(r => r.input == GetHoldable().HoldableObjectSo);
+        OvenRecipeSo recipe = recipesDictionarySo.ovenRecipes.FirstOrDefault(r => r.input == _item.HandleableItemSo);
         if (recipe is not null)
         {
             CurrentState = State.Processing;
@@ -114,28 +117,33 @@ public class OvenStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt,
         }
     }
 
-    public void SetHoldable(HoldableObject holdableObject)
+    public void AddItem(HandleableItem handleableItem)
     {
-        _holdItem = holdableObject;
+        _item = handleableItem;
     }
 
-    public HoldableObject GetHoldable()
+    public HandleableItem[] GetItems()
     {
-        return _holdItem;
+        return new []{_item};
     }
     
-    public void ClearHoldable()
+    public void ClearItem(HandleableItem item)
     {
-        _holdItem = null;
+        _item = null;
     }
 
-    public bool HaveHoldable()
+    public bool HaveItems()
     {
-        return _holdItem != null;
+        return _item != null;
     }
 
-    public Transform GetHoldPoint()
+    public Transform GetAvailableItemSlot()
     {
-        return holdPoint;
+        return itemSlot;
+    }
+
+    public bool HasAvailableSlot()
+    {
+        return _item is null;
     }
 }

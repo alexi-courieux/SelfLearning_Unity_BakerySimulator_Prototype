@@ -295,18 +295,6 @@ MonoBehaviour:
   m_CameraActivatedEvent:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &346693220 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2175131175333611795, guid: 7e6940428580f014195e618df6e2ae78,
-    type: 3}
-  m_PrefabInstance: {fileID: 5257337175345506044}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68d387e3fffbc7c468221bfe4ca2d5ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &349112772 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6987099459313694500, guid: 1bcb84f912be4ea448184af1eca078c4,
@@ -491,7 +479,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5638259111321423459, guid: 2df0e15aaad915241abd1a973b9ac956,
         type: 3}
-      propertyPath: holdableObjectSo
+      propertyPath: handleableItemSo
       value: 
       objectReference: {fileID: 11400000, guid: 21a404efc6ca1c5429e3c1fd55fdde5f,
         type: 2}
@@ -1068,25 +1056,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 598a3493683245b4f816412fa92c5a19, type: 3}
---- !u!1 &1805188045 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 1787706288839335043, guid: 7e6940428580f014195e618df6e2ae78,
-    type: 3}
-  m_PrefabInstance: {fileID: 5257337175345506044}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1805188048
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1805188045}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 913d17b147694bc4b17bb259b11e1993, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  blenderStation: {fileID: 346693220}
 --- !u!1 &1877481122
 GameObject:
   m_ObjectHideFlags: 0
@@ -1299,6 +1268,12 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5638259111321423459, guid: 2df0e15aaad915241abd1a973b9ac956,
+        type: 3}
+      propertyPath: handleableItemSo
+      value: 
+      objectReference: {fileID: 11400000, guid: 08b38a3b5277a944c81c5a2fe520eedc,
+        type: 2}
     - target: {fileID: 5638259111321423459, guid: 2df0e15aaad915241abd1a973b9ac956,
         type: 3}
       propertyPath: holdableObjectSo
@@ -1517,11 +1492,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 1787706288839335043, guid: 7e6940428580f014195e618df6e2ae78,
-        type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1805188048}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7e6940428580f014195e618df6e2ae78, type: 3}
 --- !u!1001 &5693994703722171533
 PrefabInstance:

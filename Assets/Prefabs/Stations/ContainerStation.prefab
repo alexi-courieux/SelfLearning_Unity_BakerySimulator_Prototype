@@ -67,7 +67,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55328517cfc04460b20cf74648b6c331, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  holdableObjectSo: {fileID: 11400000, guid: 620df60cc6f3a0a4db3a7611e399b988, type: 2}
+  handleableItemSo: {fileID: 0}
   containerSprite: {fileID: 8220816221679292444}
 --- !u!1001 &3547014851318294679
 PrefabInstance:
