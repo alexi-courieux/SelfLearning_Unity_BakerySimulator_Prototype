@@ -19,7 +19,6 @@ public class OvenStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt,
     [SerializeField] private RecipesDictionarySo recipesDictionarySo;
     [SerializeField] private HoldableObjectSo trashObject;
     private HoldableObject _holdItem;
-    private bool _active;
     private State _state;
     private State CurrentState
     {
@@ -65,7 +64,7 @@ public class OvenStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt,
 
     public void Interact()
     {
-        if (_active) return;
+        if (CurrentState is not State.Idle) return;
         if (IsHoldingItem())
         {
             if (!Player.Instance.HoldSystem.IsHoldingItem())
@@ -88,8 +87,7 @@ public class OvenStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt,
     {
         if (GetHeldItem() != null)
         {
-            _active = !_active;
-            if (_active)
+            if (CurrentState is State.Idle)
             {
                 CheckForRecipe();
             }
@@ -112,7 +110,7 @@ public class OvenStation : MonoBehaviour, ICanBeInteracted, ICanBeInteractedAlt,
         }
         else
         {
-            _active = false;
+            CurrentState = State.Idle;
         }
     }
 
