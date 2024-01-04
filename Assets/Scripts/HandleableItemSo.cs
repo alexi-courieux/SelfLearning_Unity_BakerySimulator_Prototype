@@ -6,4 +6,6 @@ public class HandleableItemSo : ScriptableObject
     public Transform prefab;
     public Sprite sprite;
     public string itemName;
+    public float buyPrice;
+    public float sellPrice;
 }

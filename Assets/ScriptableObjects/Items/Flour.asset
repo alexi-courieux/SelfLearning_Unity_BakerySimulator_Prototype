@@ -15,3 +15,5 @@ MonoBehaviour:
   prefab: {fileID: 3036039211888260285, guid: d47a515ee3bfe034897a18972b5cd354, type: 3}
   sprite: {fileID: 21300000, guid: 23d86883505e12e4eba588103511e8a2, type: 3}
   itemName: Flour
+  buyPrice: 1
+  sellPrice: 1

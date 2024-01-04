@@ -15,3 +15,5 @@ MonoBehaviour:
   prefab: {fileID: 1116257768256646283, guid: 6249433425c8c0c4fa89cf38f30d73a4, type: 3}
   sprite: {fileID: 21300000, guid: 77b28124b8bda494381c80bd5aa42c22, type: 3}
   itemName: Bread
+  buyPrice: 10
+  sellPrice: 8

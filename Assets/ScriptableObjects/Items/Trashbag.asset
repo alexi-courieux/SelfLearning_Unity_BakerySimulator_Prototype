@@ -15,3 +15,5 @@ MonoBehaviour:
   prefab: {fileID: 8097709733323586053, guid: 76bdecddf43a3634b8dee127cec7d966, type: 3}
   sprite: {fileID: 0}
   itemName: Trashbag
+  buyPrice: 0
+  sellPrice: -5

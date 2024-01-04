@@ -25,7 +25,13 @@ public class SellStation : MonoBehaviour, IInteractable, IInteractableAlt, IHand
 
     public void InteractAlt()
     {
-        _items.ToList().ForEach(i => i.DestroySelf());
+        float totalPrice = 0f;
+        _items.ToList().ForEach(i =>
+        {
+            totalPrice += i.HandleableItemSo.sellPrice;
+            i.DestroySelf();
+        });
+        EconomyManager.Instance.AddMoney(totalPrice);
     }
 
     public void AddItem(HandleableItem item)
