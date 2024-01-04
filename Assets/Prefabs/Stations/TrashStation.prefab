@@ -67,7 +67,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 05582b07ac371724586d7e4a2101d2c5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  trashAmountMax: 10
+  trashAmountMax: 5
+  trashbagItem: {fileID: 11400000, guid: d9821be180943174cb724104a17fdbc4, type: 2}
 --- !u!1 &3882449364138400415
 GameObject:
   m_ObjectHideFlags: 0

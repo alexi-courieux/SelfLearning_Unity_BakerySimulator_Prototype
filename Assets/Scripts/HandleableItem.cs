@@ -34,6 +34,7 @@ public class HandleableItem : MonoBehaviour, IInteractable
             _parent.AddItem(this);
             transform.parent = _parent.GetAvailableItemSlot();
             transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
         }
         else
         {
