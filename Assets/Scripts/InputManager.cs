@@ -10,6 +10,7 @@ public class InputManager : MonoBehaviour
     public EventHandler OnInteractAlt;
     public EventHandler OnDrop;
     public EventHandler OnCameraSwitch;
+    public EventHandler OnPause;
     
     private InputActions _inputActions;
 
@@ -59,7 +60,7 @@ public class InputManager : MonoBehaviour
     
     private void Pause_OnPerformed(InputAction.CallbackContext obj)
     {
-        Debug.Log("Pause");
+        OnPause?.Invoke(this, EventArgs.Empty);
     }
     
     private void Camera_OnPerformed(InputAction.CallbackContext obj)

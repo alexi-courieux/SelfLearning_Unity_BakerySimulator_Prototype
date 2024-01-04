@@ -14,6 +14,9 @@ namespace DefaultNamespace
         }
         private void Start()
         {
+            GameManager.Instance.OnGamePaused += GameManager_OnGamePaused;
+            GameManager.Instance.OnGameResumed += GameManager_OnGameResumed;
+            
             blenderStation.OnStateChanged += BlenderStation_OnStateChanged;
             _audioSource.loop = true;
             _audioSource.clip = audioClipRefsDictionarySo.blender.GetRandomClip();
@@ -41,6 +44,15 @@ namespace DefaultNamespace
         {
             _audioSource.Stop();
         }
-
+        
+        private void GameManager_OnGamePaused(object sender, System.EventArgs e)
+        {
+            _audioSource.Pause();
+        }
+        
+        private void GameManager_OnGameResumed(object sender, System.EventArgs e)
+        {
+            _audioSource.UnPause();
+        }
     }
 }

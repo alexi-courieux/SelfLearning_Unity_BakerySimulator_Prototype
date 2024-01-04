@@ -5,7 +5,7 @@ public class EconomyManager : MonoBehaviour
 {
     public static EconomyManager Instance { get; private set; }
     
-    public EventHandler<float> OnMoneyChanged;
+    public EventHandler OnMoneyChanged;
 
     private const float StartMoney = 100;
     
@@ -22,7 +22,7 @@ public class EconomyManager : MonoBehaviour
         _money += amount;
         PlayerPrefs.SetFloat("Money", _money);
         PlayerPrefs.Save();
-        OnMoneyChanged?.Invoke(this, _money);
+        OnMoneyChanged?.Invoke(this, EventArgs.Empty);
     }
     
     public float GetMoney() => _money;
