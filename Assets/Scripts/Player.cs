@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -16,7 +17,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float characterRotationSpeed = 5f;
     [SerializeField] private float idleCharacterRotationSpeed = 1f;
     [SerializeField] private Transform visualTransform;
-    [SerializeField] private Transform interactionRaycastSpawnPoint;
+    [SerializeField] private Transform playerPositionForRaycast;
     
     private CharacterController _characterController;
 
@@ -98,7 +99,10 @@ public class Player : MonoBehaviour
         Transform cameraTransform = Camera.main!.transform;
         int stationMask = LayerMask.GetMask(LayerStation);
         int holdableMask = LayerMask.GetMask(LayerHoldable);
-        return Physics.Raycast(interactionRaycastSpawnPoint.position, cameraTransform.forward, out hitInfo,
-            MaxInteractionDistance, stationMask | holdableMask);
+        Ray ray = Camera.main!.ViewportPointToRay(new Vector3(0.5f,0.5f, 0));
+        float playerDistanceFromCamera = Vector3.Distance(playerPositionForRaycast.position, cameraTransform.position);
+        ray.origin += cameraTransform.forward * playerDistanceFromCamera;
+        Debug.DrawRay(ray.origin, ray.direction * 5f, Color.red, 1f);
+        return Physics.Raycast(ray, out hitInfo, MaxInteractionDistance, stationMask | holdableMask);
     }
 }
