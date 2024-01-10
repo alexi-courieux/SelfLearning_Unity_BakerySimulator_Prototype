@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface IDisplayItems
 {
-    public HandleableItemSo GetItems();
+    public HandleableItemSo[] GetItemsSo();
 }

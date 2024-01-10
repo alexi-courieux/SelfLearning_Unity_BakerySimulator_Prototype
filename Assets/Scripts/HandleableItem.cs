@@ -31,8 +31,8 @@ public class HandleableItem : MonoBehaviour, IInteractable
 
         if (_parent is not null)
         {
-            _parent.AddItem(this);
             transform.parent = _parent.GetAvailableItemSlot();
+            _parent.AddItem(this);
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
         }
