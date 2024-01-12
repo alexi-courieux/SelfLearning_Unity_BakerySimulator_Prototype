@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 7474551214082643677}
   - component: {fileID: 4706228385161292009}
   m_Layer: 7
-  m_Name: SellStation
+  m_Name: CheckoutStation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -69,6 +69,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemSlot: {fileID: 6559909507529449496}
+  customerLimit: 0
+  customerOffset: {x: 0, y: 0, z: 0}
+  customerCheckoutPosition: {fileID: 0}
 --- !u!1 &6595922061457085182
 GameObject:
   m_ObjectHideFlags: 0
@@ -79,7 +82,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4557867732887543558}
   m_Layer: 7
-  m_Name: SellStation_Visual
+  m_Name: CheckoutStation_Visual
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
