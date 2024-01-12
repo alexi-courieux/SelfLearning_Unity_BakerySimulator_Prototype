@@ -2,6 +2,8 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
+using Random = UnityEngine.Random;
+
 public enum CustomerState
 {
     CollectingRequestOrder,
@@ -17,14 +19,28 @@ public class Customer : MonoBehaviour, IHandleItems
     public EventHandler<CustomerState> OnStateChange;
     
     [SerializeField] private Transform itemSlot;
+    
+    private const float PatienceMax = 100f;
+    private const float PatienceGainOnOrder = 20f;
+    private const float PatienceLossOnWaitingForOrderCompletion = 1f;
+    private const float PatienceLossOnWaitingToOrder = 1.2f;
+    private const float PatienceLossOnWaitingInQueue = 0.8f;
+    private const float DirectOrderProbability = 0.8f;
     private HandleableItem _item;
+    
     private bool _isCollectingRequestOrder;
 
     private CustomerState _state;
-    private CustomerState CurrentState
+    private NavMeshAgent _agent;
+    private CheckoutStation _checkoutStation;
+    private float _patience;
+    
+    public Order Order { get; private set; }
+    
+    public CustomerState CurrentState
     {
         get => _state;
-        set
+        private set
         {
             _state = value;
             OnStateChange?.Invoke(this, _state);
@@ -32,14 +48,6 @@ public class Customer : MonoBehaviour, IHandleItems
         }
     }
 
-    private NavMeshAgent _agent;
-    private CheckoutStation _checkoutStation;
-    private const float PatienceMax = 10f;
-    private const float PatienceGainOnOrder = 20f;
-    private const float PatienceLossOnWaitingForOrderCompletion = 1f;
-    private const float PatienceLossOnWaitingToOrder = 1.2f;
-    private const float PatienceLossOnWaitingInQueue = 0.8f;
-    private float _patience;
 
     private void Awake()
     {
@@ -60,9 +68,8 @@ public class Customer : MonoBehaviour, IHandleItems
             {
                 _checkoutStation = checkout;
                 checkout.AddCustomer(this);
-                MoveTo(checkout.GetCustomerPosition(this));
-                CurrentState = CustomerState.WaitingInQueue;
-                _checkoutStation.OnCustomerLeave += CheckoutStation_OnCustomerLeave;
+                MoveInQueue();
+                _checkoutStation.OnAnyCustomerLeave += CheckoutStation_OnAnyCustomerLeave;
             }
             else
             {
@@ -71,14 +78,16 @@ public class Customer : MonoBehaviour, IHandleItems
         }
     }
 
-    private void CheckoutStation_OnCustomerLeave(object sender, EventArgs e)
+    private void CheckoutStation_OnAnyCustomerLeave(object sender, EventArgs e)
     {
         if(CurrentState is CustomerState.Leaving) return;
+        MoveInQueue();
+    }
+
+    private void MoveInQueue()
+    {
         MoveTo(_checkoutStation.GetCustomerPosition(this));
-        if (_checkoutStation.GetCustomerPositionIndex(this) == 0)
-        {
-            CurrentState = CustomerState.WaitingToOrder;
-        }
+        CurrentState = _checkoutStation.GetCustomerPositionIndex(this) == 0 ? CustomerState.WaitingToOrder : CustomerState.WaitingInQueue;
     }
 
     private void Update()
@@ -147,6 +156,7 @@ public class Customer : MonoBehaviour, IHandleItems
     private void DestroySelf()
     {
         CustomerManager.Instance.RemoveCustomer(this);
+        OrderManager.Instance.RemoveOrder(this);
         Destroy(gameObject);
     }
     
@@ -159,21 +169,11 @@ public class Customer : MonoBehaviour, IHandleItems
             case CustomerState.WaitingInQueue:
                 break;
             case CustomerState.WaitingToOrder:
-                // TODO Wait for the checkout station to call the order
-                // TODO Choose if the order is a request or a normal order
-                // TODO Wait for call
                 break;
             case CustomerState.WaitingForOrderCompletion:
-                /*
-                 TODO Once called, create an order to the OrderManager
-                 - If the order is a request
-                    activate the request UI
-                    wait for the checkout station to tell if the request is accepted or not
-                 - If the order is a normal order
-                    activate the order UI
-                    wait for the checkout station to tell if the order is completed, failed or refused
-                */
-                _patience += PatienceGainOnOrder;
+                _patience = Mathf.Min(PatienceMax, _patience + PatienceGainOnOrder);
+                Debug.Log("New order", this);
+                Debug.Log(Order.Items); // TODO log items correctly for debugging purposes
                 break;
             case CustomerState.Leaving:
                 MoveTo(CustomerManager.Instance.DespawnPoint.position, DestroySelf);
@@ -195,6 +195,7 @@ public class Customer : MonoBehaviour, IHandleItems
         {
             yield return new WaitForSeconds(0.5f);
         }
+
         while (_agent.remainingDistance > _agent.stoppingDistance)
         {
             yield return new WaitForSeconds(0.5f);
@@ -202,7 +203,16 @@ public class Customer : MonoBehaviour, IHandleItems
         onDestinationReached?.Invoke();
     }
 
-    public void Checkout()
+    public void CreateOrder()
+    {
+        OrderType orderType = OrderManager.Instance.CanPerformDirectOrder()
+            ? Random.Range(0, 1) < DirectOrderProbability ? OrderType.Direct : OrderType.Request
+            : OrderType.Request;
+        Order = OrderManager.Instance.CreateOrder(this, orderType);
+        CurrentState = CustomerState.WaitingForOrderCompletion;
+    }
+
+    public void Leave()
     {
         CurrentState = CustomerState.Leaving;
     }

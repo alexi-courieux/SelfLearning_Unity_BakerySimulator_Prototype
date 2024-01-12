@@ -26,15 +26,20 @@ public class WaitingQueue<T>
         _waitingEntities.Push(entity);
     }
     
-    public virtual void Remove(T entity)
+    public void Remove(T entity)
     {
         _waitingEntities.Remove(entity);
     }
     
-    public virtual T Shift()
+    public T Shift()
     {
         T entity = _waitingEntities.Shift();
         return entity;
+    }
+    
+    public T PeekFirst()
+    {
+        return _waitingEntities[0];
     }
 
     public Vector3 GetPosition(T entity)
