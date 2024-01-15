@@ -158,8 +158,12 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IInteractableAlt, I
         if (checkoutItems.Count == orderItems.Count && !checkoutItems.Except(orderItems).Any())
         {
             Pay();
+            customer.Leave();
+        }
+        else
+        {
+            customer.ReceiveFailedOrder();
         }
 
-        customer.Leave();
     }
 }

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using JetBrains.Annotations;
+﻿using System.Collections.Generic;
 
 public enum OrderType
 {
@@ -21,5 +19,23 @@ public class Order
         Type = type;
         Items = items;
         TimeLimit = timeLimit;
+    }
+
+
+    public override string ToString()
+    {
+        var items = new List<string>();
+        foreach ((HandleableItemSo key, int value) in Items)
+        {
+            items.Add($"{key.name} x{value}");
+        }
+
+        return
+            "Order"
+            + $"\tCustomer: {Customer.name}"
+            + $"\tType: {Type}" 
+            + (Type is OrderType.Request ? $"\tTime Limit: {TimeLimit}" : "")
+            + "\tItems:"
+            + string.Join("\t\t", items);
     }
 }

@@ -25,6 +25,7 @@ public class Customer : MonoBehaviour, IHandleItems
     private const float PatienceLossOnWaitingForOrderCompletion = 1f;
     private const float PatienceLossOnWaitingToOrder = 1.2f;
     private const float PatienceLossOnWaitingInQueue = 0.8f;
+    private const float PatienceLossOnOrderFail = 10f;
     private const float DirectOrderProbability = 0.8f;
     private HandleableItem _item;
     
@@ -172,8 +173,7 @@ public class Customer : MonoBehaviour, IHandleItems
                 break;
             case CustomerState.WaitingForOrderCompletion:
                 _patience = Mathf.Min(PatienceMax, _patience + PatienceGainOnOrder);
-                Debug.Log("New order", this);
-                Debug.Log(Order.Items); // TODO log items correctly for debugging purposes
+                Logger.LogInfo(Order, this);
                 break;
             case CustomerState.Leaving:
                 MoveTo(CustomerManager.Instance.DespawnPoint.position, DestroySelf);
@@ -210,6 +210,11 @@ public class Customer : MonoBehaviour, IHandleItems
             : OrderType.Request;
         Order = OrderManager.Instance.CreateOrder(this, orderType);
         CurrentState = CustomerState.WaitingForOrderCompletion;
+    }
+    
+    public void ReceiveFailedOrder()
+    {
+        _patience -= PatienceLossOnOrderFail;
     }
 
     public void Leave()

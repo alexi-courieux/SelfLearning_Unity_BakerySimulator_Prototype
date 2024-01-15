@@ -2773,6 +2773,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7803d7d7f7c94b449ed1c720fbc3e8a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  sellableItemDictionarySo: {fileID: 11400000, guid: 911fb5827e8247945aae47a166b61a02,
+    type: 2}
   displayStations:
   - {fileID: 2045007086}
 --- !u!1 &1656778904

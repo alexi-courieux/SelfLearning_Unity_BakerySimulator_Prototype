@@ -19,7 +19,7 @@ public class DisplayStation : MonoBehaviour, IInteractable, IHandleItems, IDispl
 
     public void Interact()
     {
-        if (Player.Instance.HandleSystem.HaveItems())
+        if (Player.Instance.HandleSystem.HaveItems() && Player.Instance.HandleSystem.GetItem().HandleableItemSo.CanBeSold())
         {
             if (HasAvailableSlot())
             {

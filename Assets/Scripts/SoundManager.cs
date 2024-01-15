@@ -28,7 +28,6 @@ public class SoundManager : MonoBehaviour
         audioSource.loop = loop;
         audioSource.volume = volumeMultiplier;
         audioSource.Play();
-        Debug.Log(clip.length);
         return source;
     }
 }

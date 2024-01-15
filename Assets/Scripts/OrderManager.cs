@@ -6,8 +6,14 @@ using Random = UnityEngine.Random;
 
 public class OrderManager : MonoBehaviour
 {
+    
     public static OrderManager Instance { get; private set; }
     
+    private const float MinimumRequestTimeLimit = 120f;
+    private const float MinimumPerItemRequestTimeLimit = 30f;
+    private const float MaximumPerItemRequestTimeLimit = 60f;
+    
+    [SerializeField] private SellableItemDictionarySo sellableItemDictionarySo;
     [SerializeField] private Transform[] displayStations;
     private IDisplayItems[] _displayStations;
     private List<Order> _orders;
@@ -26,7 +32,7 @@ public class OrderManager : MonoBehaviour
         return type switch
         {
             OrderType.Direct => CreateDirectOrder(customer),
-            OrderType.Request => null,
+            OrderType.Request => CreateRequestOrder(customer),
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Invalid order type")
         };
     }
@@ -51,7 +57,32 @@ public class OrderManager : MonoBehaviour
             }
         }
 
-        Order order = new Order(customer, OrderType.Direct, items);
+        Order order = new (customer, OrderType.Direct, items);
+        _orders.Add(order);
+        return order;
+    }
+    
+    private Order CreateRequestOrder(Customer customer)
+    {
+        // iterate through the display stations and get a random item from each
+        var items = new Dictionary<HandleableItemSo, int>();
+        int orderSize = Random.Range(1, 5);
+        for (int i = 0; i < orderSize; i++)
+        {
+            HandleableItemSo item = sellableItemDictionarySo.sellableItems[Random.Range(0, sellableItemDictionarySo.sellableItems.Count())];
+            if (items.ContainsKey(item))
+            {
+                items[item]++;
+            }
+            else
+            {
+                items.Add(item, 1);
+            }
+        }
+
+        float timeLimit = MinimumRequestTimeLimit + (orderSize * Random.Range(MinimumPerItemRequestTimeLimit, MaximumPerItemRequestTimeLimit));
+        
+        Order order = new (customer, OrderType.Request, items, timeLimit);
         _orders.Add(order);
         return order;
     }
