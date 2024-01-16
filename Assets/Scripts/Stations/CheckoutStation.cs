@@ -51,9 +51,18 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IInteractableAlt, I
                 customer.CreateOrder();
                 break;
             case CustomerState.WaitingForOrderCompletion:
-                CheckOrderCompletion(customer);
+                if (customer.Order.Type is OrderType.Direct)
+                {
+                    CheckOrderCompletion(customer);
+                }
+                else
+                {
+                    AcceptOrder(customer);
+                }
                 break;
             case CustomerState.CollectingRequestOrder:
+                CheckOrderCompletion(customer);
+                break;
             case CustomerState.WaitingInQueue:
             case CustomerState.Leaving:
                 throw new Exception("Customer shouldn't be in this state while interacting with checkout station");
@@ -164,6 +173,11 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IInteractableAlt, I
         {
             customer.ReceiveFailedOrder();
         }
+    }
 
+    private void AcceptOrder(Customer customer)
+    {
+        OrderManager.Instance.AcceptRequest(customer.Order);
+        customer.Leave();
     }
 }

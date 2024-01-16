@@ -8,7 +8,8 @@ public class CustomerManager : MonoBehaviour
     private const float SpawnTimeMin = 2f;
     private const float SpawnTimeMax = 10f;
     
-    [SerializeField] private CustomerDictionarySo customerDictionarySo;
+    [SerializeField] private Transform customerPrefab;
+    [SerializeField] private CustomerVisualDictionarySo customerVisualVisualDictionarySo;
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Transform despawnPoint;
 
@@ -46,15 +47,16 @@ public class CustomerManager : MonoBehaviour
 
     private void SpawnCustomer()
     {
-        Transform customerPrefab = customerDictionarySo.GetRandomCustomerPrefab();
+        Transform customerVisualPrefab = customerVisualVisualDictionarySo.GetRandomCustomerVisual();
         Transform customerTransform = Instantiate(customerPrefab, spawnPoint.position, spawnPoint.rotation);
+        Transform customerVisualTransform = Instantiate(customerVisualPrefab, customerTransform.position, customerTransform.rotation, customerTransform);
         Customer customer = customerTransform.GetComponent<Customer>();
         _customers.Add(customer);
     }
     
     private void ResetSpawnTimer()
     {
-        _spawnTimer = UnityEngine.Random.Range(SpawnTimeMin, SpawnTimeMax);
+        _spawnTimer = Random.Range(SpawnTimeMin, SpawnTimeMax);
     }
 
     public CheckoutStation TryGetCheckoutStation(Customer requestingCustomer)

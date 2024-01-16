@@ -7,7 +7,6 @@ public class WaitingQueue<T>
     private readonly StackList<T> _waitingEntities;
     
     public int Count => _waitingEntities.Count;
-    public StackList<T> Entities => _waitingEntities;
 
     public WaitingQueue(int queueSize, Vector3 queueOffset, Transform queueCheckoutPosition)
     {
@@ -29,12 +28,6 @@ public class WaitingQueue<T>
     public void Remove(T entity)
     {
         _waitingEntities.Remove(entity);
-    }
-    
-    public T Shift()
-    {
-        T entity = _waitingEntities.Shift();
-        return entity;
     }
     
     public T PeekFirst()

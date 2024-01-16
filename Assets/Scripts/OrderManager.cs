@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -16,15 +17,20 @@ public class OrderManager : MonoBehaviour
     [SerializeField] private SellableItemDictionarySo sellableItemDictionarySo;
     [SerializeField] private Transform[] displayStations;
     private IDisplayItems[] _displayStations;
-    private List<Order> _orders;
+    private List<Order> _requests;
 
     private List<HandleableItemSo> AvailableItems => _displayStations.SelectMany(s => s.GetItemsSo()).ToList();
 
     private void Awake()
     {
         Instance = this;
-        _orders = new List<Order>();
+        _requests = new List<Order>();
         _displayStations = displayStations.Select(s => s.GetComponent<IDisplayItems>()).ToArray();
+    }
+
+    private void Start()
+    {
+        StartCoroutine(HandleRequests());
     }
 
     public Order CreateOrder(Customer customer, OrderType type)
@@ -58,7 +64,6 @@ public class OrderManager : MonoBehaviour
         }
 
         Order order = new (customer, OrderType.Direct, items);
-        _orders.Add(order);
         return order;
     }
     
@@ -83,13 +88,29 @@ public class OrderManager : MonoBehaviour
         float timeLimit = MinimumRequestTimeLimit + (orderSize * Random.Range(MinimumPerItemRequestTimeLimit, MaximumPerItemRequestTimeLimit));
         
         Order order = new (customer, OrderType.Request, items, timeLimit);
-        _orders.Add(order);
         return order;
     }
-
-    public void RemoveOrder(Customer customer)
+    
+    public void AcceptRequest(Order order)
     {
-        _orders.RemoveAll(o => o.Customer == customer);
+        _requests.Add(order);
+    }
+
+    public void RemoveRequest(Customer customer)
+    {
+        _requests.RemoveAll(o => o.Customer == customer);
+    }
+
+    private IEnumerator HandleRequests()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(1f);
+            foreach (Order r in _requests.Where(r => r.TimeLimit > 0f))
+            {
+                r.TimeLimit -= 1f;
+            }
+        }
     }
 
     public bool CanPerformDirectOrder()

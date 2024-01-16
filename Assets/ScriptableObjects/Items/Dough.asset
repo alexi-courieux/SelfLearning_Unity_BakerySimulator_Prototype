@@ -16,4 +16,4 @@ MonoBehaviour:
   sprite: {fileID: 21300000, guid: d847b54fb321bba438f5573f8a647430, type: 3}
   itemName: Dough
   buyPrice: 5
-  sellPrice: 3
+  sellPrice: 0

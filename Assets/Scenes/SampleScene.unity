@@ -3202,7 +3202,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfa6f8a3f74e4599a58b9c7842a1e48c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  customerDictionarySo: {fileID: 11400000, guid: ff04324f89ab69942b6bee9f9a4e3068,
+  customerPrefab: {fileID: 7081025204482942038, guid: e827f0e20ae3dc949add0d27eccdbe56,
+    type: 3}
+  customerVisualVisualDictionarySo: {fileID: 11400000, guid: ff04324f89ab69942b6bee9f9a4e3068,
     type: 2}
   spawnPoint: {fileID: 1751294284}
   despawnPoint: {fileID: 1305269346}

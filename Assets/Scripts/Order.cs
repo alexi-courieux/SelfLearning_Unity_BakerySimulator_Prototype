@@ -11,7 +11,7 @@ public class Order
     public Customer Customer { get; }
     public OrderType Type { get; }
     public Dictionary<HandleableItemSo, int> Items { get; }
-    public float TimeLimit { get; }
+    public float TimeLimit { get; set; }
     
     public Order(Customer customer, OrderType type, Dictionary<HandleableItemSo, int> items, float timeLimit = default)
     {
