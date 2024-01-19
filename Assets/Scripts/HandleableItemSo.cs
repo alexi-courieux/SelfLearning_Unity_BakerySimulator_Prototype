@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+using UnityEngine;
 
 [CreateAssetMenu(fileName = "Object", menuName = "ScriptableObject/HoldableObject", order = 0)]
 public class HandleableItemSo : ScriptableObject
@@ -8,4 +9,9 @@ public class HandleableItemSo : ScriptableObject
     public string itemName;
     public float buyPrice;
     public float sellPrice;
+    
+    public bool CanBeSold()
+    {
+        return sellPrice > 0f;
+    }
 }

@@ -16,8 +16,8 @@ public class PauseUI : MonoBehaviour
         GameManager.Instance.OnGameResumed += GameManager_OnGameResumed;
         
         resumeButton.onClick.AddListener(GameManager.Instance.TogglePause);
-        optionsButton.onClick.AddListener(() => Debug.Log("Options"));
-        mainMenuButton.onClick.AddListener(() => Debug.Log("Main Menu"));
+        optionsButton.onClick.AddListener(() => Logger.LogInfo("Options"));
+        mainMenuButton.onClick.AddListener(() => Logger.LogInfo("Main Menu"));
         quitButton.onClick.AddListener(Application.Quit);
         
         gameObject.SetActive(false);

@@ -7,7 +7,6 @@ public class WaitingQueue<T>
     private readonly StackList<T> _waitingEntities;
     
     public int Count => _waitingEntities.Count;
-    public StackList<T> Entities => _waitingEntities;
 
     public WaitingQueue(int queueSize, Vector3 queueOffset, Transform queueCheckoutPosition)
     {
@@ -26,15 +25,14 @@ public class WaitingQueue<T>
         _waitingEntities.Push(entity);
     }
     
-    public virtual void Remove(T entity)
+    public void Remove(T entity)
     {
         _waitingEntities.Remove(entity);
     }
     
-    public virtual T Shift()
+    public T PeekFirst()
     {
-        T entity = _waitingEntities.Shift();
-        return entity;
+        return _waitingEntities[0];
     }
 
     public Vector3 GetPosition(T entity)

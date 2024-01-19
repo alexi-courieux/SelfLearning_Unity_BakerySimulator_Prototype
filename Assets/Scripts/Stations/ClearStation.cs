@@ -10,7 +10,7 @@ public class ClearStation : MonoBehaviour, IInteractable, IHandleItems
         {
             if (Player.Instance.HandleSystem.HaveItems())
             {
-                Debug.Log("Player can't hold more than one item at a time!");
+                Logger.LogWarning("Player can't hold more than one item at a time!");
             }
             else
             {

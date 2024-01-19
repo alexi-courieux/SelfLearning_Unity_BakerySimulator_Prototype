@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class CheckoutStation : MonoBehaviour, IInteractable, IInteractableAlt, IHandleItems
 {
-    public EventHandler OnCustomerLeave;
-    
+    public EventHandler OnAnyCustomerLeave;
+    public EventHandler<Order> OnOrderReceived;
+
     [SerializeField] private Transform itemSlot;
     [SerializeField] private int customerLimit;
     [SerializeField] private Vector3 customerOffset;
@@ -40,17 +43,32 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IInteractableAlt, I
 
     public void InteractAlt()
     {
-        if(!HaveItems()) return;
         if(!HaveCustomers()) return;
-        float totalPrice = 0f;
-        _items.ToList().ForEach(i =>
+        Customer customer = _customerQueue.PeekFirst();
+        switch (customer.CurrentState)
         {
-            totalPrice += i.HandleableItemSo.sellPrice;
-            i.DestroySelf();
-        });
-        EconomyManager.Instance.AddMoney(totalPrice);
-        Customer customer = _customerQueue.Shift();
-        customer.Checkout();
+            case CustomerState.WaitingToOrder:
+                customer.CreateOrder();
+                break;
+            case CustomerState.WaitingForOrderCompletion:
+                if (customer.Order.Type is OrderType.Direct)
+                {
+                    CheckOrderCompletion(customer);
+                }
+                else
+                {
+                    AcceptOrder(customer);
+                }
+                break;
+            case CustomerState.CollectingRequestOrder:
+                CheckOrderCompletion(customer);
+                break;
+            case CustomerState.WaitingInQueue:
+            case CustomerState.Leaving:
+                throw new Exception("Customer shouldn't be in this state while interacting with checkout station");
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
 
     public void AddItem(HandleableItem item)
@@ -91,16 +109,23 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IInteractableAlt, I
     public void AddCustomer(Customer customer)
     {
         _customerQueue.Add(customer);
-        customer.OnStateChange += Customer_OnStateChange;
+        customer.OnStateChange += CustomersInQueue_OnStateChange;
     }
 
-    private void Customer_OnStateChange(object sender, CustomerState state)
+    private void CustomersInQueue_OnStateChange(object sender, CustomerState state)
     {
-        if (state is not CustomerState.Leaving) return;
-        Customer c = (Customer) sender;
-        c.OnStateChange -= Customer_OnStateChange;
-        _customerQueue.Remove(c);
-        OnCustomerLeave?.Invoke(this, EventArgs.Empty);
+        if (state is CustomerState.Leaving)
+        {
+            Customer c = (Customer) sender;
+            c.OnStateChange -= CustomersInQueue_OnStateChange;
+            _customerQueue.Remove(c);
+            OnAnyCustomerLeave?.Invoke(this, EventArgs.Empty);
+        }
+
+        if (state is CustomerState.WaitingForOrderCompletion)
+        {
+            OnOrderReceived?.Invoke(this, ((Customer) sender).Order);
+        }
     }
 
     public Vector3 GetCustomerPosition(Customer customer)
@@ -121,5 +146,38 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IInteractableAlt, I
     public int CustomerCount()
     {
         return _customerQueue.Count;
+    }
+
+    private void Pay()
+    {
+        float totalPrice = 0f;
+        _items.ToList().ForEach(i =>
+        {
+            totalPrice += i.HandleableItemSo.sellPrice;
+            i.DestroySelf();
+        });
+        EconomyManager.Instance.AddMoney(totalPrice);
+    }
+    
+    private void CheckOrderCompletion(Customer customer)
+    {
+        var checkoutItems = _items.GroupBy(i => i.HandleableItemSo)
+            .ToDictionary(i => i.Key, i => i.Count());
+        var orderItems = customer.Order.Items;
+        if (checkoutItems.Count == orderItems.Count && !checkoutItems.Except(orderItems).Any())
+        {
+            Pay();
+            customer.Leave();
+        }
+        else
+        {
+            customer.ReceiveFailedOrder();
+        }
+    }
+
+    private void AcceptOrder(Customer customer)
+    {
+        OrderManager.Instance.AcceptRequest(customer.Order);
+        customer.Leave();
     }
 }
