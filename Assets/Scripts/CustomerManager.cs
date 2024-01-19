@@ -13,7 +13,7 @@ public class CustomerManager : MonoBehaviour
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Transform despawnPoint;
 
-    private List<Customer> _customers;
+    private List<Customer> _requestCustomerPool;
     public List<CheckoutStation> CheckoutStations { get; private set; }
     private float _spawnTimer;
     
@@ -22,7 +22,7 @@ public class CustomerManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        _customers = new List<Customer>();
+        _requestCustomerPool = new List<Customer>();
         CheckoutStations = new List<CheckoutStation>();
     }
 
@@ -39,21 +39,44 @@ public class CustomerManager : MonoBehaviour
             ResetSpawnTimer();
         }
     }
-    
-    public void RemoveCustomer(Customer customer)
-    {
-        _customers.Remove(customer);
-    }
 
     private void SpawnCustomer()
     {
+        CreateCustomer();
+    }
+
+    private void CreateCustomer()
+    {
         Transform customerVisualPrefab = customerVisualVisualDictionarySo.GetRandomCustomerVisual();
         Transform customerTransform = Instantiate(customerPrefab, spawnPoint.position, spawnPoint.rotation);
-        Transform customerVisualTransform = Instantiate(customerVisualPrefab, customerTransform.position, customerTransform.rotation, customerTransform);
         Customer customer = customerTransform.GetComponent<Customer>();
-        _customers.Add(customer);
+        Transform visualTransform = Instantiate(customerVisualPrefab, customerTransform.position, customerTransform.rotation, customerTransform);
+        CustomerVisual visual = visualTransform.GetComponent<CustomerVisual>();
+        visual.Customer = customer;
     }
-    
+
+    public void Despawn(Customer customer)
+    {
+        customer.gameObject.SetActive(false);
+        bool haveRequests = OrderManager.Instance.HaveRequests(customer);
+        if (haveRequests)
+        {
+            _requestCustomerPool.Add(customer);
+        }
+        else
+        {
+            customer.DestroySelf();
+        }
+    }
+
+    public void SpawnForRequest(Customer customer)
+    {
+        _requestCustomerPool.Remove(customer);
+        customer.transform.position = spawnPoint.position;
+        customer.IsCollectingRequestOrder = true;
+        customer.gameObject.SetActive(true);
+    }
+
     private void ResetSpawnTimer()
     {
         _spawnTimer = Random.Range(SpawnTimeMin, SpawnTimeMax);

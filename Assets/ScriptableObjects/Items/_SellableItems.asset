@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ce95f176a7543ceafb983091c0cdfd7, type: 3}
   m_Name: _SellableItems
   m_EditorClassIdentifier: 
-  sellableItems: []
+  sellableItems:
+  - {fileID: 11400000, guid: 620df60cc6f3a0a4db3a7611e399b988, type: 2}
+  - {fileID: 11400000, guid: 08b38a3b5277a944c81c5a2fe520eedc, type: 2}

@@ -9,10 +9,10 @@ public class OrderManager : MonoBehaviour
 {
     
     public static OrderManager Instance { get; private set; }
-    
-    private const float MinimumRequestTimeLimit = 120f;
-    private const float MinimumPerItemRequestTimeLimit = 30f;
-    private const float MaximumPerItemRequestTimeLimit = 60f;
+
+    private const float MinimumRequestTimeLimit = 10f;//120f;
+    private const float MinimumPerItemRequestTimeLimit = 3f;//30f;
+    private const float MaximumPerItemRequestTimeLimit = 6f;//60f;
     
     [SerializeField] private SellableItemDictionarySo sellableItemDictionarySo;
     [SerializeField] private Transform[] displayStations;
@@ -42,7 +42,7 @@ public class OrderManager : MonoBehaviour
             _ => throw new ArgumentOutOfRangeException(nameof(type), type, "Invalid order type")
         };
     }
-    
+
     private Order CreateDirectOrder(Customer customer)
     {
         // iterate through the display stations and get a random item from each
@@ -96,6 +96,11 @@ public class OrderManager : MonoBehaviour
         _requests.Add(order);
     }
 
+    public bool HaveRequests(Customer customer)
+    {
+        return _requests.Any(o => o.Customer == customer);
+    }
+    
     public void RemoveRequest(Customer customer)
     {
         _requests.RemoveAll(o => o.Customer == customer);
@@ -109,6 +114,10 @@ public class OrderManager : MonoBehaviour
             foreach (Order r in _requests.Where(r => r.TimeLimit > 0f))
             {
                 r.TimeLimit -= 1f;
+                if (r.TimeLimit <= 0f)
+                {
+                    CustomerManager.Instance.SpawnForRequest(r.Customer);
+                }
             }
         }
     }

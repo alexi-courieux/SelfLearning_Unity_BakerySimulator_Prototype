@@ -2,7 +2,7 @@
 using UnityEditor;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "_SellableItems", menuName = "ScriptableObject/Recipe/_SellableItemDictionary", order = 0)]
+[CreateAssetMenu(fileName = "_SellableItems", menuName = "ScriptableObject/_SellableItemDictionary", order = 0)]
 public class SellableItemDictionarySo : ScriptableObject
 {
     public HandleableItemSo[] sellableItems;

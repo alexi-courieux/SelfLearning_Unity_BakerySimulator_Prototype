@@ -3764,7 +3764,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -3788,7 +3788,7 @@ MonoBehaviour:
   m_LayerMask:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_UseGeometry: 0
+  m_UseGeometry: 1
   m_DefaultArea: 0
   m_GenerateLinks: 0
   m_IgnoreNavMeshAgent: 1
@@ -4432,12 +4432,17 @@ PrefabInstance:
     - target: {fileID: 4706228385161292009, guid: 2f5f3fbbe560edb47a62fe7b1d1761a0,
         type: 3}
       propertyPath: customerOffset.x
-      value: 2
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4706228385161292009, guid: 2f5f3fbbe560edb47a62fe7b1d1761a0,
+        type: 3}
+      propertyPath: customerOffset.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4706228385161292009, guid: 2f5f3fbbe560edb47a62fe7b1d1761a0,
         type: 3}
       propertyPath: customerOffset.z
-      value: 0
+      value: -2
       objectReference: {fileID: 0}
     - target: {fileID: 4706228385161292009, guid: 2f5f3fbbe560edb47a62fe7b1d1761a0,
         type: 3}

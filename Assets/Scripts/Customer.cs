@@ -17,6 +17,7 @@ public enum CustomerState
 public class Customer : MonoBehaviour, IHandleItems
 {
     public EventHandler<CustomerState> OnStateChange;
+    public EventHandler OnPassingOrder;
     
     [SerializeField] private Transform itemSlot;
     
@@ -30,6 +31,8 @@ public class Customer : MonoBehaviour, IHandleItems
     
     public bool IsCollectingRequestOrder { get; set; }
     public Order Order { get; private set; }
+    
+    public float Velocity => _agent.velocity.magnitude;
     public CustomerState CurrentState
     {
         get => _state;
@@ -52,69 +55,20 @@ public class Customer : MonoBehaviour, IHandleItems
         _agent = GetComponent<NavMeshAgent>();
     }
 
-    private void Start()
+    private void OnEnable()
     {
-        _patience = PatienceMax;
-        CheckoutStation checkout = CustomerManager.Instance.TryGetCheckoutStation(this);
-        if (checkout is not null)
-        {
-            _checkoutStation = checkout;
-            checkout.AddCustomer(this);
-            MoveInQueue();
-            _checkoutStation.OnAnyCustomerLeave += CheckoutStation_OnAnyCustomerLeave;
-        }
-        else
-        {
-            CurrentState = CustomerState.Leaving;
-        }
+        Initialize();
     }
 
-    private void CheckoutStation_OnAnyCustomerLeave(object sender, EventArgs e)
+    private void OnDisable()
     {
-        if(CurrentState is CustomerState.Leaving) return;
-        MoveInQueue();
-    }
-
-    private void MoveInQueue()
-    {
-        MoveTo(_checkoutStation.GetCustomerPosition(this));
-        bool isFirst = _checkoutStation.GetCustomerPositionIndex(this) == 0;
-        CurrentState = isFirst 
-            ? IsCollectingRequestOrder ? CustomerState.CollectingRequestOrder : CustomerState.WaitingToOrder
-            : CustomerState.WaitingInQueue;
-    }
-
-    private void Update()
-    {
-        switch (CurrentState)
-        {
-            case CustomerState.CollectingRequestOrder:
-                _patience -= Time.deltaTime * PatienceLossOnWaitingForOrderCompletion;
-                break;
-            case CustomerState.WaitingInQueue:
-                _patience -= Time.deltaTime * PatienceLossOnWaitingInQueue;
-                break;
-            case CustomerState.WaitingToOrder:
-                _patience -= Time.deltaTime * PatienceLossOnWaitingToOrder;
-                break;
-            case CustomerState.WaitingForOrderCompletion:
-                _patience -= Time.deltaTime * PatienceLossOnWaitingForOrderCompletion;
-                break;
-            case CustomerState.Leaving:
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-        
-        if (_patience <= 0f)
-        {
-            CurrentState = CustomerState.Leaving;
-        }
-    }
-
-    private void OnDestroy()
-    {
+        _checkoutStation.OnAnyCustomerLeave -= CheckoutStation_OnAnyCustomerLeave;
         StopAllCoroutines();
+    }
+    
+    public void DestroySelf()
+    {
+        Destroy(gameObject);
     }
 
     public void AddItem(HandleableItem item)
@@ -146,11 +100,37 @@ public class Customer : MonoBehaviour, IHandleItems
     {
         return _item is null;
     }
-
-    private void DestroySelf()
+    
+    private void Initialize()
     {
-        CustomerManager.Instance.RemoveCustomer(this);
-        Destroy(gameObject);
+        _patience = PatienceMax;
+        CheckoutStation checkout = CustomerManager.Instance.TryGetCheckoutStation(this);
+        if (checkout is not null)
+        {
+            _checkoutStation = checkout;
+            checkout.AddCustomer(this);
+            MoveInQueue(StartLosePatience);
+            _checkoutStation.OnAnyCustomerLeave += CheckoutStation_OnAnyCustomerLeave;
+        }
+        else
+        {
+            CurrentState = CustomerState.Leaving;
+        }
+    }
+
+    private void CheckoutStation_OnAnyCustomerLeave(object sender, EventArgs e)
+    {
+        if(CurrentState is CustomerState.Leaving) return;
+        MoveInQueue();
+    }
+
+    private void MoveInQueue(Action onDestinationReached = null)
+    {
+        MoveTo(_checkoutStation.GetCustomerPosition(this), onDestinationReached);
+        bool isFirst = _checkoutStation.GetCustomerPositionIndex(this) == 0;
+        CurrentState = isFirst 
+            ? IsCollectingRequestOrder ? CustomerState.CollectingRequestOrder : CustomerState.WaitingToOrder
+            : CustomerState.WaitingInQueue;
     }
     
     private void HandleStateChange()
@@ -174,13 +154,18 @@ public class Customer : MonoBehaviour, IHandleItems
                 {
                     OrderManager.Instance.RemoveRequest(this);
                 }
-                MoveTo(CustomerManager.Instance.DespawnPoint.position, DestroySelf);
+                MoveTo(CustomerManager.Instance.DespawnPoint.position, Despawn);
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
     }
     
+    private void Despawn()
+    {
+        CustomerManager.Instance.Despawn(this);
+    }
+
     private void MoveTo(Vector3 position, Action onDestinationReached = null)
     {
         _agent.SetDestination(position);
@@ -207,6 +192,7 @@ public class Customer : MonoBehaviour, IHandleItems
             ? Random.Range(0f, 1f) < DirectOrderProbability ? OrderType.Direct : OrderType.Request
             : OrderType.Request;
         Order = OrderManager.Instance.CreateOrder(this, orderType);
+        OnPassingOrder?.Invoke(this, EventArgs.Empty);
         CurrentState = CustomerState.WaitingForOrderCompletion;
     }
 
@@ -217,6 +203,39 @@ public class Customer : MonoBehaviour, IHandleItems
 
     public void Leave()
     {
+        CurrentState = CustomerState.Leaving;
+    }
+
+    private void StartLosePatience()
+    {
+        StartCoroutine(LosePatienceOverTime());    
+    }
+    
+    private IEnumerator LosePatienceOverTime()
+    {
+        while (_patience > 0f)
+        {
+            yield return new WaitForSeconds(1f);
+            switch (CurrentState)
+            {
+                case CustomerState.CollectingRequestOrder:
+                    _patience -= PatienceLossOnWaitingForOrderCompletion;
+                    break;
+                case CustomerState.WaitingInQueue:
+                    _patience -= PatienceLossOnWaitingInQueue;
+                    break;
+                case CustomerState.WaitingToOrder:
+                    _patience -= PatienceLossOnWaitingToOrder;
+                    break;
+                case CustomerState.WaitingForOrderCompletion:
+                    _patience -= PatienceLossOnWaitingForOrderCompletion;
+                    break;
+                case CustomerState.Leaving:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
         CurrentState = CustomerState.Leaving;
     }
 }
