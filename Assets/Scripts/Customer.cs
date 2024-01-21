@@ -62,7 +62,10 @@ public class Customer : MonoBehaviour, IHandleItems
 
     private void OnDisable()
     {
-        _checkoutStation.OnAnyCustomerLeave -= CheckoutStation_OnAnyCustomerLeave;
+        if (_checkoutStation is not null)
+        {
+            _checkoutStation.OnAnyCustomerLeave -= CheckoutStation_OnAnyCustomerLeave;
+        }
         StopAllCoroutines();
     }
     

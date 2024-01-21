@@ -8,6 +8,10 @@ public class Player : MonoBehaviour
     private const string LayerHandleableitem = "HandleableItem";
     public static Player Instance { get; private set; }
 
+    public EventHandler<float> OnPlayerMove;
+    public EventHandler OnPlayerInteract;
+    public EventHandler OnPlayerInteractAlt;
+    
     public PlayerItemHandlingSystem HandleSystem { get; private set; }
 
     private const float MaxInteractionDistance = 2f;
@@ -48,6 +52,7 @@ public class Player : MonoBehaviour
     {
         Vector3 finalMovement = Vector3.zero;
         Vector2 movementInput = InputManager.Instance.GetMovementVectorNormalized();
+        OnPlayerMove?.Invoke(this, movementInput.magnitude);
         Transform cameraTransform = Camera.main!.transform;
         Vector3 moveDirection =
             Vector3.ProjectOnPlane(cameraTransform.forward, Vector3.up).normalized * movementInput.y +
@@ -87,6 +92,7 @@ public class Player : MonoBehaviour
         if (hitInfo.transform.TryGetComponent(out IInteractable interactableComponent))
         {
             interactableComponent.Interact();
+            OnPlayerInteract?.Invoke(this, EventArgs.Empty);
         }
     }
 
@@ -96,6 +102,7 @@ public class Player : MonoBehaviour
         if (hitInfo.transform.TryGetComponent(out IInteractableAlt interactableComponent))
         {
             interactableComponent.InteractAlt();
+            OnPlayerInteractAlt?.Invoke(this, EventArgs.Empty);
         }
     }
 
