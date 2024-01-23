@@ -5,8 +5,8 @@ public class CustomerManager : MonoBehaviour
 {
     public static CustomerManager Instance { get; private set; }
 
-    private const float SpawnTimeMin = 2f;
-    private const float SpawnTimeMax = 10f;
+    private const float SpawnTimeMin = 10f;
+    private const float SpawnTimeMax = 30f;
     
     [SerializeField] private Transform customerPrefab;
     [SerializeField] private CustomerVisualDictionarySo customerVisualVisualDictionarySo;
