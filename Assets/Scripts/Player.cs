@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     
     public PlayerItemHandlingSystem HandleSystem { get; private set; }
 
-    private const float MaxInteractionDistance = 2f;
+    private const float MaxInteractionDistance = 4f;
 
     [SerializeField] private float movementSpeed = 6f;
 
