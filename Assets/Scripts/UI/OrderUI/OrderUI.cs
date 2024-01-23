@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class OrderUI : MonoBehaviour
@@ -7,32 +6,27 @@ public class OrderUI : MonoBehaviour
     [SerializeField] private Customer customer;
     [SerializeField] private Transform itemUIContainer;
 
-    private Order _order;
     private void Start()
     {
-        customer.OnPassingOrder += Customer_OnPassingOrder;
         customer.OnStateChange += Customer_OnStateChange;
         itemUITemplate.gameObject.SetActive(false);
         gameObject.SetActive(false);
     }
 
-    private void Customer_OnStateChange(object sender, CustomerState e)
+    private void Customer_OnStateChange(object sender, CustomerState state)
     {
-        if (e == CustomerState.Leaving)
+        if (state is CustomerState.CollectingRequestOrder || state is CustomerState.WaitingForOrderCompletion && customer.Order.Type is OrderType.Direct)
+        {
+            UpdateVisual();
+            Show();
+        }
+        
+        if (state == CustomerState.Leaving)
         {
             Hide();
         }
     }
 
-    private void Customer_OnPassingOrder(object sender, EventArgs e)
-    {
-        _order = customer.Order;
-        if (_order.Type is not OrderType.Direct) return;
-        
-        UpdateVisual();
-        Show();
-    }
-    
     private void Show()
     {
         gameObject.SetActive(true);
@@ -51,7 +45,7 @@ public class OrderUI : MonoBehaviour
             Destroy(child.gameObject);
         }
         
-        foreach ((HandleableItemSo item, int quantity) in _order.Items)
+        foreach ((HandleableItemSo item, int quantity) in customer.Order.Items)
         {
             Transform itemUI = Instantiate(itemUITemplate, itemUIContainer);
             itemUI.gameObject.SetActive(true);
