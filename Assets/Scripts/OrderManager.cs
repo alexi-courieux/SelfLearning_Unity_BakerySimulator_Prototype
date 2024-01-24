@@ -13,11 +13,15 @@ public class OrderManager : MonoBehaviour
     private const float MinimumRequestTimeLimit = 10f;//120f;
     private const float MinimumPerItemRequestTimeLimit = 3f;//30f;
     private const float MaximumPerItemRequestTimeLimit = 6f;//60f;
+
+    public EventHandler OnRequestListChanged;
     
     [SerializeField] private SellableItemDictionarySo sellableItemDictionarySo;
     [SerializeField] private Transform[] displayStations;
     private IDisplayItems[] _displayStations;
     private List<Order> _requests;
+    
+    public List<Order> Requests => _requests;
 
     private List<HandleableItemSo> AvailableItems => _displayStations.SelectMany(s => s.GetItemsSo()).ToList();
 
@@ -94,6 +98,7 @@ public class OrderManager : MonoBehaviour
     public void AcceptRequest(Order order)
     {
         _requests.Add(order);
+        OnRequestListChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public bool HaveRequests(Customer customer)
@@ -104,6 +109,7 @@ public class OrderManager : MonoBehaviour
     public void RemoveRequest(Customer customer)
     {
         _requests.RemoveAll(o => o.Customer == customer);
+        OnRequestListChanged?.Invoke(this, EventArgs.Empty);
     }
 
     private IEnumerator HandleRequests()
