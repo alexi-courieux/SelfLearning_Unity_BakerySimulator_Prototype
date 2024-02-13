@@ -1,12 +1,11 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
+using TMPro;
 using UnityEngine;
 
 public class EconomyUI : MonoBehaviour
 {
-    [SerializeField] private TMPro.TextMeshProUGUI moneyText;
+    [SerializeField] private TextMeshProUGUI moneyText;
     private void Start()
     {
         EconomyManager.Instance.OnMoneyChanged += EconomyManager_OnMoneyChanged;

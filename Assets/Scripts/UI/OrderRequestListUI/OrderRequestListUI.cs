@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using System.Linq;
 using UnityEngine;
 
@@ -14,7 +13,7 @@ public class OrderRequestListUI : MonoBehaviour
         OrderManager.Instance.OnRequestListChanged += OrderManager_OnRequestListChanged;
     }
 
-    private void OrderManager_OnRequestListChanged(object sender, System.EventArgs e)
+    private void OrderManager_OnRequestListChanged(object sender, EventArgs e)
     {
         UpdateVisual();
     }

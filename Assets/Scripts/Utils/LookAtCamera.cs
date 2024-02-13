@@ -18,17 +18,17 @@ public class LookAtCamera : MonoBehaviour
         switch (mode)
         {
             case Mode.LookAt:
-                transform.LookAt(Camera.main.transform);
+                transform.LookAt(Camera.main!.transform);
                 break;
             case Mode.LookAtInverted:
-                var dirFromCamera = transform.position - Camera.main.transform.position;
+                Vector3 dirFromCamera = transform.position - Camera.main!.transform.position;
                 transform.LookAt(transform.position + dirFromCamera);
                 break;
             case Mode.CameraFacing:
-                transform.forward = Camera.main.transform.forward;
+                transform.forward = Camera.main!.transform.forward;
                 break;
             case Mode.CameraFacingInverted:
-                transform.forward = -Camera.main.transform.forward;
+                transform.forward = -Camera.main!.transform.forward;
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

@@ -32,11 +32,6 @@ public class OrderManager : MonoBehaviour
         _displayStations = displayStations.Select(s => s.GetComponent<IDisplayItems>()).ToArray();
     }
 
-    private void Start()
-    {
-        StartCoroutine(HandleRequests());
-    }
-
     public Order CreateOrder(Customer customer, OrderType type)
     {
         return type switch
@@ -98,6 +93,7 @@ public class OrderManager : MonoBehaviour
     public void AcceptRequest(Order order)
     {
         _requests.Add(order);
+        StartCoroutine(HandleRequests(order));
         OnRequestListChanged?.Invoke(this, EventArgs.Empty);
     }
 
@@ -112,20 +108,15 @@ public class OrderManager : MonoBehaviour
         OnRequestListChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    private IEnumerator HandleRequests()
+    private IEnumerator HandleRequests(Order request)
     {
-        while (true)
+        while (request.TimeLimit > 0f)
         {
             yield return new WaitForSeconds(1f);
-            foreach (Order r in _requests.Where(r => r.TimeLimit > 0f))
-            {
-                r.TimeLimit -= 1f;
-                if (r.TimeLimit <= 0f)
-                {
-                    CustomerManager.Instance.SpawnForRequest(r.Customer);
-                }
-            }
+            request.TimeLimit -= 1f;
+            
         }
+        CustomerManager.Instance.SpawnForRequest(request.Customer);
     }
 
     public bool CanPerformDirectOrder()

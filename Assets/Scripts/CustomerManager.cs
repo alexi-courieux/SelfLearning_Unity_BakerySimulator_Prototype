@@ -12,8 +12,7 @@ public class CustomerManager : MonoBehaviour
     [SerializeField] private CustomerVisualDictionarySo customerVisualVisualDictionarySo;
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Transform despawnPoint;
-
-    private List<Customer> _requestCustomerPool;
+    
     public List<CheckoutStation> CheckoutStations { get; private set; }
     private float _spawnTimer;
     
@@ -22,7 +21,6 @@ public class CustomerManager : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        _requestCustomerPool = new List<Customer>();
         CheckoutStations = new List<CheckoutStation>();
     }
 
@@ -59,11 +57,7 @@ public class CustomerManager : MonoBehaviour
     {
         customer.gameObject.SetActive(false);
         bool haveRequests = OrderManager.Instance.HaveRequests(customer);
-        if (haveRequests)
-        {
-            _requestCustomerPool.Add(customer);
-        }
-        else
+        if (!haveRequests)
         {
             customer.DestroySelf();
         }
@@ -71,7 +65,6 @@ public class CustomerManager : MonoBehaviour
 
     public void SpawnForRequest(Customer customer)
     {
-        _requestCustomerPool.Remove(customer);
         customer.transform.position = spawnPoint.position;
         customer.IsCollectingRequestOrder = true;
         customer.gameObject.SetActive(true);
