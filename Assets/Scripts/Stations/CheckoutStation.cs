@@ -1,8 +1,6 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class CheckoutStation : MonoBehaviour, IInteractable, IInteractableAlt, IHandleItems
 {
@@ -167,7 +165,7 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IInteractableAlt, I
         if (checkoutItems.Count == orderItems.Count && !checkoutItems.Except(orderItems).Any())
         {
             Pay();
-            customer.Leave();
+            customer.LeaveHappy();
         }
         else
         {
@@ -178,6 +176,6 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IInteractableAlt, I
     private void AcceptOrder(Customer customer)
     {
         OrderManager.Instance.AcceptRequest(customer.Order);
-        customer.Leave();
+        customer.LeaveHappy();
     }
 }

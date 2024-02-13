@@ -1,6 +1,4 @@
-﻿using System;
-
-public static class Logger
+﻿public static class Logger
 {
     [System.Diagnostics.Conditional("UNITY_EDITOR")]
     public static void LogInfo(object message, UnityEngine.Object context = null)
