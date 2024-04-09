@@ -17,10 +17,10 @@ public class OrderManager : MonoBehaviour
     private const float PhoneRequestChance = 0.5f;
 
     public EventHandler OnRequestListChanged;
+    public EventHandler OnPhoneCall;
     
     [SerializeField] private SellableItemDictionarySo sellableItemDictionarySo;
     [SerializeField] private Transform[] displayStations;
-    [SerializeField] private PhoneStation phoneStation;
     private IDisplayItems[] _displayStations;
     
     private List<Order> _requests;
@@ -45,7 +45,7 @@ public class OrderManager : MonoBehaviour
         {
             if (Random.value < PhoneRequestChance)
             {
-                phoneStation.Ring();
+                OnPhoneCall.Invoke(this, EventArgs.Empty);
             }
             _phoneRequestTimer = PhoneRequestFrequency;
         }

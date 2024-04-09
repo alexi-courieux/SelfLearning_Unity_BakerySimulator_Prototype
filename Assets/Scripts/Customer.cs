@@ -140,7 +140,6 @@ public class Customer : MonoBehaviour, IHandleItems
     
     private void HandleStateChange()
     {
-        Logger.LogInfo("State changed to " + CurrentState);
         switch (CurrentState)
         {
             case CustomerState.CollectingRequestOrder:

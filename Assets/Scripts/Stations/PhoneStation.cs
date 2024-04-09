@@ -15,7 +15,7 @@ public class PhoneStation : MonoBehaviour, IInteractable, IInteractableAlt
     public Order Order { get; private set; }
     
     
-    public EventHandler<State> OnStateChanged;
+    public EventHandler<State> OnStateChange;
     
     private float _timeoutTimer;
     private State _state;
@@ -26,8 +26,13 @@ public class PhoneStation : MonoBehaviour, IInteractable, IInteractableAlt
         set
         {
             _state = value;
-            OnStateChanged?.Invoke(this, _state);
+            OnStateChange?.Invoke(this, _state);
         }
+    }
+
+    private void Start()
+    {
+        OrderManager.Instance.OnPhoneCall += OrderManager_OnPhoneCall;
     }
 
     private void Update()
@@ -77,8 +82,8 @@ public class PhoneStation : MonoBehaviour, IInteractable, IInteractableAlt
     
     private void GetOrder()
     {
-        CurrentState = State.OnCall;
         Order = OrderManager.Instance.CreateOrder(OrderType.Request);
+        CurrentState = State.OnCall;
         _timeoutTimer = CallTimeout;
     }
     
@@ -88,9 +93,14 @@ public class PhoneStation : MonoBehaviour, IInteractable, IInteractableAlt
         OrderManager.Instance.AcceptRequest(Order);
     }
 
-    public void Ring()
+    private void OrderManager_OnPhoneCall(object sender, EventArgs e)
     {
-        _timeoutTimer = RingTimeout;
+        if (CurrentState is State.Idle) Ring();
+    }
+    
+    private void Ring()
+    {
         CurrentState = State.Ringing;
+        _timeoutTimer = RingTimeout;
     }
 }

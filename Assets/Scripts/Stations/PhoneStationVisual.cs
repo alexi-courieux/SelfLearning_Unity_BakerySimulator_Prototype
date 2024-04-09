@@ -11,7 +11,7 @@ public class PhoneStationVisual : MonoBehaviour
     private void Awake()
     {
         _animator = GetComponent<Animator>();
-        phoneStation.OnStateChanged += OnStateChanged;
+        phoneStation.OnStateChange += OnStateChanged;
     }
     
     private void OnStateChanged(object sender, PhoneStation.State state)

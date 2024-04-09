@@ -17,7 +17,7 @@ namespace DefaultNamespace
             GameManager.Instance.OnGamePaused += GameManager_OnGamePaused;
             GameManager.Instance.OnGameResumed += GameManager_OnGameResumed;
             
-            phoneStation.OnStateChanged += PhoneStation_OnStateChanged;
+            phoneStation.OnStateChange += PhoneStation_OnStateChanged;
             _audioSource.loop = true;
             _audioSource.clip = audioClipRefsDictionarySo.phone.GetRandomClip();
         }
