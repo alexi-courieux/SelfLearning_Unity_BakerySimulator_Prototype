@@ -10,10 +10,10 @@ public class OrderManager : MonoBehaviour
     
     public static OrderManager Instance { get; private set; }
 
-    private const float MinimumRequestTimeLimit = 1f;
-    private const float MinimumPerItemRequestTimeLimit = 3f;
-    private const float MaximumPerItemRequestTimeLimit = 6f;
-    private const float PhoneRequestFrequency = 3f;
+    private const float MinimumRequestTimeLimit = 60f;
+    private const float MinimumPerItemRequestTimeLimit = 10f;
+    private const float MaximumPerItemRequestTimeLimit = 20f;
+    private const float PhoneRequestFrequency = 30f;
     private const float PhoneRequestChance = 0.5f;
 
     public EventHandler OnRequestListChanged;
