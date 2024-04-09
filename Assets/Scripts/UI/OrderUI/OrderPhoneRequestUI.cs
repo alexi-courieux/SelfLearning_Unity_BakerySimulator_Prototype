@@ -2,39 +2,35 @@ using System;
 using TMPro;
 using UnityEngine;
 
-public class OrderRequestUI : MonoBehaviour
+public class OrderPhoneRequestUI : MonoBehaviour
 {
     [SerializeField] private Transform itemUITemplate;
-    [SerializeField] private Customer customer;
+    [SerializeField] private PhoneStation phoneStation;
     [SerializeField] private Transform itemUIContainer;
     [SerializeField] private TextMeshProUGUI timerText;
 
     private Order _order;
     private void Start()
     {
-        customer.OnPassingOrder += Customer_OnPassingOrder;
-        customer.OnStateChange += Customer_OnStateChange;
+        phoneStation.OnStateChange += PhoneStation_OnStateChange;
         itemUITemplate.gameObject.SetActive(false);
         gameObject.SetActive(false);
     }
 
-    private void Customer_OnStateChange(object sender, CustomerState e)
+    private void PhoneStation_OnStateChange(object sender, PhoneStation.State state)
     {
-        if (e == CustomerState.Leaving)
+        if (state is PhoneStation.State.OnCall)
+        {
+            _order = phoneStation.Order;
+            UpdateVisual();
+            Show();
+        }
+        else
         {
             Hide();
         }
     }
 
-    private void Customer_OnPassingOrder(object sender, EventArgs e)
-    {
-        _order = customer.Order;
-        if (_order.Type is not OrderType.Request || _order.Customer.IsCollectingRequestOrder) return;
-        
-        UpdateVisual();
-        Show();
-    }
-    
     private void Show()
     {
         gameObject.SetActive(true);

@@ -17,7 +17,7 @@ public enum CustomerState
 public class Customer : MonoBehaviour, IHandleItems
 {
     public EventHandler<CustomerState> OnStateChange;
-    public EventHandler OnPassingOrder;
+    public EventHandler OnPassingOrder, OnOrderFailed, OnOrderCompleted, OnLowPatience, OnOutOfPatience;
     
     [SerializeField] private Transform itemSlot;
     
@@ -28,9 +28,10 @@ public class Customer : MonoBehaviour, IHandleItems
     private const float PatienceLossOnWaitingInQueue = 0.8f;
     private const float PatienceLossOnOrderFail = 10f;
     private const float DirectOrderProbability = 0.8f;
+    private const float LowPatienceThreshold = 10f;
     
     public bool IsCollectingRequestOrder { get; set; }
-    public Order Order { get; private set; }
+    public Order Order { get; set; }
     
     public float Velocity => _agent.velocity.magnitude;
     public CustomerState CurrentState
@@ -49,6 +50,7 @@ public class Customer : MonoBehaviour, IHandleItems
     private NavMeshAgent _agent;
     private CheckoutStation _checkoutStation;
     private float _patience;
+    private bool _lowPatienceThresholdReached;
     
     private void Awake()
     {
@@ -132,7 +134,7 @@ public class Customer : MonoBehaviour, IHandleItems
         MoveTo(_checkoutStation.GetCustomerPosition(this), onDestinationReached);
         bool isFirst = _checkoutStation.GetCustomerPositionIndex(this) == 0;
         CurrentState = isFirst 
-            ? IsCollectingRequestOrder ? CustomerState.CollectingRequestOrder : CustomerState.WaitingToOrder
+            ? CustomerState.WaitingToOrder
             : CustomerState.WaitingInQueue;
     }
     
@@ -194,18 +196,26 @@ public class Customer : MonoBehaviour, IHandleItems
         OrderType orderType = OrderManager.Instance.CanPerformDirectOrder()
             ? Random.Range(0f, 1f) < DirectOrderProbability ? OrderType.Direct : OrderType.Request
             : OrderType.Request;
-        Order = OrderManager.Instance.CreateOrder(this, orderType);
+        Order = OrderManager.Instance.CreateOrder(orderType, this);
         OnPassingOrder?.Invoke(this, EventArgs.Empty);
         CurrentState = CustomerState.WaitingForOrderCompletion;
+    }
+
+    public void GetOrder()
+    {
+        OnPassingOrder?.Invoke(this, EventArgs.Empty);
+        CurrentState = CustomerState.CollectingRequestOrder;
     }
 
     public void ReceiveFailedOrder()
     {
         _patience -= PatienceLossOnOrderFail;
+        OnOrderFailed?.Invoke(this, EventArgs.Empty);
     }
 
-    public void Leave()
+    public void LeaveHappy()
     {
+        OnOrderCompleted?.Invoke(this, EventArgs.Empty);
         CurrentState = CustomerState.Leaving;
     }
 
@@ -238,7 +248,13 @@ public class Customer : MonoBehaviour, IHandleItems
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+            if (!_lowPatienceThresholdReached && _patience <= LowPatienceThreshold)
+            {
+                _lowPatienceThresholdReached = true;
+                OnLowPatience?.Invoke(this, EventArgs.Empty);
+            }
         }
+        OnOutOfPatience?.Invoke(this, EventArgs.Empty);
         CurrentState = CustomerState.Leaving;
     }
 }

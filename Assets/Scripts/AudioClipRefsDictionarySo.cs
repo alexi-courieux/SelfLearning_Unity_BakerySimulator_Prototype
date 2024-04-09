@@ -5,4 +5,5 @@ public class AudioClipRefsDictionarySo : ScriptableObject
 {
     public AudioClipRefSo oven;
     public AudioClipRefSo blender;
+    public AudioClipRefSo phone;
 }

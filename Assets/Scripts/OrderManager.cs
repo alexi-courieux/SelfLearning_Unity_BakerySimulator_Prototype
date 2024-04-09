@@ -10,17 +10,22 @@ public class OrderManager : MonoBehaviour
     
     public static OrderManager Instance { get; private set; }
 
-    private const float MinimumRequestTimeLimit = 10f;//120f;
-    private const float MinimumPerItemRequestTimeLimit = 3f;//30f;
-    private const float MaximumPerItemRequestTimeLimit = 6f;//60f;
+    private const float MinimumRequestTimeLimit = 1f;
+    private const float MinimumPerItemRequestTimeLimit = 3f;
+    private const float MaximumPerItemRequestTimeLimit = 6f;
+    private const float PhoneRequestFrequency = 3f;
+    private const float PhoneRequestChance = 0.5f;
 
     public EventHandler OnRequestListChanged;
+    public EventHandler OnPhoneCall;
     
     [SerializeField] private SellableItemDictionarySo sellableItemDictionarySo;
     [SerializeField] private Transform[] displayStations;
     private IDisplayItems[] _displayStations;
-    private List<Order> _requests;
     
+    private List<Order> _requests;
+    private float _phoneRequestTimer;
+
     public List<Order> Requests => _requests;
 
     private List<HandleableItemSo> AvailableItems => _displayStations.SelectMany(s => s.GetItemsSo()).ToList();
@@ -30,14 +35,23 @@ public class OrderManager : MonoBehaviour
         Instance = this;
         _requests = new List<Order>();
         _displayStations = displayStations.Select(s => s.GetComponent<IDisplayItems>()).ToArray();
+        _phoneRequestTimer = PhoneRequestFrequency;
     }
 
-    private void Start()
+    private void Update()
     {
-        StartCoroutine(HandleRequests());
+        _phoneRequestTimer -= Time.deltaTime;
+        if (_phoneRequestTimer <= 0f)
+        {
+            if (Random.value < PhoneRequestChance)
+            {
+                OnPhoneCall.Invoke(this, EventArgs.Empty);
+            }
+            _phoneRequestTimer = PhoneRequestFrequency;
+        }
     }
 
-    public Order CreateOrder(Customer customer, OrderType type)
+    public Order CreateOrder(OrderType type, Customer customer = null)
     {
         return type switch
         {
@@ -47,6 +61,11 @@ public class OrderManager : MonoBehaviour
         };
     }
 
+    /// <summary>
+    /// Create a new direct order with items in stock
+    /// </summary>
+    /// <param name="customer">needing the order</param>
+    /// <returns>Order with a random number of sellable items in stock</returns>
     private Order CreateDirectOrder(Customer customer)
     {
         // iterate through the display stations and get a random item from each
@@ -67,11 +86,16 @@ public class OrderManager : MonoBehaviour
             }
         }
 
-        Order order = new (customer, OrderType.Direct, items);
+        Order order = new (OrderType.Direct, items, customer);
         return order;
     }
     
-    private Order CreateRequestOrder(Customer customer)
+    /// <summary>
+    /// Create a new request order
+    /// </summary>
+    /// <param name="customer">Link the order to a specific customer</param>
+    /// <returns>Order with a random number of sellable items</returns>
+    private Order CreateRequestOrder(Customer customer = null)
     {
         // iterate through the display stations and get a random item from each
         var items = new Dictionary<HandleableItemSo, int>();
@@ -91,13 +115,18 @@ public class OrderManager : MonoBehaviour
 
         float timeLimit = MinimumRequestTimeLimit + (orderSize * Random.Range(MinimumPerItemRequestTimeLimit, MaximumPerItemRequestTimeLimit));
         
-        Order order = new (customer, OrderType.Request, items, timeLimit);
+        Order order = new (OrderType.Request, items, customer, timeLimit);
         return order;
     }
     
+    /// <summary>
+    /// Add a request to the list and start its countdown
+    /// </summary>
+    /// <param name="order"></param>
     public void AcceptRequest(Order order)
     {
         _requests.Add(order);
+        StartCoroutine(HandleRequests(order));
         OnRequestListChanged?.Invoke(this, EventArgs.Empty);
     }
 
@@ -112,19 +141,22 @@ public class OrderManager : MonoBehaviour
         OnRequestListChanged?.Invoke(this, EventArgs.Empty);
     }
 
-    private IEnumerator HandleRequests()
+    private IEnumerator HandleRequests(Order request)
     {
-        while (true)
+        while (request.TimeLimit > 0f)
         {
             yield return new WaitForSeconds(1f);
-            foreach (Order r in _requests.Where(r => r.TimeLimit > 0f))
-            {
-                r.TimeLimit -= 1f;
-                if (r.TimeLimit <= 0f)
-                {
-                    CustomerManager.Instance.SpawnForRequest(r.Customer);
-                }
-            }
+            request.TimeLimit -= 1f;
+            
+        }
+
+        if (request.Customer != null)
+        {
+            CustomerManager.Instance.RespawnForRequest(request.Customer);
+        }
+        else
+        {
+            CustomerManager.Instance.SpawnForRequest(request);
         }
     }
 

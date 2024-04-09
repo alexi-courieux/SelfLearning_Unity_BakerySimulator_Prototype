@@ -1,5 +1,4 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿using UnityEngine;
 
 [CreateAssetMenu(fileName = "Object", menuName = "ScriptableObject/HoldableObject", order = 0)]
 public class HandleableItemSo : ScriptableObject
