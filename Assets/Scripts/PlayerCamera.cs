@@ -2,7 +2,6 @@ using System;
 using Cinemachine;
 using UnityEngine;
 
-
 public class PlayerCamera : MonoBehaviour
 {
     private const int ActiveCameraPriority = 20;
@@ -27,13 +26,22 @@ public class PlayerCamera : MonoBehaviour
 
     private void Start()
     {
-        _activeCamera = thirdPersonCamera;
+        _activeCamera = GetCameraByPriority();
         InputManager.Instance.OnCameraSwitch += InputManager_OnCameraSwitch;
     }
 
     private void Update()
     {
         RotateCamera();
+    }
+    
+    private CinemachineVirtualCameraBase GetCameraByPriority()
+    {
+        if (thirdPersonCamera.Priority > firstPersonCamera.Priority)
+        {
+            return thirdPersonCamera;
+        }
+        return firstPersonCamera;
     }
 
     private void InputManager_OnCameraSwitch(object sender, EventArgs e)

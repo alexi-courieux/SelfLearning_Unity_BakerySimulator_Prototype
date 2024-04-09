@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+
 public class CustomerManager : MonoBehaviour
 {
     public static CustomerManager Instance { get; private set; }
 
-    private const float SpawnTimeMin = 10f;
-    private const float SpawnTimeMax = 30f;
+    private const float SpawnFrequency = 10f;
+    private const float SpawnChance = 0.33f;
     
     [SerializeField] private Transform customerPrefab;
     [SerializeField] private CustomerVisualDictionarySo customerVisualVisualDictionarySo;
@@ -25,7 +26,7 @@ public class CustomerManager : MonoBehaviour
     }
 
     private void Start() {
-        ResetSpawnTimer();
+        _spawnTimer = SpawnFrequency;
     }
 
     private void Update()
@@ -33,8 +34,11 @@ public class CustomerManager : MonoBehaviour
         _spawnTimer -= Time.deltaTime;
         if (_spawnTimer <= 0f)
         {
-            SpawnCustomer();
-            ResetSpawnTimer();
+            if (Random.value < SpawnChance)
+            {
+                SpawnCustomer();
+            }
+            _spawnTimer = SpawnFrequency;
         }
     }
 
@@ -43,7 +47,7 @@ public class CustomerManager : MonoBehaviour
         CreateCustomer();
     }
 
-    private void CreateCustomer()
+    private Customer CreateCustomer()
     {
         Transform customerVisualPrefab = customerVisualVisualDictionarySo.GetRandomCustomerVisual();
         Transform customerTransform = Instantiate(customerPrefab, spawnPoint.position, spawnPoint.rotation);
@@ -51,6 +55,7 @@ public class CustomerManager : MonoBehaviour
         Transform visualTransform = Instantiate(customerVisualPrefab, customerTransform.position, customerTransform.rotation, customerTransform);
         CustomerVisual visual = visualTransform.GetComponent<CustomerVisual>();
         visual.Customer = customer;
+        return customer;
     }
 
     public void Despawn(Customer customer)
@@ -63,16 +68,19 @@ public class CustomerManager : MonoBehaviour
         }
     }
 
-    public void SpawnForRequest(Customer customer)
+    public void RespawnForRequest(Customer customer)
     {
         customer.transform.position = spawnPoint.position;
         customer.IsCollectingRequestOrder = true;
         customer.gameObject.SetActive(true);
     }
 
-    private void ResetSpawnTimer()
+    public void SpawnForRequest(Order order)
     {
-        _spawnTimer = Random.Range(SpawnTimeMin, SpawnTimeMax);
+        Customer customer = CreateCustomer();
+        customer.IsCollectingRequestOrder = true;
+        customer.Order = order;
+        order.Customer = customer;
     }
 
     public CheckoutStation TryGetCheckoutStation(Customer requestingCustomer)

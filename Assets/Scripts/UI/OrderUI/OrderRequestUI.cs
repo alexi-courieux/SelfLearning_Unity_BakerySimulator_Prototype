@@ -29,7 +29,7 @@ public class OrderRequestUI : MonoBehaviour
     private void Customer_OnPassingOrder(object sender, EventArgs e)
     {
         _order = customer.Order;
-        if (_order.Type is not OrderType.Request) return;
+        if (_order.Type is not OrderType.Request || _order.Customer.IsCollectingRequestOrder) return;
         
         UpdateVisual();
         Show();

@@ -43,7 +43,6 @@ public class PhoneStation : MonoBehaviour, IInteractable, IInteractableAlt
 
     public void Interact()
     {
-        Logger.LogInfo("Interacting with PhoneStation");
         switch (CurrentState)
         {
             case State.Idle:

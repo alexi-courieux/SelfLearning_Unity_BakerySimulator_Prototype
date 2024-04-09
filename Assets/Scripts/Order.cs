@@ -8,7 +8,7 @@ public enum OrderType
 
 public class Order
 {
-    public Customer Customer { get; }
+    public Customer Customer { get; set; }
     public OrderType Type { get; }
     public Dictionary<HandleableItemSo, int> Items { get; }
     public float TimeLimit { get; set; }

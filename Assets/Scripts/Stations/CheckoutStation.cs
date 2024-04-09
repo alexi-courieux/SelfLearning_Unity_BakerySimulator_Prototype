@@ -46,7 +46,14 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IInteractableAlt, I
         switch (customer.CurrentState)
         {
             case CustomerState.WaitingToOrder:
-                customer.CreateOrder();
+                if (customer.IsCollectingRequestOrder)
+                {
+                    customer.GetOrder();
+                }
+                else
+                {
+                    customer.CreateOrder();
+                }
                 break;
             case CustomerState.WaitingForOrderCompletion:
                 if (customer.Order.Type is OrderType.Direct)
