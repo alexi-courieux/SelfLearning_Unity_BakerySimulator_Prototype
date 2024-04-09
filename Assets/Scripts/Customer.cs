@@ -196,7 +196,7 @@ public class Customer : MonoBehaviour, IHandleItems
         OrderType orderType = OrderManager.Instance.CanPerformDirectOrder()
             ? Random.Range(0f, 1f) < DirectOrderProbability ? OrderType.Direct : OrderType.Request
             : OrderType.Request;
-        Order = OrderManager.Instance.CreateOrder(this, orderType);
+        Order = OrderManager.Instance.CreateOrder(orderType, this);
         OnPassingOrder?.Invoke(this, EventArgs.Empty);
         CurrentState = CustomerState.WaitingForOrderCompletion;
     }
