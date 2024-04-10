@@ -7,7 +7,7 @@ public class CustomerManager : MonoBehaviour
     public static CustomerManager Instance { get; private set; }
 
     private const float SpawnFrequency = 10f;
-    private const float SpawnChance = 0.33f;
+    private const float SpawnChance = 0.63f;
     
     [SerializeField] private Transform customerPrefab;
     [SerializeField] private CustomerVisualDictionarySo customerVisualVisualDictionarySo;
