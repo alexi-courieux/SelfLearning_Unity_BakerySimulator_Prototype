@@ -14,7 +14,7 @@ public enum CustomerState
 }
 
 [RequireComponent(typeof(NavMeshAgent))]
-public class Customer : MonoBehaviour, IHandleItems
+public class Customer : MonoBehaviour, IInteractable, IInteractableAlt
 {
     public EventHandler<CustomerState> OnStateChange;
     public EventHandler OnPassingOrder, OnOrderFailed, OnOrderCompleted, OnLowPatience, OnOutOfPatience;
@@ -75,36 +75,6 @@ public class Customer : MonoBehaviour, IHandleItems
     {
         Destroy(gameObject);
     }
-
-    public void AddItem(HandleableItem item)
-    {
-        _item = item;
-    }
-
-    public HandleableItem[] GetItems()
-    {
-        return new[] {_item};
-    }
-
-    public void ClearItem(HandleableItem item)
-    {
-        _item = null;
-    }
-
-    public bool HaveItems()
-    {
-        return _item is not null;
-    }
-
-    public Transform GetAvailableItemSlot()
-    {
-        return itemSlot;
-    }
-
-    public bool HasAvailableSlot()
-    {
-        return _item is null;
-    }
     
     private void Initialize()
     {
@@ -120,6 +90,56 @@ public class Customer : MonoBehaviour, IHandleItems
         else
         {
             CurrentState = CustomerState.Leaving;
+        }
+    }
+
+    public void Interact()
+    {
+        switch (CurrentState)
+        {
+            case CustomerState.WaitingToOrder:
+                if (IsCollectingRequestOrder)
+                {
+                    GetOrder();
+                }
+                else
+                {
+                    CreateOrder();
+                }
+                break;
+            case CustomerState.WaitingForOrderCompletion:
+                if (Order.Type is OrderType.Direct)
+                {
+                    _checkoutStation.CheckOrderCompletion(this);
+                }
+                else
+                {
+                    AcceptOrder();
+                }
+                break;
+            case CustomerState.CollectingRequestOrder:
+                _checkoutStation.CheckOrderCompletion(this);
+                break;
+            case CustomerState.WaitingInQueue:
+            case CustomerState.Leaving:
+            default:
+                return;
+        }
+    }
+    
+    public void InteractAlt()
+    {
+        switch (CurrentState)
+        {
+            case CustomerState.CollectingRequestOrder:
+            case CustomerState.WaitingToOrder:
+            case CustomerState.WaitingForOrderCompletion:
+                LeaveUnhappy();
+                break;
+            case CustomerState.WaitingInQueue:
+            case CustomerState.Leaving:
+            default:
+                return;
         }
     }
 
@@ -218,12 +238,24 @@ public class Customer : MonoBehaviour, IHandleItems
         OnOrderCompleted?.Invoke(this, EventArgs.Empty);
         CurrentState = CustomerState.Leaving;
     }
+    
+    public void LeaveUnhappy()
+    {
+        OnOrderFailed?.Invoke(this, EventArgs.Empty);
+        CurrentState = CustomerState.Leaving;
+    }
 
     private void StartLosePatience()
     {
         StartCoroutine(LosePatienceOverTime());    
     }
     
+    private void AcceptOrder()
+    {
+        OrderManager.Instance.AcceptRequest(Order);
+        LeaveHappy();
+    }
+
     private IEnumerator LosePatienceOverTime()
     {
         while (_patience > 0f)

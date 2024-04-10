@@ -5,6 +5,7 @@ public class Player : MonoBehaviour
 {
     private const string LayerStation = "Station";
     private const string LayerHandleableitem = "HandleableItem";
+    private const string LayerCustomer = "Customer";
     public static Player Instance { get; private set; }
 
     public EventHandler<float> OnPlayerMove;
@@ -87,7 +88,7 @@ public class Player : MonoBehaviour
     private void InputManager_OnInteract(object sender, EventArgs e)
     {
         if (!CheckForRaycastHit(out RaycastHit hitInfo)) return;
-
+        Logger.LogInfo("Interacting with " + hitInfo.transform.name);
         if (hitInfo.transform.TryGetComponent(out IInteractable interactableComponent))
         {
             interactableComponent.Interact();
@@ -110,12 +111,13 @@ public class Player : MonoBehaviour
         Transform cameraTransform = Camera.main!.transform;
         int stationMask = LayerMask.GetMask(LayerStation);
         int handleableItemMask = LayerMask.GetMask(LayerHandleableitem);
+        int customerMask = LayerMask.GetMask(LayerCustomer);
         Ray ray = Camera.main!.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         float playerDistanceFromCamera = Vector3.Distance(playerPositionForRaycast.position, cameraTransform.position);
         ray.origin += cameraTransform.forward * playerDistanceFromCamera;
         bool hit = Physics.Raycast(ray, out hitInfo, MaxInteractionDistance);
         if (!hit) return false;
         int targetLayer = 1 << hitInfo.transform.gameObject.layer;
-        return targetLayer == stationMask || targetLayer == handleableItemMask;
+        return targetLayer == stationMask || targetLayer == handleableItemMask || targetLayer == customerMask;
     }
 }

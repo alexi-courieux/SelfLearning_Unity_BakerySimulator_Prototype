@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-public class CheckoutStation : MonoBehaviour, IInteractable, IInteractableAlt, IHandleItems
+public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems
 {
     public EventHandler OnAnyCustomerLeave;
     public EventHandler<Order> OnOrderReceived;
@@ -36,43 +36,6 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IInteractableAlt, I
                 HandleableItem item = _items.Pop();
                 item.SetParent(Player.Instance.HandleSystem);
             }
-        }
-    }
-
-    public void InteractAlt()
-    {
-        if(!HaveCustomers()) return;
-        Customer customer = _customerQueue.PeekFirst();
-        switch (customer.CurrentState)
-        {
-            case CustomerState.WaitingToOrder:
-                if (customer.IsCollectingRequestOrder)
-                {
-                    customer.GetOrder();
-                }
-                else
-                {
-                    customer.CreateOrder();
-                }
-                break;
-            case CustomerState.WaitingForOrderCompletion:
-                if (customer.Order.Type is OrderType.Direct)
-                {
-                    CheckOrderCompletion(customer);
-                }
-                else
-                {
-                    AcceptOrder(customer);
-                }
-                break;
-            case CustomerState.CollectingRequestOrder:
-                CheckOrderCompletion(customer);
-                break;
-            case CustomerState.WaitingInQueue:
-            case CustomerState.Leaving:
-                throw new Exception("Customer shouldn't be in this state while interacting with checkout station");
-            default:
-                throw new ArgumentOutOfRangeException();
         }
     }
 
@@ -163,8 +126,8 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IInteractableAlt, I
         });
         EconomyManager.Instance.AddMoney(totalPrice);
     }
-    
-    private void CheckOrderCompletion(Customer customer)
+
+    public void CheckOrderCompletion(Customer customer)
     {
         var checkoutItems = _items.GroupBy(i => i.HandleableItemSo)
             .ToDictionary(i => i.Key, i => i.Count());
@@ -178,11 +141,5 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IInteractableAlt, I
         {
             customer.ReceiveFailedOrder();
         }
-    }
-
-    private void AcceptOrder(Customer customer)
-    {
-        OrderManager.Instance.AcceptRequest(customer.Order);
-        customer.LeaveHappy();
     }
 }
