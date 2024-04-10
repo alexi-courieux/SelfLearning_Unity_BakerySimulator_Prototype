@@ -8,6 +8,7 @@ public class SellableItemDictionarySo : ScriptableObject
     public HandleableItemSo[] sellableItems;
 }
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(SellableItemDictionarySo))]
 public class SellableItemDictionarySoEditor : Editor
 {
@@ -26,3 +27,4 @@ public class SellableItemDictionarySoEditor : Editor
         }
     }
 }
+#endif

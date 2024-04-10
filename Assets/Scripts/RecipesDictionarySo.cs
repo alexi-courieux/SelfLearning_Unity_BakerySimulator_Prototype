@@ -9,6 +9,7 @@ public class RecipesDictionarySo : ScriptableObject
     public BlenderRecipeSo[] blenderRecipes;
 }
 
+#if UNITY_EDITOR
 [CustomEditor(typeof(RecipesDictionarySo))]
 public class RecipeDictionarySoEditor : Editor
 {
@@ -31,3 +32,4 @@ public class RecipeDictionarySoEditor : Editor
         }
     }
 }
+#endif
