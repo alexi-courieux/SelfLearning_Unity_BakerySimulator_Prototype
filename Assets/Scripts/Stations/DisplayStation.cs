@@ -17,6 +17,11 @@ public class DisplayStation : MonoBehaviour, IInteractable, IHandleItems, IDispl
         _items = new StackList<HandleableItem>();
     }
 
+    private void Start()
+    {
+        OrderManager.Instance.DisplayStations.Add(this);
+    }
+
     public void Interact()
     {
         if (Player.Instance.HandleSystem.HaveItems() && Player.Instance.HandleSystem.GetItem().HandleableItemSo.CanBeSold())
