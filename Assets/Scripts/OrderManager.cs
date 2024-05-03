@@ -19,22 +19,22 @@ public class OrderManager : MonoBehaviour
     public EventHandler OnRequestListChanged;
     public EventHandler OnPhoneCall;
     
+    public List<IDisplayItems> DisplayStations { get; private set; }
+
     [SerializeField] private SellableItemDictionarySo sellableItemDictionarySo;
-    [SerializeField] private Transform[] displayStations;
-    private IDisplayItems[] _displayStations;
-    
+
     private List<Order> _requests;
     private float _phoneRequestTimer;
 
     public List<Order> Requests => _requests;
 
-    private List<HandleableItemSo> AvailableItems => _displayStations.SelectMany(s => s.GetItemsSo()).ToList();
+    private List<HandleableItemSo> AvailableItems => DisplayStations.SelectMany(s => s.GetItemsSo()).ToList();
 
     private void Awake()
     {
         Instance = this;
         _requests = new List<Order>();
-        _displayStations = displayStations.Select(s => s.GetComponent<IDisplayItems>()).ToArray();
+        DisplayStations = new List<IDisplayItems>();
         _phoneRequestTimer = PhoneRequestFrequency;
     }
 
