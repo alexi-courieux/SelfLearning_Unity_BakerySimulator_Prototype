@@ -16,7 +16,7 @@ public class BlenderStation : MonoBehaviour, IInteractable, IInteractableAlt, IH
     
     [SerializeField] private Transform itemSlot;
     [SerializeField] private RecipesDictionarySo recipesDictionarySo;
-    private readonly StackList<HandleableItem> _items = new();
+    private readonly StackList<Item> _items = new();
     private State _state;
     private State CurrentState
     {
@@ -41,7 +41,7 @@ public class BlenderStation : MonoBehaviour, IInteractable, IInteractableAlt, IH
                 if (_timeToProcess <= 0f)
                 {
                     _items.ToList().ForEach(i => i.DestroySelf());
-                    HandleableItem.SpawnItem(_blenderRecipeSo.output, this);
+                    Item.SpawnItem(_blenderRecipeSo.output.prefab, this);
                     CheckForRecipe();
                 }
                 break;
@@ -63,7 +63,7 @@ public class BlenderStation : MonoBehaviour, IInteractable, IInteractableAlt, IH
         {
             if (_items.Count > 0) 
             {
-                HandleableItem item = _items.Pop();
+                Item item = _items.Pop();
                 item.SetParent(Player.Instance.HandleSystem);
                 OnTakeOut?.Invoke(this, EventArgs.Empty);
             }
@@ -89,7 +89,8 @@ public class BlenderStation : MonoBehaviour, IInteractable, IInteractableAlt, IH
     private void CheckForRecipe()
     {
         string[] itemsSo = GetItems()
-            .Select((i) => i.HandleableItemSo.itemName)
+            .Cast<Product>()
+            .Select((i) => i.ProductSo.itemName)
             .OrderBy(n => n)
             .ToArray();
         BlenderRecipeSo recipe = recipesDictionarySo.blenderRecipes.FirstOrDefault(r =>
@@ -100,7 +101,7 @@ public class BlenderStation : MonoBehaviour, IInteractable, IInteractableAlt, IH
                 .ToArray();
             return itemsSo.SequenceEqual(recipeItemsSo);
         });
-        if (recipe != null)
+        if (recipe is not null)
         {
             CurrentState = State.Processing;
             _timeToProcess = recipe.timeToProcess;
@@ -112,17 +113,17 @@ public class BlenderStation : MonoBehaviour, IInteractable, IInteractableAlt, IH
         }
     }
 
-    public void AddItem(HandleableItem item)
+    public void AddItem(Item item)
     {
         _items.Push(item);
     }
 
-    public HandleableItem[] GetItems()
+    public Item[] GetItems()
     {
         return _items.ToArray();
     }
     
-    public void ClearItem(HandleableItem item)
+    public void ClearItem(Item item)
     {
         _items.RemoveAll(i => i == item);
     }

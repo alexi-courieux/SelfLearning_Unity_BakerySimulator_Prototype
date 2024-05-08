@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8097709733323586053}
-  - component: {fileID: 2915447635207785043}
   - component: {fileID: 6912700482975362531}
   - component: {fileID: 7378148586309904626}
+  - component: {fileID: 4547726961888652593}
   m_Layer: 6
   m_Name: Trashbag
   m_TagString: Untagged
@@ -35,19 +35,6 @@ Transform:
   - {fileID: 5901274111784199105}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &2915447635207785043
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5887815187341392851}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e520fab0c8074b98b16c8bdea1d3974e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  handleableItemSo: {fileID: 11400000, guid: d9821be180943174cb724104a17fdbc4, type: 2}
 --- !u!65 &6912700482975362531
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -96,6 +83,19 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &4547726961888652593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5887815187341392851}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 35bdb2d049ff4ef297015296771dcc2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  productSo: {fileID: 11400000, guid: d9821be180943174cb724104a17fdbc4, type: 2}
 --- !u!1 &5906239529265904881
 GameObject:
   m_ObjectHideFlags: 0

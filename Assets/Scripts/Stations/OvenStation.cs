@@ -17,8 +17,8 @@ public class OvenStation : MonoBehaviour, IInteractable, IInteractableAlt, IHand
     
     [SerializeField] private Transform itemSlot;
     [SerializeField] private RecipesDictionarySo recipesDictionarySo;
-    [SerializeField] private HandleableItemSo trashObject;
-    private HandleableItem _item;
+    [SerializeField] private ProductSo trashObject;
+    private Product _product;
     private State _state;
     private State CurrentState
     {
@@ -42,18 +42,18 @@ public class OvenStation : MonoBehaviour, IInteractable, IInteractableAlt, IHand
                 _timeToProcess -= Time.deltaTime;
                 if (_timeToProcess <= 0f)
                 {
-                    foreach (HandleableItem item in GetItems())
+                    foreach (Item item in GetItems())
                     {
                         item.DestroySelf();
                     }
                     if (_ovenRecipeSo.burnt)
                     {
                         CurrentState = State.Burning;
-                        HandleableItem.SpawnItem(trashObject, this);
+                        Item.SpawnItem(trashObject.prefab, this);
                     }
                     else
                     {
-                        HandleableItem.SpawnItem(_ovenRecipeSo.output, this);
+                        Item.SpawnItem(_ovenRecipeSo.output.prefab, this);
                         CheckForRecipe();
                     }
                 }
@@ -68,11 +68,11 @@ public class OvenStation : MonoBehaviour, IInteractable, IInteractableAlt, IHand
     public void Interact()
     {
         if (CurrentState is not State.Idle) return;
-        if (_item is not null)
+        if (_product is not null)
         {
             if (!Player.Instance.HandleSystem.HaveItems())
             {
-                _item.SetParent(Player.Instance.HandleSystem);
+                _product.SetParent(Player.Instance.HandleSystem);
                 OnTakeOut?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -88,7 +88,7 @@ public class OvenStation : MonoBehaviour, IInteractable, IInteractableAlt, IHand
 
     public void InteractAlt()
     {
-        if (_item is not null)
+        if (_product is not null)
         {
             if (CurrentState is State.Idle)
             {
@@ -104,7 +104,7 @@ public class OvenStation : MonoBehaviour, IInteractable, IInteractableAlt, IHand
 
     private void CheckForRecipe()
     {
-        OvenRecipeSo recipe = recipesDictionarySo.ovenRecipes.FirstOrDefault(r => r.input == _item.HandleableItemSo);
+        OvenRecipeSo recipe = recipesDictionarySo.ovenRecipes.FirstOrDefault(r => r.input == _product.ProductSo);
         if (recipe is not null)
         {
             CurrentState = State.Processing;
@@ -117,24 +117,24 @@ public class OvenStation : MonoBehaviour, IInteractable, IInteractableAlt, IHand
         }
     }
 
-    public void AddItem(HandleableItem handleableItem)
+    public void AddItem(Item item)
     {
-        _item = handleableItem;
+        _product = item as Product;
     }
 
-    public HandleableItem[] GetItems()
+    public Item[] GetItems()
     {
-        return new []{_item};
+        return new []{_product};
     }
     
-    public void ClearItem(HandleableItem item)
+    public void ClearItem(Item item)
     {
-        _item = null;
+        _product = null;
     }
 
     public bool HaveItems()
     {
-        return _item != null;
+        return _product != null;
     }
 
     public Transform GetAvailableItemSlot()
@@ -144,6 +144,6 @@ public class OvenStation : MonoBehaviour, IInteractable, IInteractableAlt, IHand
 
     public bool HasAvailableSlot()
     {
-        return _item is null;
+        return _product is null;
     }
 }

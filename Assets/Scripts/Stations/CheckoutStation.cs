@@ -13,7 +13,7 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems
     [SerializeField] private Transform customerCheckoutPosition;
 
     private WaitingQueue<Customer> _customerQueue;
-    private readonly StackList<HandleableItem> _items = new();
+    private readonly StackList<Item> _items = new();
     
 
     private void Start()
@@ -26,30 +26,30 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems
     {
         if (Player.Instance.HandleSystem.HaveItems())
         {
-            HandleableItem item = Player.Instance.HandleSystem.GetItem();
+            Item item = Player.Instance.HandleSystem.GetItem();
             item.SetParent(this);
         }
         else
         {
             if (_items.Count > 0)
             {
-                HandleableItem item = _items.Pop();
+                Item item = _items.Pop();
                 item.SetParent(Player.Instance.HandleSystem);
             }
         }
     }
 
-    public void AddItem(HandleableItem item)
+    public void AddItem(Item item)
     {
         _items.Push(item);
     }
 
-    public HandleableItem[] GetItems()
+    public Item[] GetItems()
     {
         return _items.ToArray();
     }
 
-    public void ClearItem(HandleableItem item)
+    public void ClearItem(Item item)
     {
         _items.Remove(item);
     }
@@ -66,6 +66,7 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems
 
     public bool HasAvailableSlot()
     {
+        
         return true;
     }
 
@@ -119,9 +120,9 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems
     private void Pay()
     {
         float totalPrice = 0f;
-        _items.ToList().ForEach(i =>
+        _items.Cast<Product>().ToList().ForEach(i =>
         {
-            totalPrice += i.HandleableItemSo.sellPrice;
+            totalPrice += i.ProductSo.sellPrice;
             i.DestroySelf();
         });
         EconomyManager.Instance.AddMoney(totalPrice);
@@ -129,7 +130,7 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems
 
     public void CheckOrderCompletion(Customer customer)
     {
-        var checkoutItems = _items.GroupBy(i => i.HandleableItemSo)
+        var checkoutItems = _items.Cast<Product>().GroupBy(i => i.ProductSo)
             .ToDictionary(i => i.Key, i => i.Count());
         var orderItems = customer.Order.Items;
         if (checkoutItems.Count == orderItems.Count && !checkoutItems.Except(orderItems).Any())

@@ -10,10 +10,10 @@ public class Order
 {
     public Customer Customer { get; set; }
     public OrderType Type { get; }
-    public Dictionary<HandleableItemSo, int> Items { get; }
+    public Dictionary<ProductSo, int> Items { get; }
     public float TimeLimit { get; set; }
     
-    public Order(OrderType type, Dictionary<HandleableItemSo, int> items, Customer customer = null, float timeLimit = default)
+    public Order(OrderType type, Dictionary<ProductSo, int> items, Customer customer = null, float timeLimit = default)
     {
         Customer = customer;
         Type = type;
@@ -25,7 +25,7 @@ public class Order
     public override string ToString()
     {
         var items = new List<string>();
-        foreach ((HandleableItemSo key, int value) in Items)
+        foreach ((ProductSo key, int value) in Items)
         {
             items.Add($"{key.name} x{value}");
         }

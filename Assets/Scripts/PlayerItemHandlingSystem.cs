@@ -5,7 +5,7 @@ public class PlayerItemHandlingSystem: MonoBehaviour, IHandleItems
 {
     private const int IgnoreRaycastLayer = 1 << 1;
     [SerializeField] private Transform itemSlot;
-    private HandleableItem _item;
+    private Item _item;
     private int _defaultHandleableItemsLayer;
 
     private void Start()
@@ -24,24 +24,24 @@ public class PlayerItemHandlingSystem: MonoBehaviour, IHandleItems
         _item.SetParent(null);
     }
 
-    public void AddItem(HandleableItem handleableItem)
+    public void AddItem(Item item)
     {
-        _item = handleableItem;
+        _item = item;
         _defaultHandleableItemsLayer = _item.gameObject.layer;
-        handleableItem.gameObject.layer = IgnoreRaycastLayer;
+        item.gameObject.layer = IgnoreRaycastLayer;
     }
 
-    public HandleableItem[] GetItems()
+    public Item[] GetItems()
     {
         return new[] {_item};
     }
 
-    public HandleableItem GetItem()
+    public Item GetItem()
     {
         return _item;
     }
 
-    public void ClearItem(HandleableItem item)
+    public void ClearItem(Item item)
     {
         _item.gameObject.layer = _defaultHandleableItemsLayer;
         _item = null;

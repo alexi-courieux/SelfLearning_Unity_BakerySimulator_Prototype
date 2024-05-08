@@ -6,8 +6,8 @@ public class OrderRequestItemSingleUI : MonoBehaviour
 {
     [SerializeField] private Image itemIcon;
     [SerializeField] private TextMeshProUGUI quantityText;
-    public void SetItem(HandleableItemSo item, int quantity) {
-        itemIcon.sprite = item.sprite;
+    public void SetItem(ProductSo product, int quantity) {
+        itemIcon.sprite = product.sprite;
         quantityText.text = quantity.ToString();
     }
 }

@@ -3,5 +3,5 @@
 /// </summary>
 public interface IDisplayItems
 {
-    public HandleableItemSo[] GetItemsSo();
+    public ProductSo[] GetItemsSo();
 }

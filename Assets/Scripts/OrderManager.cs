@@ -28,7 +28,7 @@ public class OrderManager : MonoBehaviour
 
     public List<Order> Requests => _requests;
 
-    private List<HandleableItemSo> AvailableItems => DisplayStations.SelectMany(s => s.GetItemsSo()).ToList();
+    private List<ProductSo> AvailableItems => DisplayStations.SelectMany(s => s.GetItemsSo()).ToList();
 
     private void Awake()
     {
@@ -69,20 +69,20 @@ public class OrderManager : MonoBehaviour
     private Order CreateDirectOrder(Customer customer)
     {
         // iterate through the display stations and get a random item from each
-        var items = new Dictionary<HandleableItemSo, int>();
+        var items = new Dictionary<ProductSo, int>();
         var availableItems = AvailableItems;
         int orderSize = Mathf.Min(Random.Range(1, 5), availableItems.Count);
         for (int i = 0; i < orderSize; i++)
         {
-            HandleableItemSo item = availableItems[Random.Range(0, availableItems.Count)];
-            availableItems.Remove(item);
-            if (items.ContainsKey(item))
+            ProductSo product = availableItems[Random.Range(0, availableItems.Count)];
+            availableItems.Remove(product);
+            if (items.ContainsKey(product))
             {
-                items[item]++;
+                items[product]++;
             }
             else
             {
-                items.Add(item, 1);
+                items.Add(product, 1);
             }
         }
 
@@ -98,18 +98,18 @@ public class OrderManager : MonoBehaviour
     private Order CreateRequestOrder(Customer customer = null)
     {
         // iterate through the display stations and get a random item from each
-        var items = new Dictionary<HandleableItemSo, int>();
+        var items = new Dictionary<ProductSo, int>();
         int orderSize = Random.Range(1, 5);
         for (int i = 0; i < orderSize; i++)
         {
-            HandleableItemSo item = sellableItemDictionarySo.sellableItems[Random.Range(0, sellableItemDictionarySo.sellableItems.Count())];
-            if (items.ContainsKey(item))
+            ProductSo product = sellableItemDictionarySo.sellableItems[Random.Range(0, sellableItemDictionarySo.sellableItems.Count())];
+            if (items.ContainsKey(product))
             {
-                items[item]++;
+                items[product]++;
             }
             else
             {
-                items.Add(item, 1);
+                items.Add(product, 1);
             }
         }
 

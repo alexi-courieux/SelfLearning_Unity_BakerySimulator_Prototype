@@ -7,9 +7,9 @@ public class OrderItemUI : MonoBehaviour
     [SerializeField] private Image icon;
     [SerializeField] private TextMeshProUGUI quantityText;
 
-    public void SetItem(HandleableItemSo item, int quantity)
+    public void SetItem(ProductSo product, int quantity)
     {
-        icon.sprite = item.sprite;
+        icon.sprite = product.sprite;
         quantityText.text = quantity.ToString();
     }
 }

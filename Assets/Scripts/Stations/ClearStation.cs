@@ -3,7 +3,7 @@ using UnityEngine;
 public class ClearStation : MonoBehaviour, IInteractable, IHandleItems
 {
     [SerializeField] private Transform itemSlot;
-    private HandleableItem _item;
+    private Item _item;
    public void Interact()
     {
         if (HaveItems())
@@ -27,17 +27,17 @@ public class ClearStation : MonoBehaviour, IInteractable, IHandleItems
     }
 
   
-   public void AddItem(HandleableItem handleableItem)
+   public void AddItem(Item item)
     {
-        _item = handleableItem;
+        _item = item;
     }
 
-    public HandleableItem[] GetItems()
+    public Item[] GetItems()
     {
         return new[] {_item};
     }
     
-    public void ClearItem(HandleableItem item)
+    public void ClearItem(Item item)
     {
         _item = null;
     }

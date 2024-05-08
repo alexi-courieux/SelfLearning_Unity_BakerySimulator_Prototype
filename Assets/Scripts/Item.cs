@@ -1,18 +1,21 @@
 ﻿using System;
 using UnityEngine;
 
-public class HandleableItem : MonoBehaviour, IInteractable
+public abstract class Item : MonoBehaviour, IInteractable
 {
-    public HandleableItemSo HandleableItemSo => handleableItemSo;
-
-    [SerializeField] private HandleableItemSo handleableItemSo;
     private IHandleItems _parent;
-
-    public static void SpawnItem(HandleableItemSo handleableItemSo, IHandleItems parent)
+    private Rigidbody _rb;
+    
+    public static void SpawnItem(Transform itemPrefab, IHandleItems parent)
     {
-        Transform itemTransform = Instantiate(handleableItemSo.prefab);
-        HandleableItem item = itemTransform.GetComponent<HandleableItem>();
+        Transform itemTransform = Instantiate(itemPrefab);
+        Item item = itemTransform.GetComponent<Item>();
         item.SetParent(parent);
+    }
+
+    private void Awake()
+    {
+       _rb = GetComponent<Rigidbody>();
     }
 
     /// <summary>
@@ -40,11 +43,10 @@ public class HandleableItem : MonoBehaviour, IInteractable
         {
             transform.parent = null;
         }
-
-        TryGetComponent(out Rigidbody rb);
-        if (rb is not null)
+        
+        if (_rb is not null)
         {
-            rb.isKinematic = _parent is not null;
+            _rb.isKinematic = _parent is not null;
         }
     }
 
