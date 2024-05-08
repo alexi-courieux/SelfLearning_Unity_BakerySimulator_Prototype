@@ -88,7 +88,6 @@ public class Player : MonoBehaviour
     private void InputManager_OnInteract(object sender, EventArgs e)
     {
         if (!CheckForRaycastHit(out RaycastHit hitInfo)) return;
-        Logger.LogInfo("Interacting with " + hitInfo.transform.name);
         if (hitInfo.transform.TryGetComponent(out IInteractable interactableComponent))
         {
             interactableComponent.Interact();
