@@ -3,13 +3,13 @@ using UnityEngine;
 
 public abstract class Item : MonoBehaviour, IInteractable
 {
-    private IHandleItems _parent;
+    private IHandleItemsBase _parent;
     private Rigidbody _rb;
     
-    public static void SpawnItem(Transform itemPrefab, IHandleItems parent)
+    public static void SpawnItem<T>(Transform itemPrefab, IHandleItems<T> parent) where T : Item
     {
         Transform itemTransform = Instantiate(itemPrefab);
-        Item item = itemTransform.GetComponent<Item>();
+        T item = itemTransform.GetComponent<T>();
         item.SetParent(parent);
     }
 
@@ -23,7 +23,7 @@ public abstract class Item : MonoBehaviour, IInteractable
     /// </summary>
     /// <param name="targetParent">new parent</param>
     /// <returns>true if the parent have changed</returns>
-    public void SetParent(IHandleItems targetParent)
+    public void SetParent<T>(IHandleItems<T> targetParent) where T : Item
     {
         if (targetParent?.HasAvailableSlot() is false)
             throw new ArgumentException("The parent must have an available slot or be null");
@@ -52,7 +52,7 @@ public abstract class Item : MonoBehaviour, IInteractable
 
     public void DestroySelf()
     {
-        SetParent(null);
+        SetParent<Item>(null);
         Destroy(gameObject);
     }
 

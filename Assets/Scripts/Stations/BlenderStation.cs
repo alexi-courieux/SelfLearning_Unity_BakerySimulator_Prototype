@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-public class BlenderStation : MonoBehaviour, IInteractable, IInteractableAlt, IHandleItems
+public class BlenderStation : MonoBehaviour, IInteractable, IInteractableAlt, IHandleItems<Product>
 {
     public EventHandler OnPutIn;
     public EventHandler OnTakeOut;
@@ -16,7 +16,7 @@ public class BlenderStation : MonoBehaviour, IInteractable, IInteractableAlt, IH
     
     [SerializeField] private Transform itemSlot;
     [SerializeField] private RecipesDictionarySo recipesDictionarySo;
-    private readonly StackList<Item> _items = new();
+    private readonly StackList<Product> _items = new();
     private State _state;
     private State CurrentState
     {
@@ -56,7 +56,13 @@ public class BlenderStation : MonoBehaviour, IInteractable, IInteractableAlt, IH
 
         if (Player.Instance.HandleSystem.HaveItems())
         {
-            Player.Instance.HandleSystem.GetItem().SetParent(this);
+            Item item = Player.Instance.HandleSystem.GetItem();
+            if (Player.Instance.HandleSystem.GetItem() is not Product product)
+            {
+                Logger.LogWarning("Station can only hold products!");
+                return;
+            }
+            product.SetParent(this);
             OnPutIn?.Invoke(this, EventArgs.Empty);
         }
         else
@@ -113,17 +119,17 @@ public class BlenderStation : MonoBehaviour, IInteractable, IInteractableAlt, IH
         }
     }
 
-    public void AddItem(Item item)
+    public void AddItem(Product item)
     {
         _items.Push(item);
     }
 
-    public Item[] GetItems()
+    public Product[] GetItems()
     {
         return _items.ToArray();
     }
     
-    public void ClearItem(Item item)
+    public void ClearItem(Product item)
     {
         _items.RemoveAll(i => i == item);
     }

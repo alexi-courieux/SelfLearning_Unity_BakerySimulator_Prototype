@@ -2,19 +2,19 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-public class DisplayStation : MonoBehaviour, IInteractable, IHandleItems, IDisplayItems
+public class DisplayStation : MonoBehaviour, IInteractable, IHandleItems<Product>, IDisplayItems
 {
     public EventHandler OnPutIn;
     public EventHandler OnTakeOut;
     
     [SerializeField] private Transform[] itemSlots;
-    private StackList<Item> _items;
+    private StackList<Product> _items;
     private int _capacity;
 
     private void Awake()
     {
         _capacity = itemSlots.Length;
-        _items = new StackList<Item>();
+        _items = new StackList<Product>();
     }
 
     private void Start()
@@ -28,7 +28,16 @@ public class DisplayStation : MonoBehaviour, IInteractable, IHandleItems, IDispl
         {
             if (!HasAvailableSlot()) return;
             Item item = Player.Instance.HandleSystem.GetItem();
-            if (item is not Product product || !product.ProductSo.CanBeSold()) return;
+            if (Player.Instance.HandleSystem.GetItem() is not Product product)
+            {
+                Logger.LogWarning("Station can only hold products!");
+                return;
+            }
+            if (!product.ProductSo.CanBeSold())
+            {
+                Logger.LogWarning("Product can't be sold!");
+                return;
+            }
             
             Player.Instance.HandleSystem.GetItem().SetParent(this);
             OnPutIn?.Invoke(this, EventArgs.Empty);
@@ -45,17 +54,17 @@ public class DisplayStation : MonoBehaviour, IInteractable, IHandleItems, IDispl
     }
 
   
-   public void AddItem(Item item)
+   public void AddItem(Product item)
     {
         _items.Push(item);
     }
 
-    public Item[] GetItems()
+    public Product[] GetItems()
     {
         return _items.ToArray();
     }
     
-    public void ClearItem(Item item)
+    public void ClearItem(Product item)
     {
         _items.Remove(item);
     }

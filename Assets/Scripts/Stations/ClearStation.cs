@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class ClearStation : MonoBehaviour, IInteractable, IHandleItems
+public class ClearStation : MonoBehaviour, IInteractable, IHandleItems<Item>
 {
     [SerializeField] private Transform itemSlot;
     private Item _item;

@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems
+public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems<Product>
 {
     public EventHandler OnAnyCustomerLeave;
     public EventHandler<Order> OnOrderReceived;
@@ -13,7 +13,7 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems
     [SerializeField] private Transform customerCheckoutPosition;
 
     private WaitingQueue<Customer> _customerQueue;
-    private readonly StackList<Item> _items = new();
+    private readonly StackList<Product> _products = new();
     
 
     private void Start()
@@ -27,36 +27,41 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems
         if (Player.Instance.HandleSystem.HaveItems())
         {
             Item item = Player.Instance.HandleSystem.GetItem();
-            item.SetParent(this);
+            if (Player.Instance.HandleSystem.GetItem() is not Product product)
+            {
+                Logger.LogWarning("Station can only hold products!");
+                return;
+            }
+            product.SetParent(this);
         }
         else
         {
-            if (_items.Count > 0)
+            if (_products.Count > 0)
             {
-                Item item = _items.Pop();
+                Item item = _products.Pop();
                 item.SetParent(Player.Instance.HandleSystem);
             }
         }
     }
 
-    public void AddItem(Item item)
+    public void AddItem(Product item)
     {
-        _items.Push(item);
+        _products.Push(item);
     }
 
-    public Item[] GetItems()
+    public Product[] GetItems()
     {
-        return _items.ToArray();
+        return _products.ToArray();
     }
 
-    public void ClearItem(Item item)
+    public void ClearItem(Product item)
     {
-        _items.Remove(item);
+        _products.Remove(item);
     }
 
     public bool HaveItems()
     {
-        return _items.Count > 0;
+        return _products.Count > 0;
     }
 
     public Transform GetAvailableItemSlot()
@@ -120,7 +125,7 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems
     private void Pay()
     {
         float totalPrice = 0f;
-        _items.Cast<Product>().ToList().ForEach(i =>
+        _products.Cast<Product>().ToList().ForEach(i =>
         {
             totalPrice += i.ProductSo.sellPrice;
             i.DestroySelf();
@@ -130,7 +135,7 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems
 
     public void CheckOrderCompletion(Customer customer)
     {
-        var checkoutItems = _items.Cast<Product>().GroupBy(i => i.ProductSo)
+        var checkoutItems = _products.Cast<Product>().GroupBy(i => i.ProductSo)
             .ToDictionary(i => i.Key, i => i.Count());
         var orderItems = customer.Order.Items;
         if (checkoutItems.Count == orderItems.Count && !checkoutItems.Except(orderItems).Any())

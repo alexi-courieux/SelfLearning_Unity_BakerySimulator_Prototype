@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-public class OvenStation : MonoBehaviour, IInteractable, IInteractableAlt, IHandleItems
+public class OvenStation : MonoBehaviour, IInteractable, IInteractableAlt, IHandleItems<Product>
 {
     public EventHandler OnPutIn;
     public EventHandler OnTakeOut;
@@ -42,9 +42,9 @@ public class OvenStation : MonoBehaviour, IInteractable, IInteractableAlt, IHand
                 _timeToProcess -= Time.deltaTime;
                 if (_timeToProcess <= 0f)
                 {
-                    foreach (Item item in GetItems())
+                    foreach (Product product in GetItems())
                     {
-                        item.DestroySelf();
+                        product.DestroySelf();
                     }
                     if (_ovenRecipeSo.burnt)
                     {
@@ -80,7 +80,13 @@ public class OvenStation : MonoBehaviour, IInteractable, IInteractableAlt, IHand
         {
             if (Player.Instance.HandleSystem.HaveItems())
             {
-                Player.Instance.HandleSystem.GetItem().SetParent(this);
+                Item item = Player.Instance.HandleSystem.GetItem();
+                if (item is not Product product)
+                {
+                    Logger.LogWarning("Station can only hold products!");
+                    return;
+                }
+                product.SetParent(this);
                 OnPutIn?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -117,17 +123,17 @@ public class OvenStation : MonoBehaviour, IInteractable, IInteractableAlt, IHand
         }
     }
 
-    public void AddItem(Item item)
+    public void AddItem(Product product)
     {
-        _product = item as Product;
+        _product = product;
     }
 
-    public Item[] GetItems()
+    public Product[] GetItems()
     {
         return new []{_product};
     }
     
-    public void ClearItem(Item item)
+    public void ClearItem(Product product)
     {
         _product = null;
     }

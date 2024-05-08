@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class PlayerItemHandlingSystem: MonoBehaviour, IHandleItems
+public class PlayerItemHandlingSystem: MonoBehaviour, IHandleItems<Item>
 {
     private const int IgnoreRaycastLayer = 1 << 1;
     [SerializeField] private Transform itemSlot;
@@ -21,7 +21,7 @@ public class PlayerItemHandlingSystem: MonoBehaviour, IHandleItems
     private void Drop()
     {
         if (!HaveItems()) return;
-        _item.SetParent(null);
+        _item.SetParent<Item>(null);
     }
 
     public void AddItem(Item item)
