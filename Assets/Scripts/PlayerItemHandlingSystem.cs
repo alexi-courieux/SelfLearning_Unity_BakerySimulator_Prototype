@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public class PlayerItemHandlingSystem: MonoBehaviour, IHandleItems<Item>
+public class PlayerItemHandlingSystem: MonoBehaviour, IHandleItems
 {
     private const int IgnoreRaycastLayer = 1 << 1;
     [SerializeField] private Transform itemSlot;
@@ -20,18 +20,18 @@ public class PlayerItemHandlingSystem: MonoBehaviour, IHandleItems<Item>
 
     private void Drop()
     {
-        if (!HaveItems()) return;
-        _item.SetParent<Item>(null);
+        if (!HaveItems<Item>()) return;
+        _item.Drop();
     }
 
-    public void AddItem(Item item)
+    public void AddItem<T>(Item item) where T : Item
     {
         _item = item;
         _defaultHandleableItemsLayer = _item.gameObject.layer;
         item.gameObject.layer = IgnoreRaycastLayer;
     }
 
-    public Item[] GetItems()
+    public Item[] GetItems<T>() where T : Item
     {
         return new[] {_item};
     }
@@ -48,17 +48,22 @@ public class PlayerItemHandlingSystem: MonoBehaviour, IHandleItems<Item>
         _defaultHandleableItemsLayer = 0;
     }
 
-    public bool HaveItems()
+    public bool HaveItems<T>() where T : Item
+    {
+        return _item is T;
+    }
+    
+    public bool HaveAnyItems()
     {
         return _item is not null;
     }
     
-    public Transform GetAvailableItemSlot()
+    public Transform GetAvailableItemSlot<T>() where T : Item
     {
         return itemSlot;
     }
 
-    public bool HasAvailableSlot()
+    public bool HasAvailableSlot<T>() where T : Item
     {
         return _item is null;
     }

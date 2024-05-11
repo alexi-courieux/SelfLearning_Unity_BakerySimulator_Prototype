@@ -2,7 +2,7 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems<Product>
+public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems
 {
     public EventHandler OnAnyCustomerLeave;
     public EventHandler<Order> OnOrderReceived;
@@ -24,53 +24,86 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems<Produc
 
     public void Interact()
     {
-        if (Player.Instance.HandleSystem.HaveItems())
+        if (Player.Instance.HandleSystem.HaveAnyItems())
         {
-            Item item = Player.Instance.HandleSystem.GetItem();
-            if (Player.Instance.HandleSystem.GetItem() is not Product product)
+            if (!Player.Instance.HandleSystem.HaveItems<Product>())
             {
                 Logger.LogWarning("Station can only hold products!");
                 return;
             }
-            product.SetParent(this);
+            Player.Instance.HandleSystem.GetItem().SetParent<Product>(this);
         }
         else
         {
             if (_products.Count > 0)
             {
                 Item item = _products.Pop();
-                item.SetParent(Player.Instance.HandleSystem);
+                item.SetParent<Item>(Player.Instance.HandleSystem);
             }
         }
     }
 
-    public void AddItem(Product item)
+    public void AddItem<T>(Item item) where T : Item
     {
-        _products.Push(item);
+        if (typeof(T) != typeof(Product))
+        {
+            Logger.LogWarning("This station can only hold products!");
+            return;
+        }
+        
+        _products.Push(item as Product);
     }
 
-    public Product[] GetItems()
+    public Item[] GetItems<T>() where T : Item
     {
-        return _products.ToArray();
+        if (typeof(T) != typeof(Product))
+        {
+            Logger.LogWarning("This station can only hold products!");
+            return null;
+        }
+        
+        return _products.Cast<Item>().ToArray();
     }
 
-    public void ClearItem(Product item)
+    public void ClearItem(Item item)
     {
-        _products.Remove(item);
+        _products.Remove(item as Product);
     }
 
-    public bool HaveItems()
+    public bool HaveItems<T>() where T : Item
+    {
+        if (typeof(T) != typeof(Product))
+        {
+            Logger.LogWarning("This station can only hold products!");
+            return false;
+        }
+        
+        return _products.Count > 0;
+    }
+    
+    public bool HaveAnyItems()
     {
         return _products.Count > 0;
     }
-
-    public Transform GetAvailableItemSlot()
+    
+    public Transform GetAvailableItemSlot<T>() where T : Item
     {
+        if (typeof(T) != typeof(Product))
+        {
+            Logger.LogWarning("This station can only hold products!");
+            return null;
+        }
+        
         return itemSlot;
     }
 
-    public bool HasAvailableSlot()
+    public bool HasAvailableSlot<T>() where T : Item
     {
+        if (typeof(T) != typeof(Product))
+        {
+            Logger.LogWarning("This station can only hold products!");
+            return false;
+        }
         
         return true;
     }
@@ -111,11 +144,6 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems<Produc
     {
         return _customerQueue.GetPositionIndex(customer);
     }
-    
-    private bool HaveCustomers()
-    {
-        return _customerQueue.Count > 0;
-    }
 
     public int CustomerCount()
     {
@@ -125,7 +153,7 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems<Produc
     private void Pay()
     {
         float totalPrice = 0f;
-        _products.Cast<Product>().ToList().ForEach(i =>
+        _products.ToList().ForEach(i =>
         {
             totalPrice += i.ProductSo.sellPrice;
             i.DestroySelf();
@@ -135,7 +163,7 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems<Produc
 
     public void CheckOrderCompletion(Customer customer)
     {
-        var checkoutItems = _products.Cast<Product>().GroupBy(i => i.ProductSo)
+        var checkoutItems = _products.GroupBy(i => i.ProductSo)
             .ToDictionary(i => i.Key, i => i.Count());
         var orderItems = customer.Order.Items;
         if (checkoutItems.Count == orderItems.Count && !checkoutItems.Except(orderItems).Any())

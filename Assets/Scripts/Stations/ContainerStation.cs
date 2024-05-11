@@ -11,8 +11,8 @@ public class ContainerStation : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        if (Player.Instance.HandleSystem.HaveItems()) return;
-        Item.SpawnItem(productSo.prefab, Player.Instance.HandleSystem);
+        if (Player.Instance.HandleSystem.HaveAnyItems()) return;
+        Item.SpawnItem<Product>(productSo.prefab, Player.Instance.HandleSystem);
         EconomyManager.Instance.AddMoney(-productSo.buyPrice);
     }
 }

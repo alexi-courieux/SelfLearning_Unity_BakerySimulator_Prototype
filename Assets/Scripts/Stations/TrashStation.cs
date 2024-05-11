@@ -26,9 +26,9 @@ public class TrashStation : MonoBehaviour, IInteractable, IInteractableAlt
     public void Interact()
     {
         if (_trashAmount >= trashAmountMax) return;
-        if (!Player.Instance.HandleSystem.HaveItems()) return;
-        if (Player.Instance.HandleSystem.GetItem() is not Product product) return;
-        if(product.ProductSo == trashbagProduct) return;
+        if (!Player.Instance.HandleSystem.HaveItems<Product>()) return;
+        Product product = Player.Instance.HandleSystem.GetItem() as Product;
+        if(product!.ProductSo == trashbagProduct) return;
         product.DestroySelf();
         TrashAmount++;
     }
@@ -36,9 +36,9 @@ public class TrashStation : MonoBehaviour, IInteractable, IInteractableAlt
     public void InteractAlt()
     {
         if (_trashAmount is 0) return;
-        if (Player.Instance.HandleSystem.HaveItems()) return;
+        if (Player.Instance.HandleSystem.HaveItems<Product>()) return;
         TrashAmount = 0;
-        Item.SpawnItem(trashbagProduct.prefab, Player.Instance.HandleSystem);
+        Item.SpawnItem<Product>(trashbagProduct.prefab, Player.Instance.HandleSystem);
     }
     
     public int GetTrashAmountMax()
