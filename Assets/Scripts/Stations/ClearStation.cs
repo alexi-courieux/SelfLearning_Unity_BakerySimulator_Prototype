@@ -1,34 +1,18 @@
 using System;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-public class ClearStation : MonoBehaviour, IInteractable, IHandleItems
+public class ClearStation : MonoBehaviour, IInteractable, IHandleItems, IInteractableAlt, IFocusable
 {
-    [FormerlySerializedAs("itemSlot")] [SerializeField] private Transform productSlot;
+    [SerializeField] private RecipesDictionarySo recipesDictionarySo;
+    [SerializeField] private Transform productSlot;
     [SerializeField] private Transform toolSlot;
     private Product _product;
     private Tool _tool;
+    private ToolRecipeSo[] _recipes;
+    
    public void Interact()
     {
-        /*if (HaveAnyItems())
-        {
-            if (Player.Instance.HandleSystem.HaveAnyItems())
-            {
-                Logger.LogWarning("Player can't hold more than one item at a time!");
-            }
-            else
-            {
-                _product.SetParent(Player.Instance.HandleSystem);
-            }
-        }
-        else
-        {
-            if (Player.Instance.HandleSystem.HaveAnyItems())
-            {
-                Player.Instance.HandleSystem.GetItem().SetParent(this);
-            }
-        }*/
-
         if (Player.Instance.HandleSystem.HaveAnyItems())
         {
             if (Player.Instance.HandleSystem.HaveItems<Product>())
@@ -61,8 +45,56 @@ public class ClearStation : MonoBehaviour, IInteractable, IHandleItems
         }
     }
 
-  
-   public void AddItem<T>(Item item) where T : Item
+    public void InteractAlt()
+    {
+        if (!HaveItems<Product>()) return;
+
+        if (!HaveItems<Tool>() && !Player.Instance.HandleSystem.HaveItems<Tool>()) return;
+
+        Tool tool;
+        if (Player.Instance.HandleSystem.HaveItems<Tool>())
+        {
+            tool = Player.Instance.HandleSystem.GetItem() as Tool;
+        }
+        else
+        {
+            tool = _tool;
+        }
+        
+        
+    }
+
+    public void Focus()
+    {
+        Tool tool;
+        if(Player.Instance.HandleSystem.HaveItems<Tool>())
+        {
+            // We try to use tool holded by player in priority
+            tool = Player.Instance.HandleSystem.GetItem() as Tool;
+        }
+        else
+        {
+            // If player doesn't hold any tool, we use the tool holded by the station
+            tool = _tool;
+        }
+
+        if (tool is null || _product is null) return;
+        
+        _recipes = CheckForRecipes(tool.ToolSo, _product.ProductSo);
+        // TODO : Show Recipe UI
+    }
+    
+    public void StopFocus()
+    {
+        // TODO : Hide Recipe UI
+    }
+    public ToolRecipeSo[] CheckForRecipes(ToolSo tool, ProductSo product)
+    {
+        return recipesDictionarySo.toolRecipes.Where(r => r.tool == tool && r.input == product).ToArray();
+    }
+
+
+    public void AddItem<T>(Item item) where T : Item
     {
         if (typeof(T) != typeof(Product) && typeof(T) != typeof(Tool))
         {

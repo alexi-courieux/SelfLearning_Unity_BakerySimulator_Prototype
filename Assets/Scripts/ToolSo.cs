@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "tool", menuName = "ScriptableObject/Tool", order = 0)]
+[CreateAssetMenu(fileName = "tool", menuName = "ScriptableObject/Tool")]
 public class ToolSo : ScriptableObject
 {
     public Transform prefab;

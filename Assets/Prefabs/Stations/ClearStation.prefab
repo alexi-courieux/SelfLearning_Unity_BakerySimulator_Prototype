@@ -69,6 +69,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 73e46cad32365fe4f89da01383ca9795, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  recipesDictionarySo: {fileID: 11400000, guid: 55e6f01085b2f864b90d35f2972893fe,
+    type: 2}
   productSlot: {fileID: 4124010638674522492}
   toolSlot: {fileID: 5787964048464162259}
 --- !u!1 &8625638014526239821
