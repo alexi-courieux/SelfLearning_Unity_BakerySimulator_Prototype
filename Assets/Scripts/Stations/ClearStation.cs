@@ -10,6 +10,7 @@ public class ClearStation : MonoBehaviour, IInteractable, IHandleItems, IInterac
     private Product _product;
     private Tool _tool;
     private ToolRecipeSo[] _recipes;
+    private ToolRecipeSo _selectedRecipe;
     
    public void Interact()
     {
@@ -35,53 +36,58 @@ public class ClearStation : MonoBehaviour, IInteractable, IHandleItems, IInterac
             if (HaveItems<Product>())
             {
                 _product.SetParent<Product>(Player.Instance.HandleSystem);
-                return;
-            }
-            
-            if (HaveItems<Tool>())
+            } 
+            else if (HaveItems<Tool>())
             {
                 _tool.SetParent<Tool>(Player.Instance.HandleSystem);
             }
         }
+        RefreshRecipes();
     }
 
     public void InteractAlt()
     {
         if (!HaveItems<Product>()) return;
-
         if (!HaveItems<Tool>() && !Player.Instance.HandleSystem.HaveItems<Tool>()) return;
-
-        Tool tool;
-        if (Player.Instance.HandleSystem.HaveItems<Tool>())
-        {
-            tool = Player.Instance.HandleSystem.GetItem() as Tool;
-        }
-        else
-        {
-            tool = _tool;
-        }
+        if (_selectedRecipe is null) return;
+        if(_product.ProductSo != _selectedRecipe.input) return;
+        Tool tool = GetToolForRecipe();
+        if(tool?.ToolSo != _selectedRecipe.tool) return;
         
-        
+        _product.DestroySelf();
+        Item.SpawnItem<Product>(_selectedRecipe.output.prefab, this);
     }
 
     public void Focus()
     {
-        Tool tool;
-        if(Player.Instance.HandleSystem.HaveItems<Tool>())
-        {
-            // We try to use tool holded by player in priority
-            tool = Player.Instance.HandleSystem.GetItem() as Tool;
-        }
-        else
-        {
-            // If player doesn't hold any tool, we use the tool holded by the station
-            tool = _tool;
-        }
+        RefreshRecipes();
+        // TODO : Show Recipe UI
+    }
+
+    private void RefreshRecipes()
+    {
+        Tool tool = GetToolForRecipe();
 
         if (tool is null || _product is null) return;
         
         _recipes = CheckForRecipes(tool.ToolSo, _product.ProductSo);
-        // TODO : Show Recipe UI
+        _selectedRecipe = _recipes.FirstOrDefault();
+        Logger.LogInfo($"Found {_recipes.Length} recipes for the current product and tool");
+        Logger.LogInfo($"Selected recipe : {_selectedRecipe}");
+    }
+    
+    private Tool GetToolForRecipe()
+    {
+        if(Player.Instance.HandleSystem.HaveItems<Tool>())
+        {
+            // We try to use tool holded by player in priority
+            return Player.Instance.HandleSystem.GetItem() as Tool;
+        }
+        else
+        {
+            // If player doesn't hold any tool, we use the tool holded by the station
+            return _tool;
+        }
     }
     
     public void StopFocus()
