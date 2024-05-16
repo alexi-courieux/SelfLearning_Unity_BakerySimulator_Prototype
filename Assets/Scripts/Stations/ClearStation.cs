@@ -2,8 +2,11 @@ using System;
 using System.Linq;
 using UnityEngine;
 
-public class ClearStation : MonoBehaviour, IInteractable, IHandleItems, IInteractableAlt, IFocusable
+public class ClearStation : MonoBehaviour, IInteractable, IHandleItems, IInteractableAlt, IFocusable, IInteractableNext, IInteractablePrevious
 {
+    public EventHandler OnFocus;
+    public EventHandler OnStopFocus;
+    public EventHandler<RecipeSelectedEventArgs> OnRecipeSelected;
     [SerializeField] private RecipesDictionarySo recipesDictionarySo;
     [SerializeField] private Transform productSlot;
     [SerializeField] private Transform toolSlot;
@@ -61,19 +64,25 @@ public class ClearStation : MonoBehaviour, IInteractable, IHandleItems, IInterac
     public void Focus()
     {
         RefreshRecipes();
-        // TODO : Show Recipe UI
+        OnFocus?.Invoke(this, EventArgs.Empty);
     }
 
     private void RefreshRecipes()
     {
         Tool tool = GetToolForRecipe();
 
-        if (tool is null || _product is null) return;
-        
-        _recipes = CheckForRecipes(tool.ToolSo, _product.ProductSo);
-        _selectedRecipe = _recipes.FirstOrDefault();
-        Logger.LogInfo($"Found {_recipes.Length} recipes for the current product and tool");
-        Logger.LogInfo($"Selected recipe : {_selectedRecipe}");
+        if (tool is null || _product is null)
+        {
+            _recipes = null;
+            _selectedRecipe = null;
+            OnRecipeSelected?.Invoke(this, new RecipeSelectedEventArgs(null, 0));
+        }
+        else
+        {
+            _recipes = CheckForRecipes(tool.ToolSo, _product.ProductSo);
+            _selectedRecipe = _recipes.FirstOrDefault();
+            OnRecipeSelected?.Invoke(this, new RecipeSelectedEventArgs(_selectedRecipe, _recipes.Length));
+        }
     }
     
     private Tool GetToolForRecipe()
@@ -90,9 +99,35 @@ public class ClearStation : MonoBehaviour, IInteractable, IHandleItems, IInterac
         }
     }
     
+    public void InteractNext()
+    {
+        if (_recipes is null || _recipes.Length == 0) return;
+        int index = Array.IndexOf(_recipes, _selectedRecipe);
+        index++;
+        if (index >= _recipes.Length)
+        {
+            index = 0;
+        }
+        _selectedRecipe = _recipes[index];
+        OnRecipeSelected?.Invoke(this, new RecipeSelectedEventArgs(_selectedRecipe, _recipes.Length));
+    }
+    
+    public void InteractPrevious()
+    {
+        if (_recipes is null || _recipes.Length == 0) return;
+        int index = Array.IndexOf(_recipes, _selectedRecipe);
+        index--;
+        if (index < 0)
+        {
+            index = _recipes.Length - 1;
+        }
+        _selectedRecipe = _recipes[index];
+        OnRecipeSelected?.Invoke(this, new RecipeSelectedEventArgs(_selectedRecipe, _recipes.Length));
+    }
+    
     public void StopFocus()
     {
-        // TODO : Hide Recipe UI
+        OnStopFocus?.Invoke(this, EventArgs.Empty);
     }
     public ToolRecipeSo[] CheckForRecipes(ToolSo tool, ProductSo product)
     {
@@ -197,5 +232,17 @@ public class ClearStation : MonoBehaviour, IInteractable, IHandleItems, IInterac
 
         Logger.LogWarning($"This station doesn't have slots for the specified item : {typeof(T)}");
         return false;
+    }
+}
+
+public class RecipeSelectedEventArgs : EventArgs
+{
+    public ToolRecipeSo Recipe { get; }
+    public int AvailableRecipesCount { get; }
+
+    public RecipeSelectedEventArgs(ToolRecipeSo recipe, int availableRecipesCount)
+    {
+        Recipe = recipe;
+        AvailableRecipesCount = availableRecipesCount;
     }
 }

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-public abstract class Item : MonoBehaviour, IInteractable
+public abstract class Item : MonoBehaviour, IInteractable, IInteractableAlt, IFocusable
 {
     private IHandleItems _parent;
     private Rigidbody _rb;
@@ -76,6 +76,37 @@ public abstract class Item : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        SetParent<Item>(Player.Instance.HandleSystem);
+        if (_parent is IInteractable interactableParent)
+        {
+            interactableParent.Interact();
+        }
+        else
+        {
+            SetParent<Item>(Player.Instance.HandleSystem);
+        }
+    }
+    
+    public void InteractAlt()
+    {
+        if (_parent is IInteractableAlt interactableParent)
+        {
+            interactableParent.InteractAlt();
+        }
+    }
+    
+    public void Focus()
+    {
+        if (_parent is IFocusable focusableParent)
+        {
+            focusableParent.Focus();
+        }
+    }
+    
+    public void StopFocus()
+    {
+        if (_parent is IFocusable focusableParent)
+        {
+            focusableParent.StopFocus();
+        }
     }
 }

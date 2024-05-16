@@ -47,6 +47,8 @@ public class Player : MonoBehaviour
     {
         InputManager.Instance.OnInteract += InputManager_OnInteract;
         InputManager.Instance.OnInteractAlt += InputManager_OnInteractAlt;
+        InputManager.Instance.OnNext += InputManager_OnNext;
+        InputManager.Instance.OnPrevious += InputManager_OnPrevious;
     }
 
     private void OnDestroy()
@@ -61,7 +63,7 @@ public class Player : MonoBehaviour
 
     private void Update()
     {
-        if (CheckForRaycastHit(out RaycastHit hitInfo, new[] {_stationMask}))
+        if (CheckForRaycastHit(out RaycastHit hitInfo, new[] {_stationMask, _handleableItemMask}))
         {
             if (hitInfo.transform.TryGetComponent(out IFocusable focusable))
             {
@@ -131,6 +133,24 @@ public class Player : MonoBehaviour
         {
             interactableComponent.InteractAlt();
             OnPlayerInteractAlt?.Invoke(this, EventArgs.Empty);
+        }
+    }
+    
+    private void InputManager_OnNext(object sender, EventArgs e)
+    {
+        CheckForRaycastHit(out RaycastHit hitInfo, new [] {_stationMask});
+        if (hitInfo.transform.TryGetComponent(out IInteractableNext interactableComponent))
+        {
+            interactableComponent.InteractNext();
+        }
+    }
+    
+    private void InputManager_OnPrevious(object sender, EventArgs e)
+    {
+        CheckForRaycastHit(out RaycastHit hitInfo, new [] {_stationMask});
+        if (hitInfo.transform.TryGetComponent(out IInteractablePrevious interactableComponent))
+        {
+            interactableComponent.InteractPrevious();
         }
     }
 
