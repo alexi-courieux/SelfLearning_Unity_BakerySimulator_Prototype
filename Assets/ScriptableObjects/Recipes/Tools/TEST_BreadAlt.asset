@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9d35f33267e48f6bd49f7fd79ce820e, type: 3}
+  m_Name: TEST_BreadAlt
+  m_EditorClassIdentifier: 
+  tool: {fileID: 11400000, guid: 33e3bf225f780db4ea36e3a4782ea299, type: 2}
+  input: {fileID: 11400000, guid: c93cf7768c544964d86c1ff5610cbb77, type: 2}
+  output: {fileID: 11400000, guid: d9821be180943174cb724104a17fdbc4, type: 2}
