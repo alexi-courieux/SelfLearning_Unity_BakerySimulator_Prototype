@@ -2,17 +2,17 @@
 
 public class ContainerStation : MonoBehaviour, IInteractable
 {
-    [SerializeField] private HandleableItemSo handleableItemSo;
+    [SerializeField] private ProductSo productSo;
     [SerializeField] private SpriteRenderer containerSprite;
     private void Start()
     {
-        containerSprite.sprite = handleableItemSo.sprite;
+        containerSprite.sprite = productSo.sprite;
     }
 
     public void Interact()
     {
-        if (Player.Instance.HandleSystem.HaveItems()) return;
-        HandleableItem.SpawnItem(handleableItemSo, Player.Instance.HandleSystem);
-        EconomyManager.Instance.AddMoney(-handleableItemSo.buyPrice);
+        if (Player.Instance.HandleSystem.HaveAnyItems()) return;
+        Item.SpawnItem<Product>(productSo.prefab, Player.Instance.HandleSystem);
+        EconomyManager.Instance.AddMoney(-productSo.buyPrice);
     }
 }

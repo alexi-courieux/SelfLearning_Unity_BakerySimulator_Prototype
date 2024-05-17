@@ -45,7 +45,7 @@ public class Customer : MonoBehaviour, IInteractable, IInteractableAlt
         }
     }
 
-    private HandleableItem _item;
+    private Item _item;
     private CustomerState _state;
     private NavMeshAgent _agent;
     private CheckoutStation _checkoutStation;

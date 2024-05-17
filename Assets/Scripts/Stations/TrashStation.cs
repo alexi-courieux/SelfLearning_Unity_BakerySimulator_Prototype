@@ -6,7 +6,7 @@ public class TrashStation : MonoBehaviour, IInteractable, IInteractableAlt
     public EventHandler<int> OnTrashAmountChanged;
     
     [SerializeField] private int trashAmountMax;
-    [SerializeField] private HandleableItemSo trashbagItem;
+    [SerializeField] private ProductSo trashbagProduct;
     private int _trashAmount;
     private int TrashAmount
     {
@@ -26,19 +26,19 @@ public class TrashStation : MonoBehaviour, IInteractable, IInteractableAlt
     public void Interact()
     {
         if (_trashAmount >= trashAmountMax) return;
-        if (!Player.Instance.HandleSystem.HaveItems()) return;
-        HandleableItem item = Player.Instance.HandleSystem.GetItem();
-        if(item.HandleableItemSo == trashbagItem) return;
-        item.DestroySelf();
+        if (!Player.Instance.HandleSystem.HaveItems<Product>()) return;
+        Product product = Player.Instance.HandleSystem.GetItem() as Product;
+        if(product!.ProductSo == trashbagProduct) return;
+        product.DestroySelf();
         TrashAmount++;
     }
 
     public void InteractAlt()
     {
         if (_trashAmount is 0) return;
-        if (Player.Instance.HandleSystem.HaveItems()) return;
+        if (Player.Instance.HandleSystem.HaveItems<Product>()) return;
         TrashAmount = 0;
-        HandleableItem.SpawnItem(trashbagItem, Player.Instance.HandleSystem);
+        Item.SpawnItem<Product>(trashbagProduct.prefab, Player.Instance.HandleSystem);
     }
     
     public int GetTrashAmountMax()

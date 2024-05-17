@@ -16,7 +16,7 @@ public class BlenderStation : MonoBehaviour, IInteractable, IInteractableAlt, IH
     
     [SerializeField] private Transform itemSlot;
     [SerializeField] private RecipesDictionarySo recipesDictionarySo;
-    private readonly StackList<HandleableItem> _items = new();
+    private readonly StackList<Product> _items = new();
     private State _state;
     private State CurrentState
     {
@@ -41,7 +41,7 @@ public class BlenderStation : MonoBehaviour, IInteractable, IInteractableAlt, IH
                 if (_timeToProcess <= 0f)
                 {
                     _items.ToList().ForEach(i => i.DestroySelf());
-                    HandleableItem.SpawnItem(_blenderRecipeSo.output, this);
+                    Item.SpawnItem<Product>(_blenderRecipeSo.output.prefab, this);
                     CheckForRecipe();
                 }
                 break;
@@ -54,17 +54,22 @@ public class BlenderStation : MonoBehaviour, IInteractable, IInteractableAlt, IH
     {
         if (CurrentState is not State.Idle) return;
 
-        if (Player.Instance.HandleSystem.HaveItems())
+        if (Player.Instance.HandleSystem.HaveAnyItems())
         {
-            Player.Instance.HandleSystem.GetItem().SetParent(this);
+            if (!Player.Instance.HandleSystem.HaveItems<Product>())
+            {
+                Logger.LogWarning("Station can only hold products!");
+                return;
+            }
+            Player.Instance.HandleSystem.GetItem().SetParent<Product>(this);
             OnPutIn?.Invoke(this, EventArgs.Empty);
         }
         else
         {
             if (_items.Count > 0) 
             {
-                HandleableItem item = _items.Pop();
-                item.SetParent(Player.Instance.HandleSystem);
+                Item item = _items.Pop();
+                item.SetParent<Item>(Player.Instance.HandleSystem);
                 OnTakeOut?.Invoke(this, EventArgs.Empty);
             }
         }
@@ -88,8 +93,9 @@ public class BlenderStation : MonoBehaviour, IInteractable, IInteractableAlt, IH
 
     private void CheckForRecipe()
     {
-        string[] itemsSo = GetItems()
-            .Select((i) => i.HandleableItemSo.itemName)
+        string[] itemsSo = GetItems<Product>()
+            .Cast<Product>()
+            .Select((i) => i.ProductSo.itemName)
             .OrderBy(n => n)
             .ToArray();
         BlenderRecipeSo recipe = recipesDictionarySo.blenderRecipes.FirstOrDefault(r =>
@@ -100,7 +106,7 @@ public class BlenderStation : MonoBehaviour, IInteractable, IInteractableAlt, IH
                 .ToArray();
             return itemsSo.SequenceEqual(recipeItemsSo);
         });
-        if (recipe != null)
+        if (recipe is not null)
         {
             CurrentState = State.Processing;
             _timeToProcess = recipe.timeToProcess;
@@ -112,33 +118,68 @@ public class BlenderStation : MonoBehaviour, IInteractable, IInteractableAlt, IH
         }
     }
 
-    public void AddItem(HandleableItem item)
+    public void AddItem<T>(Item item) where T : Item
     {
-        _items.Push(item);
+        if (typeof(T) != typeof(Product))
+        {
+            Logger.LogWarning("This station can only hold products!");
+            return;
+        }
+        
+        _items.Push(item as Product);
     }
 
-    public HandleableItem[] GetItems()
+    public Item[] GetItems<T>() where T : Item
     {
-        return _items.ToArray();
+        if (typeof(T) != typeof(Product))
+        {
+            Logger.LogWarning("This station can only hold products!");
+            return null;
+        }
+        
+        return _items.Cast<Item>().ToArray();
     }
     
-    public void ClearItem(HandleableItem item)
+    public void ClearItem(Item item)
     {
-        _items.RemoveAll(i => i == item);
+        _items.Remove(item as Product);
     }
 
-    public bool HaveItems()
+    public bool HaveItems<T>() where T : Item
     {
-        return _items.Count > 0 ;
+        if (typeof(T) != typeof(Product))
+        {
+            Logger.LogWarning("This station can only hold products!");
+            return false;
+        }
+        
+        return _items.Count > 0;
+    }
+    
+    public bool HaveAnyItems()
+    {
+        return _items.Count > 0;
     }
 
-    public Transform GetAvailableItemSlot()
+    public Transform GetAvailableItemSlot<T>() where T : Item
     {
+        if (typeof(T) != typeof(Product))
+        {
+            Logger.LogWarning("This station can only hold products!");
+            return null;
+        }
+        
         return itemSlot;
     }
 
-    public bool HasAvailableSlot()
+    public bool HasAvailableSlot<T>() where T : Item
     {
+        if (typeof(T) != typeof(Product))
+        {
+            Logger.LogWarning("This station can only hold products!");
+            return false;
+        }
+        
         return true;
     }
 }

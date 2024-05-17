@@ -29,7 +29,7 @@ public class OrderRequestSingleUI : MonoBehaviour
             Destroy(child.gameObject);
         }
         
-        foreach ((HandleableItemSo item, int quantity) in order.Items)
+        foreach ((ProductSo item, int quantity) in order.Items)
         {
             Transform itemUI = Instantiate(itemUITemplate, itemUIContainer);
             itemUI.gameObject.SetActive(true);

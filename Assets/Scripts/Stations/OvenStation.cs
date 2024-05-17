@@ -17,8 +17,8 @@ public class OvenStation : MonoBehaviour, IInteractable, IInteractableAlt, IHand
     
     [SerializeField] private Transform itemSlot;
     [SerializeField] private RecipesDictionarySo recipesDictionarySo;
-    [SerializeField] private HandleableItemSo trashObject;
-    private HandleableItem _item;
+    [SerializeField] private ProductSo trashObject;
+    private Product _product;
     private State _state;
     private State CurrentState
     {
@@ -42,18 +42,18 @@ public class OvenStation : MonoBehaviour, IInteractable, IInteractableAlt, IHand
                 _timeToProcess -= Time.deltaTime;
                 if (_timeToProcess <= 0f)
                 {
-                    foreach (HandleableItem item in GetItems())
+                    foreach (Item item in GetItems<Product>())
                     {
                         item.DestroySelf();
                     }
                     if (_ovenRecipeSo.burnt)
                     {
                         CurrentState = State.Burning;
-                        HandleableItem.SpawnItem(trashObject, this);
+                        Item.SpawnItem<Product>(trashObject.prefab, this);
                     }
                     else
                     {
-                        HandleableItem.SpawnItem(_ovenRecipeSo.output, this);
+                        Item.SpawnItem<Product>(_ovenRecipeSo.output.prefab, this);
                         CheckForRecipe();
                     }
                 }
@@ -68,27 +68,30 @@ public class OvenStation : MonoBehaviour, IInteractable, IInteractableAlt, IHand
     public void Interact()
     {
         if (CurrentState is not State.Idle) return;
-        if (_item is not null)
+        bool isPlayerHoldingProduct = Player.Instance.HandleSystem.HaveItems<Product>();
+        if (HaveItems<Product>())
         {
-            if (!Player.Instance.HandleSystem.HaveItems())
-            {
-                _item.SetParent(Player.Instance.HandleSystem);
-                OnTakeOut?.Invoke(this, EventArgs.Empty);
-            }
+            if (isPlayerHoldingProduct) return;
+            _product.SetParent<Item>(Player.Instance.HandleSystem);
+            OnTakeOut?.Invoke(this, EventArgs.Empty);
         }
         else
         {
-            if (Player.Instance.HandleSystem.HaveItems())
+            if (!isPlayerHoldingProduct) return;
+            Item item = Player.Instance.HandleSystem.GetItem();
+            if (item is not Product product)
             {
-                Player.Instance.HandleSystem.GetItem().SetParent(this);
-                OnPutIn?.Invoke(this, EventArgs.Empty);
+                Logger.LogWarning("Station can only hold products!");
+                return;
             }
+            product.SetParent<Product>(this);
+            OnPutIn?.Invoke(this, EventArgs.Empty);
         }
     }
 
     public void InteractAlt()
     {
-        if (_item is not null)
+        if (_product is not null)
         {
             if (CurrentState is State.Idle)
             {
@@ -104,7 +107,7 @@ public class OvenStation : MonoBehaviour, IInteractable, IInteractableAlt, IHand
 
     private void CheckForRecipe()
     {
-        OvenRecipeSo recipe = recipesDictionarySo.ovenRecipes.FirstOrDefault(r => r.input == _item.HandleableItemSo);
+        OvenRecipeSo recipe = recipesDictionarySo.ovenRecipes.FirstOrDefault(r => r.input == _product.ProductSo);
         if (recipe is not null)
         {
             CurrentState = State.Processing;
@@ -116,34 +119,67 @@ public class OvenStation : MonoBehaviour, IInteractable, IInteractableAlt, IHand
             CurrentState = State.Idle;
         }
     }
-
-    public void AddItem(HandleableItem handleableItem)
+    
+    public void AddItem<T>(Item item) where T : Item
     {
-        _item = handleableItem;
+        if(typeof(T) != typeof(Product))
+        {
+            throw new Exception("This station can only hold products!");
+        }
+        
+        _product = item as Product;
     }
 
-    public HandleableItem[] GetItems()
+    public Item[] GetItems<T>() where T : Item
     {
-        return new []{_item};
+        if (typeof(T) == typeof(Product))
+        {
+            return new Item[]{_product};
+        }
+        Logger.LogWarning($"This station doesn't have items of the specified type : {typeof(T)}");
+        return new Item[]{};
     }
     
-    public void ClearItem(HandleableItem item)
+    public void ClearItem(Item item)
     {
-        _item = null;
+        if (_product == item as Product)
+        {
+            _product = null;
+        }
     }
 
-    public bool HaveItems()
+    public bool HaveItems<T>() where T : Item
     {
-        return _item != null;
+        if (typeof(T) == typeof(Product))
+        {
+            return _product is not null;
+        }
+        Logger.LogWarning($"This station doesn't have items of the specified type : {typeof(T)}");
+        return false;
+    }
+    
+    public bool HaveAnyItems()
+    {
+        return _product is not null;
     }
 
-    public Transform GetAvailableItemSlot()
+    public Transform GetAvailableItemSlot<T>() where T : Item
     {
-        return itemSlot;
+        if (typeof(T) == typeof(Product))
+        {
+            return itemSlot;
+        }
+        Logger.LogWarning($"This station doesn't have items of the specified type : {typeof(T)}");
+        return null;
     }
 
-    public bool HasAvailableSlot()
+    public bool HasAvailableSlot<T>() where T : Item
     {
-        return _item is null;
+        if(typeof(T) == typeof(Product))
+        {
+            return _product is null;
+        }
+        Logger.LogWarning($"This station doesn't have items of the specified type : {typeof(T)}");
+        return false;
     }
 }

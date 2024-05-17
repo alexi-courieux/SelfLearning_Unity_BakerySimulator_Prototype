@@ -13,7 +13,7 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems
     [SerializeField] private Transform customerCheckoutPosition;
 
     private WaitingQueue<Customer> _customerQueue;
-    private readonly StackList<HandleableItem> _items = new();
+    private readonly StackList<Product> _products = new();
     
 
     private void Start()
@@ -24,48 +24,87 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems
 
     public void Interact()
     {
-        if (Player.Instance.HandleSystem.HaveItems())
+        if (Player.Instance.HandleSystem.HaveAnyItems())
         {
-            HandleableItem item = Player.Instance.HandleSystem.GetItem();
-            item.SetParent(this);
+            if (!Player.Instance.HandleSystem.HaveItems<Product>())
+            {
+                Logger.LogWarning("Station can only hold products!");
+                return;
+            }
+            Player.Instance.HandleSystem.GetItem().SetParent<Product>(this);
         }
         else
         {
-            if (_items.Count > 0)
+            if (_products.Count > 0)
             {
-                HandleableItem item = _items.Pop();
-                item.SetParent(Player.Instance.HandleSystem);
+                Item item = _products.Pop();
+                item.SetParent<Item>(Player.Instance.HandleSystem);
             }
         }
     }
 
-    public void AddItem(HandleableItem item)
+    public void AddItem<T>(Item item) where T : Item
     {
-        _items.Push(item);
+        if (typeof(T) != typeof(Product))
+        {
+            Logger.LogWarning("This station can only hold products!");
+            return;
+        }
+        
+        _products.Push(item as Product);
     }
 
-    public HandleableItem[] GetItems()
+    public Item[] GetItems<T>() where T : Item
     {
-        return _items.ToArray();
+        if (typeof(T) != typeof(Product))
+        {
+            Logger.LogWarning("This station can only hold products!");
+            return null;
+        }
+        
+        return _products.Cast<Item>().ToArray();
     }
 
-    public void ClearItem(HandleableItem item)
+    public void ClearItem(Item item)
     {
-        _items.Remove(item);
+        _products.Remove(item as Product);
     }
 
-    public bool HaveItems()
+    public bool HaveItems<T>() where T : Item
     {
-        return _items.Count > 0;
+        if (typeof(T) != typeof(Product))
+        {
+            Logger.LogWarning("This station can only hold products!");
+            return false;
+        }
+        
+        return _products.Count > 0;
     }
-
-    public Transform GetAvailableItemSlot()
+    
+    public bool HaveAnyItems()
     {
+        return _products.Count > 0;
+    }
+    
+    public Transform GetAvailableItemSlot<T>() where T : Item
+    {
+        if (typeof(T) != typeof(Product))
+        {
+            Logger.LogWarning("This station can only hold products!");
+            return null;
+        }
+        
         return itemSlot;
     }
 
-    public bool HasAvailableSlot()
+    public bool HasAvailableSlot<T>() where T : Item
     {
+        if (typeof(T) != typeof(Product))
+        {
+            Logger.LogWarning("This station can only hold products!");
+            return false;
+        }
+        
         return true;
     }
 
@@ -105,11 +144,6 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems
     {
         return _customerQueue.GetPositionIndex(customer);
     }
-    
-    private bool HaveCustomers()
-    {
-        return _customerQueue.Count > 0;
-    }
 
     public int CustomerCount()
     {
@@ -119,9 +153,9 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems
     private void Pay()
     {
         float totalPrice = 0f;
-        _items.ToList().ForEach(i =>
+        _products.ToList().ForEach(i =>
         {
-            totalPrice += i.HandleableItemSo.sellPrice;
+            totalPrice += i.ProductSo.sellPrice;
             i.DestroySelf();
         });
         EconomyManager.Instance.AddMoney(totalPrice);
@@ -129,7 +163,7 @@ public class CheckoutStation : MonoBehaviour, IInteractable, IHandleItems
 
     public void CheckOrderCompletion(Customer customer)
     {
-        var checkoutItems = _items.GroupBy(i => i.HandleableItemSo)
+        var checkoutItems = _products.GroupBy(i => i.ProductSo)
             .ToDictionary(i => i.Key, i => i.Count());
         var orderItems = customer.Order.Items;
         if (checkoutItems.Count == orderItems.Count && !checkoutItems.Except(orderItems).Any())

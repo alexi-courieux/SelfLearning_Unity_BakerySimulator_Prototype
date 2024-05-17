@@ -8,13 +8,13 @@ public class DisplayStation : MonoBehaviour, IInteractable, IHandleItems, IDispl
     public EventHandler OnTakeOut;
     
     [SerializeField] private Transform[] itemSlots;
-    private StackList<HandleableItem> _items;
+    private StackList<Product> _items;
     private int _capacity;
 
     private void Awake()
     {
         _capacity = itemSlots.Length;
-        _items = new StackList<HandleableItem>();
+        _items = new StackList<Product>();
     }
 
     private void Start()
@@ -24,58 +24,79 @@ public class DisplayStation : MonoBehaviour, IInteractable, IHandleItems, IDispl
 
     public void Interact()
     {
-        if (Player.Instance.HandleSystem.HaveItems() && Player.Instance.HandleSystem.GetItem().HandleableItemSo.CanBeSold())
+        if (Player.Instance.HandleSystem.HaveAnyItems())
         {
-            if (HasAvailableSlot())
+            if (!HasAvailableSlot<Product>()) return;
+            
+            if (Player.Instance.HandleSystem.GetItem() is not Product product)
             {
-                Player.Instance.HandleSystem.GetItem().SetParent(this);
-                OnPutIn?.Invoke(this, EventArgs.Empty);
+                Logger.LogWarning("Station can only hold products!");
+                return;
             }
+            
+            if (!product.ProductSo.CanBeSold())
+            {
+                Logger.LogWarning("Product can't be sold!");
+                return;
+            }
+            
+            product.SetParent<Product>(this);
+            OnPutIn?.Invoke(this, EventArgs.Empty);
         }
         else
         {
-            if (_items.Count > 0) 
-            {
-                HandleableItem item = _items.Pop();
-                item.SetParent(Player.Instance.HandleSystem);
-                OnTakeOut?.Invoke(this, EventArgs.Empty);
-            }
+            if (_items.Count <= 0) return;
+            
+            Item item = _items.Pop();
+            item.SetParent<Item>(Player.Instance.HandleSystem);
+            OnTakeOut?.Invoke(this, EventArgs.Empty);
         }
     }
 
   
-   public void AddItem(HandleableItem item)
+   public void AddItem<T>(Item item) where T : Item
     {
-        _items.Push(item);
+        if (typeof(T) != typeof(Product))
+        {
+            Logger.LogWarning("This station can only hold products!");
+            return;
+        }
+        
+        _items.Push(item as Product);
     }
 
-    public HandleableItem[] GetItems()
+    public Item[] GetItems<T>() where T : Item
     {
-        return _items.ToArray();
+        return _items.Cast<Item>().ToArray();
     }
     
-    public void ClearItem(HandleableItem item)
+    public void ClearItem(Item item)
     {
-        _items.Remove(item);
+        _items.Remove(item as Product);
     }
 
-    public bool HaveItems()
+    public bool HaveItems<T>() where T : Item
     {
         return _items.Count > 0;
     }
     
-    public Transform GetAvailableItemSlot()
+    public bool HaveAnyItems()
+    {
+        return _items.Count > 0;
+    }
+    
+    public Transform GetAvailableItemSlot<T>() where T : Item
     {
         return itemSlots[_items.Count];
     }
 
-    public bool HasAvailableSlot()
+    public bool HasAvailableSlot<T>() where T : Item
     {
         return _items.Count < _capacity;
     }
     
-    public HandleableItemSo[] GetItemsSo()
+    public ProductSo[] GetItemsSo()
     {
-        return _items.Select(item => item.HandleableItemSo).ToArray();
+        return _items.Select(item => item.ProductSo).ToArray();
     }
 }

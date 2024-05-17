@@ -45,7 +45,7 @@ public class OrderUI : MonoBehaviour
             Destroy(child.gameObject);
         }
         
-        foreach ((HandleableItemSo item, int quantity) in customer.Order.Items)
+        foreach ((ProductSo item, int quantity) in customer.Order.Items)
         {
             Transform itemUI = Instantiate(itemUITemplate, itemUIContainer);
             itemUI.gameObject.SetActive(true);

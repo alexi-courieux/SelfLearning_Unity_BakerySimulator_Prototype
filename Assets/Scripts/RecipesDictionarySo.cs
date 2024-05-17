@@ -7,6 +7,7 @@ public class RecipesDictionarySo : ScriptableObject
 {
     public OvenRecipeSo[] ovenRecipes;
     public BlenderRecipeSo[] blenderRecipes;
+    public ToolRecipeSo[] toolRecipes;
 }
 
 #if UNITY_EDITOR
@@ -28,6 +29,12 @@ public class RecipeDictionarySoEditor : Editor
             recipes.blenderRecipes = recipeGuids
                 .Select(guid => AssetDatabase.LoadAssetAtPath<BlenderRecipeSo>(AssetDatabase.GUIDToAssetPath(guid)))
                 .ToArray();
+            
+            recipeGuids = AssetDatabase.FindAssets($"t:{nameof(ToolRecipeSo)}");
+            recipes.toolRecipes = recipeGuids
+                .Select(guid => AssetDatabase.LoadAssetAtPath<ToolRecipeSo>(AssetDatabase.GUIDToAssetPath(guid)))
+                .ToArray();
+            
             AssetDatabase.SaveAssets();
         }
     }

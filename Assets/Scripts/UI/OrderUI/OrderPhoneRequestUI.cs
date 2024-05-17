@@ -49,7 +49,7 @@ public class OrderPhoneRequestUI : MonoBehaviour
             Destroy(child.gameObject);
         }
         
-        foreach ((HandleableItemSo item, int quantity) in _order.Items)
+        foreach ((ProductSo item, int quantity) in _order.Items)
         {
             Transform itemUI = Instantiate(itemUITemplate, itemUIContainer);
             itemUI.gameObject.SetActive(true);

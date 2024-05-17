@@ -7,7 +7,7 @@ public class BigTrashStation : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        if (!Player.Instance.HandleSystem.HaveItems()) return;
+        if (!Player.Instance.HandleSystem.HaveItems<Product>()) return;
         Player.Instance.HandleSystem.GetItem().DestroySelf();
         OnUse?.Invoke(this, EventArgs.Empty);
     }

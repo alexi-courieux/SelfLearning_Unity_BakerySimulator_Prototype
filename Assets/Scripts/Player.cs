@@ -6,6 +6,10 @@ public class Player : MonoBehaviour
     private const string LayerStation = "Station";
     private const string LayerHandleableitem = "HandleableItem";
     private const string LayerCustomer = "Customer";
+
+    private int _stationMask;
+    private int _handleableItemMask;
+    private int _customerMask;
     public static Player Instance { get; private set; }
 
     public EventHandler<float> OnPlayerMove;
@@ -24,18 +28,27 @@ public class Player : MonoBehaviour
     [SerializeField] private Transform playerPositionForRaycast;
 
     private CharacterController _characterController;
+    private Camera _camera;
+    private IFocusable _focusedObject;
 
     private void Awake()
     {
+        _stationMask = LayerMask.GetMask(LayerStation);
+        _handleableItemMask = LayerMask.GetMask(LayerHandleableitem);
+        _customerMask = LayerMask.GetMask(LayerCustomer);
+        
         Instance = this;
         _characterController = GetComponent<CharacterController>();
         HandleSystem = GetComponent<PlayerItemHandlingSystem>();
+        _camera = Camera.main;
     }
 
     private void Start()
     {
         InputManager.Instance.OnInteract += InputManager_OnInteract;
         InputManager.Instance.OnInteractAlt += InputManager_OnInteractAlt;
+        InputManager.Instance.OnNext += InputManager_OnNext;
+        InputManager.Instance.OnPrevious += InputManager_OnPrevious;
     }
 
     private void OnDestroy()
@@ -48,12 +61,30 @@ public class Player : MonoBehaviour
         Move();
     }
 
+    private void Update()
+    {
+        if (CheckForRaycastHit(out RaycastHit hitInfo, new[] {_stationMask, _handleableItemMask}))
+        {
+            if (hitInfo.transform.TryGetComponent(out IFocusable focusable))
+            {
+                if (focusable == _focusedObject) return;
+                
+                _focusedObject?.StopFocus();
+                _focusedObject = focusable;
+                focusable.Focus();
+                return;
+            }
+        }
+        _focusedObject?.StopFocus();
+        _focusedObject = null;
+    }
+
     private void Move()
     {
         Vector3 finalMovement = Vector3.zero;
         Vector2 movementInput = InputManager.Instance.GetMovementVectorNormalized();
         OnPlayerMove?.Invoke(this, movementInput.magnitude);
-        Transform cameraTransform = Camera.main!.transform;
+        Transform cameraTransform = _camera.transform;
         Vector3 moveDirection =
             Vector3.ProjectOnPlane(cameraTransform.forward, Vector3.up).normalized * movementInput.y +
             Vector3.ProjectOnPlane(cameraTransform.right, Vector3.up).normalized * movementInput.x;
@@ -87,8 +118,7 @@ public class Player : MonoBehaviour
 
     private void InputManager_OnInteract(object sender, EventArgs e)
     {
-        if (!CheckForRaycastHit(out RaycastHit hitInfo)) return;
-        Logger.LogInfo("Interacting with " + hitInfo.transform.name);
+        if (!CheckForRaycastHit(out RaycastHit hitInfo, new [] {_stationMask, _handleableItemMask, _customerMask})) return;
         if (hitInfo.transform.TryGetComponent(out IInteractable interactableComponent))
         {
             interactableComponent.Interact();
@@ -98,26 +128,41 @@ public class Player : MonoBehaviour
 
     private void InputManager_OnInteractAlt(object sender, EventArgs e)
     {
-        if (!CheckForRaycastHit(out RaycastHit hitInfo)) return;
+        if (!CheckForRaycastHit(out RaycastHit hitInfo, new [] {_stationMask, _handleableItemMask, _customerMask})) return;
         if (hitInfo.transform.TryGetComponent(out IInteractableAlt interactableComponent))
         {
             interactableComponent.InteractAlt();
             OnPlayerInteractAlt?.Invoke(this, EventArgs.Empty);
         }
     }
-
-    private bool CheckForRaycastHit(out RaycastHit hitInfo)
+    
+    private void InputManager_OnNext(object sender, EventArgs e)
     {
-        Transform cameraTransform = Camera.main!.transform;
-        int stationMask = LayerMask.GetMask(LayerStation);
-        int handleableItemMask = LayerMask.GetMask(LayerHandleableitem);
-        int customerMask = LayerMask.GetMask(LayerCustomer);
-        Ray ray = Camera.main!.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
+        CheckForRaycastHit(out RaycastHit hitInfo, new [] {_stationMask});
+        if (hitInfo.transform.TryGetComponent(out IInteractableNext interactableComponent))
+        {
+            interactableComponent.InteractNext();
+        }
+    }
+    
+    private void InputManager_OnPrevious(object sender, EventArgs e)
+    {
+        CheckForRaycastHit(out RaycastHit hitInfo, new [] {_stationMask});
+        if (hitInfo.transform.TryGetComponent(out IInteractablePrevious interactableComponent))
+        {
+            interactableComponent.InteractPrevious();
+        }
+    }
+
+    private bool CheckForRaycastHit(out RaycastHit hitInfo, int[] layers)
+    {
+        Transform cameraTransform = _camera.transform;
+        Ray ray = _camera!.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
         float playerDistanceFromCamera = Vector3.Distance(playerPositionForRaycast.position, cameraTransform.position);
         ray.origin += cameraTransform.forward * playerDistanceFromCamera;
         bool hit = Physics.Raycast(ray, out hitInfo, MaxInteractionDistance);
         if (!hit) return false;
         int targetLayer = 1 << hitInfo.transform.gameObject.layer;
-        return targetLayer == stationMask || targetLayer == handleableItemMask || targetLayer == customerMask;
+        return Array.Exists(layers, layer => layer == targetLayer);
     }
 }

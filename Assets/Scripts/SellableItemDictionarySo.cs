@@ -5,7 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "_SellableItems", menuName = "ScriptableObject/_SellableItemDictionary", order = 0)]
 public class SellableItemDictionarySo : ScriptableObject
 {
-    public HandleableItemSo[] sellableItems;
+    public ProductSo[] sellableItems;
 }
 
 #if UNITY_EDITOR
@@ -18,9 +18,9 @@ public class SellableItemDictionarySoEditor : Editor
         SellableItemDictionarySo itemDictionary = (SellableItemDictionarySo) target;
         if (GUILayout.Button("Autofill"))
         {
-            string[] sellableGuids = AssetDatabase.FindAssets($"t:{nameof(HandleableItemSo)}");
+            string[] sellableGuids = AssetDatabase.FindAssets($"t:{nameof(ProductSo)}");
             itemDictionary.sellableItems = sellableGuids
-                .Select(guid => AssetDatabase.LoadAssetAtPath<HandleableItemSo>(AssetDatabase.GUIDToAssetPath(guid)))
+                .Select(guid => AssetDatabase.LoadAssetAtPath<ProductSo>(AssetDatabase.GUIDToAssetPath(guid)))
                 .Where(i => i.CanBeSold())
                 .ToArray();
             AssetDatabase.SaveAssets();

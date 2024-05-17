@@ -5,7 +5,7 @@ public class PlayerItemHandlingSystem: MonoBehaviour, IHandleItems
 {
     private const int IgnoreRaycastLayer = 1 << 1;
     [SerializeField] private Transform itemSlot;
-    private HandleableItem _item;
+    private Item _item;
     private int _defaultHandleableItemsLayer;
 
     private void Start()
@@ -20,45 +20,50 @@ public class PlayerItemHandlingSystem: MonoBehaviour, IHandleItems
 
     private void Drop()
     {
-        if (!HaveItems()) return;
-        _item.SetParent(null);
+        if (!HaveItems<Item>()) return;
+        _item.Drop();
     }
 
-    public void AddItem(HandleableItem handleableItem)
+    public void AddItem<T>(Item item) where T : Item
     {
-        _item = handleableItem;
+        _item = item;
         _defaultHandleableItemsLayer = _item.gameObject.layer;
-        handleableItem.gameObject.layer = IgnoreRaycastLayer;
+        item.gameObject.layer = IgnoreRaycastLayer;
     }
 
-    public HandleableItem[] GetItems()
+    public Item[] GetItems<T>() where T : Item
     {
         return new[] {_item};
     }
 
-    public HandleableItem GetItem()
+    public Item GetItem()
     {
         return _item;
     }
 
-    public void ClearItem(HandleableItem item)
+    public void ClearItem(Item item)
     {
         _item.gameObject.layer = _defaultHandleableItemsLayer;
         _item = null;
         _defaultHandleableItemsLayer = 0;
     }
 
-    public bool HaveItems()
+    public bool HaveItems<T>() where T : Item
+    {
+        return _item is T;
+    }
+    
+    public bool HaveAnyItems()
     {
         return _item is not null;
     }
     
-    public Transform GetAvailableItemSlot()
+    public Transform GetAvailableItemSlot<T>() where T : Item
     {
         return itemSlot;
     }
 
-    public bool HasAvailableSlot()
+    public bool HasAvailableSlot<T>() where T : Item
     {
         return _item is null;
     }
