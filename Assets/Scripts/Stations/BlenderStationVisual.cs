@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 
-public class BlenderStationVisual : MonoBehaviour
+namespace AshLight.BakerySim.Stations
+{
+    public class BlenderStationVisual : MonoBehaviour
     {
         private static readonly int Processing = Animator.StringToHash("Processing");
 
@@ -22,3 +24,4 @@ public class BlenderStationVisual : MonoBehaviour
             _animator.SetBool(Processing, state == BlenderStation.State.Processing);
         }
     }
+}

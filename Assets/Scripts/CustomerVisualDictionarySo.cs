@@ -1,13 +1,15 @@
 ﻿using UnityEngine;
 
-
-[CreateAssetMenu(fileName = "CustomerVisuals", menuName = "ScriptableObject/_CustomerVisualDictionary", order = 0)]
-public class CustomerVisualDictionarySo : ScriptableObject
+namespace AshLight.BakerySim
 {
-    public Transform[] customerVisualPrefabs;
-    
-    public Transform GetRandomCustomerVisual()
+    [CreateAssetMenu(fileName = "CustomerVisuals", menuName = "ScriptableObject/_CustomerVisualDictionary", order = 0)]
+    public class CustomerVisualDictionarySo : ScriptableObject
     {
-        return customerVisualPrefabs[Random.Range(0, customerVisualPrefabs.Length)];
+        public Transform[] customerVisualPrefabs;
+
+        public Transform GetRandomCustomerVisual()
+        {
+            return customerVisualPrefabs[Random.Range(0, customerVisualPrefabs.Length)];
+        }
     }
 }

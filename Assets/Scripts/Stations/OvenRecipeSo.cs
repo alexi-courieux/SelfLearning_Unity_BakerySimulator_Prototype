@@ -1,10 +1,13 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "OvenRecipe_new", menuName = "ScriptableObject/Recipe/Oven")]
-public class OvenRecipeSo : ScriptableObject
+namespace AshLight.BakerySim.Stations
 {
-    public ProductSo input;
-    public ProductSo output;
-    public float timeToProcess;
-    public bool burnt;
+    [CreateAssetMenu(fileName = "OvenRecipe_new", menuName = "ScriptableObject/Recipe/Oven")]
+    public class OvenRecipeSo : ScriptableObject
+    {
+        public ProductSo input;
+        public ProductSo output;
+        public float timeToProcess;
+        public bool burnt;
+    }
 }

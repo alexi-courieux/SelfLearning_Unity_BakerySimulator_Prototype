@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 
-public class Product : Item
+namespace AshLight.BakerySim
 {
-    public ProductSo ProductSo => productSo;
+    public class Product : Item
+    {
+        public ProductSo ProductSo => productSo;
 
-    [SerializeField] private ProductSo productSo;
+        [SerializeField] private ProductSo productSo;
+    }
 }

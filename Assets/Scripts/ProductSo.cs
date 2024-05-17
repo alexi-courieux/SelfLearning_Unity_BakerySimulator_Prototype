@@ -1,16 +1,19 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "Product", menuName = "ScriptableObject/Product")]
-public class ProductSo : ScriptableObject
+namespace AshLight.BakerySim
 {
-    public Transform prefab;
-    public Sprite sprite;
-    public string itemName;
-    public float buyPrice;
-    public float sellPrice;
-    
-    public bool CanBeSold()
+    [CreateAssetMenu(fileName = "Product", menuName = "ScriptableObject/Product")]
+    public class ProductSo : ScriptableObject
     {
-        return sellPrice > 0f;
+        public Transform prefab;
+        public Sprite sprite;
+        public string itemName;
+        public float buyPrice;
+        public float sellPrice;
+
+        public bool CanBeSold()
+        {
+            return sellPrice > 0f;
+        }
     }
 }

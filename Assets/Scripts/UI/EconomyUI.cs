@@ -3,27 +3,30 @@ using System.Globalization;
 using TMPro;
 using UnityEngine;
 
-public class EconomyUI : MonoBehaviour
+namespace AshLight.BakerySim.UI
 {
-    [SerializeField] private TextMeshProUGUI moneyText;
-    private void Start()
+    public class EconomyUI : MonoBehaviour
     {
-        EconomyManager.Instance.OnMoneyChanged += EconomyManager_OnMoneyChanged;
-        UpdateVisuals();
-    }
+        [SerializeField] private TextMeshProUGUI moneyText;
+        private void Start()
+        {
+            EconomyManager.Instance.OnMoneyChanged += EconomyManager_OnMoneyChanged;
+            UpdateVisuals();
+        }
 
-    private void OnDestroy()
-    {
-        EconomyManager.Instance.OnMoneyChanged -= EconomyManager_OnMoneyChanged;
-    }
+        private void OnDestroy()
+        {
+            EconomyManager.Instance.OnMoneyChanged -= EconomyManager_OnMoneyChanged;
+        }
     
-    private void EconomyManager_OnMoneyChanged(object sender, EventArgs e)
-    {
-        UpdateVisuals();
-    }
+        private void EconomyManager_OnMoneyChanged(object sender, EventArgs e)
+        {
+            UpdateVisuals();
+        }
     
-    private void UpdateVisuals()
-    {
-        moneyText.text = EconomyManager.Instance.GetMoney().ToString(CultureInfo.CurrentUICulture);
+        private void UpdateVisuals()
+        {
+            moneyText.text = EconomyManager.Instance.GetMoney().ToString(CultureInfo.CurrentUICulture);
+        }
     }
 }

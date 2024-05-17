@@ -1,7 +1,10 @@
-﻿/// <summary>
-/// Interface for objects that can be interacted with (alternative)
-/// </summary>
-public interface IInteractableAlt
+﻿namespace AshLight.BakerySim
 {
-       public void InteractAlt();
+       /// <summary>
+       /// Interface for objects that can be interacted with (alternative)
+       /// </summary>
+       public interface IInteractableAlt
+       {
+              public void InteractAlt();
+       }
 }

@@ -1,9 +1,12 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "recipe", menuName = "ScriptableObject/Recipe/Tool")]
-public class ToolRecipeSo : ScriptableObject
+namespace AshLight.BakerySim
 {
-    public ToolSo tool;
-    public ProductSo input;
-    public ProductSo output;
+    [CreateAssetMenu(fileName = "recipe", menuName = "ScriptableObject/Recipe/Tool")]
+    public class ToolRecipeSo : ScriptableObject
+    {
+        public ToolSo tool;
+        public ProductSo input;
+        public ProductSo output;
+    }
 }

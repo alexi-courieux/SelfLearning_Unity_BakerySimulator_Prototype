@@ -1,14 +1,17 @@
 using System;
 using UnityEngine;
 
-public class BigTrashStation : MonoBehaviour, IInteractable
+namespace AshLight.BakerySim.Stations
 {
-    public EventHandler OnUse;
-
-    public void Interact()
+    public class BigTrashStation : MonoBehaviour, IInteractable
     {
-        if (!Player.Instance.HandleSystem.HaveItems<Product>()) return;
-        Player.Instance.HandleSystem.GetItem().DestroySelf();
-        OnUse?.Invoke(this, EventArgs.Empty);
+        public EventHandler OnUse;
+
+        public void Interact()
+        {
+            if (!Player.Instance.HandleSystem.HaveItems<Product>()) return;
+            Player.Instance.HandleSystem.GetItem().DestroySelf();
+            OnUse?.Invoke(this, EventArgs.Empty);
+        }
     }
 }

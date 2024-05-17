@@ -2,14 +2,17 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class OrderItemUI : MonoBehaviour
+namespace AshLight.BakerySim.UI.OrderUI
 {
-    [SerializeField] private Image icon;
-    [SerializeField] private TextMeshProUGUI quantityText;
-
-    public void SetItem(ProductSo product, int quantity)
+    public class OrderItemUI : MonoBehaviour
     {
-        icon.sprite = product.sprite;
-        quantityText.text = quantity.ToString();
+        [SerializeField] private Image icon;
+        [SerializeField] private TextMeshProUGUI quantityText;
+
+        public void SetItem(ProductSo product, int quantity)
+        {
+            icon.sprite = product.sprite;
+            quantityText.text = quantity.ToString();
+        }
     }
 }

@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "tool", menuName = "ScriptableObject/Tool")]
-public class ToolSo : ScriptableObject
+namespace AshLight.BakerySim
 {
-    public Transform prefab;
-    public string itemName;
+    [CreateAssetMenu(fileName = "tool", menuName = "ScriptableObject/Tool")]
+    public class ToolSo : ScriptableObject
+    {
+        public Transform prefab;
+        public string itemName;
+    }
 }

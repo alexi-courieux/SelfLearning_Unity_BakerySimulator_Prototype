@@ -17,3 +17,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: f24d09d21dbd8964297963c84156475a, type: 2}
   blenderRecipes:
   - {fileID: 11400000, guid: 8aba02857467bb149949255253357296, type: 2}
+  toolRecipes:
+  - {fileID: 11400000, guid: 487db22515b61ef4795ddae2d1bbfcf7, type: 2}
+  - {fileID: 11400000, guid: a6aa8187150027e4397ca14aad86d479, type: 2}
+  - {fileID: 11400000, guid: f37746da616339d4899730c368393e7d, type: 2}
+  - {fileID: 11400000, guid: 9955f649e005f474db5562223dc49bf7, type: 2}

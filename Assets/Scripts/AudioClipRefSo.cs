@@ -1,12 +1,15 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "AudioClip_new", menuName = "ScriptableObject/AudioClipRef")]
-public class AudioClipRefSo : ScriptableObject
+namespace AshLight.BakerySim
 {
-    public AudioClip[] audioClips;
-
-    public AudioClip GetRandomClip()
+    [CreateAssetMenu(fileName = "AudioClip_new", menuName = "ScriptableObject/AudioClipRef")]
+    public class AudioClipRefSo : ScriptableObject
     {
-        return audioClips[Random.Range(0, audioClips.Length)];
+        public AudioClip[] audioClips;
+
+        public AudioClip GetRandomClip()
+        {
+            return audioClips[Random.Range(0, audioClips.Length)];
+        }
     }
 }

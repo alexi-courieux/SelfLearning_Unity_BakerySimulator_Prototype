@@ -1,18 +1,21 @@
 ﻿using UnityEngine;
 
-public class ContainerStation : MonoBehaviour, IInteractable
+namespace AshLight.BakerySim.Stations
 {
-    [SerializeField] private ProductSo productSo;
-    [SerializeField] private SpriteRenderer containerSprite;
-    private void Start()
+    public class ContainerStation : MonoBehaviour, IInteractable
     {
-        containerSprite.sprite = productSo.sprite;
-    }
+        [SerializeField] private ProductSo productSo;
+        [SerializeField] private SpriteRenderer containerSprite;
+        private void Start()
+        {
+            containerSprite.sprite = productSo.sprite;
+        }
 
-    public void Interact()
-    {
-        if (Player.Instance.HandleSystem.HaveAnyItems()) return;
-        Item.SpawnItem<Product>(productSo.prefab, Player.Instance.HandleSystem);
-        EconomyManager.Instance.AddMoney(-productSo.buyPrice);
+        public void Interact()
+        {
+            if (Player.Instance.HandleSystem.HaveAnyItems()) return;
+            Item.SpawnItem<Product>(productSo.prefab, Player.Instance.HandleSystem);
+            EconomyManager.Instance.AddMoney(-productSo.buyPrice);
+        }
     }
 }

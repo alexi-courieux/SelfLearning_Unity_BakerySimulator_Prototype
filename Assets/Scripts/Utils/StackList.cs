@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 
-public class StackList<T> : List<T>
+namespace Utils
+{
+    public class StackList<T> : List<T>
     {
         public void Push(T item)
         {
@@ -31,3 +33,4 @@ public class StackList<T> : List<T>
             return Count != 0 ? this[0] : default;
         }
     }
+}

@@ -1,41 +1,45 @@
 ﻿using System.Collections.Generic;
 
-public enum OrderType
+namespace AshLight.BakerySim
 {
-    Direct,
-    Request
-}
-
-public class Order
-{
-    public Customer Customer { get; set; }
-    public OrderType Type { get; }
-    public Dictionary<ProductSo, int> Items { get; }
-    public float TimeLimit { get; set; }
-    
-    public Order(OrderType type, Dictionary<ProductSo, int> items, Customer customer = null, float timeLimit = default)
+    public enum OrderType
     {
-        Customer = customer;
-        Type = type;
-        Items = items;
-        TimeLimit = timeLimit;
+        Direct,
+        Request
     }
 
-
-    public override string ToString()
+    public class Order
     {
-        var items = new List<string>();
-        foreach ((ProductSo key, int value) in Items)
+        public Customer Customer { get; set; }
+        public OrderType Type { get; }
+        public Dictionary<ProductSo, int> Items { get; }
+        public float TimeLimit { get; set; }
+
+        public Order(OrderType type, Dictionary<ProductSo, int> items, Customer customer = null,
+            float timeLimit = default)
         {
-            items.Add($"{key.name} x{value}");
+            Customer = customer;
+            Type = type;
+            Items = items;
+            TimeLimit = timeLimit;
         }
 
-        return
-            "Order"
-            + $"\tCustomer: {Customer.name}"
-            + $"\tType: {Type}" 
-            + (Type is OrderType.Request ? $"\tTime Limit: {TimeLimit}" : "")
-            + "\tItems:"
-            + string.Join("\t\t", items);
+
+        public override string ToString()
+        {
+            var items = new List<string>();
+            foreach ((ProductSo key, int value) in Items)
+            {
+                items.Add($"{key.name} x{value}");
+            }
+
+            return
+                "Order"
+                + $"\tCustomer: {Customer.name}"
+                + $"\tType: {Type}"
+                + (Type is OrderType.Request ? $"\tTime Limit: {TimeLimit}" : "")
+                + "\tItems:"
+                + string.Join("\t\t", items);
+        }
     }
 }

@@ -1,37 +1,40 @@
 using System;
 using UnityEngine;
 
-public class LookAtCamera : MonoBehaviour
+namespace Utils
 {
-    private enum Mode
+    public class LookAtCamera : MonoBehaviour
     {
-        LookAt,
-        LookAtInverted,
-        CameraFacing,
-        CameraFacingInverted,
-    }
-    
-    [SerializeField] private Mode mode = Mode.LookAt;
-
-    private void LateUpdate()
-    {
-        switch (mode)
+        private enum Mode
         {
-            case Mode.LookAt:
-                transform.LookAt(Camera.main!.transform);
-                break;
-            case Mode.LookAtInverted:
-                Vector3 dirFromCamera = transform.position - Camera.main!.transform.position;
-                transform.LookAt(transform.position + dirFromCamera);
-                break;
-            case Mode.CameraFacing:
-                transform.forward = Camera.main!.transform.forward;
-                break;
-            case Mode.CameraFacingInverted:
-                transform.forward = -Camera.main!.transform.forward;
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
+            LookAt,
+            LookAtInverted,
+            CameraFacing,
+            CameraFacingInverted,
+        }
+    
+        [SerializeField] private Mode mode = Mode.LookAt;
+
+        private void LateUpdate()
+        {
+            switch (mode)
+            {
+                case Mode.LookAt:
+                    transform.LookAt(Camera.main!.transform);
+                    break;
+                case Mode.LookAtInverted:
+                    Vector3 dirFromCamera = transform.position - Camera.main!.transform.position;
+                    transform.LookAt(transform.position + dirFromCamera);
+                    break;
+                case Mode.CameraFacing:
+                    transform.forward = Camera.main!.transform.forward;
+                    break;
+                case Mode.CameraFacingInverted:
+                    transform.forward = -Camera.main!.transform.forward;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
     }
 }

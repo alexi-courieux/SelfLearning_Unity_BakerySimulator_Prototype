@@ -1,7 +1,10 @@
-﻿/// <summary>
-/// Interface for objects that can be interacted with (next)
-/// </summary>
-public interface IInteractableNext
+﻿namespace AshLight.BakerySim
 {
-       public void InteractNext();
+       /// <summary>
+       /// Interface for objects that can be interacted with (next)
+       /// </summary>
+       public interface IInteractableNext
+       {
+              public void InteractNext();
+       }
 }

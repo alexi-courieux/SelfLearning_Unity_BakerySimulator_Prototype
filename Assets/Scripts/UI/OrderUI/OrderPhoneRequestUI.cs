@@ -1,68 +1,72 @@
 using System;
+using AshLight.BakerySim.Stations;
 using TMPro;
 using UnityEngine;
 
-public class OrderPhoneRequestUI : MonoBehaviour
+namespace AshLight.BakerySim.UI.OrderUI
 {
-    [SerializeField] private Transform itemUITemplate;
-    [SerializeField] private PhoneStation phoneStation;
-    [SerializeField] private Transform itemUIContainer;
-    [SerializeField] private TextMeshProUGUI timerText;
-
-    private Order _order;
-    private void Start()
+    public class OrderPhoneRequestUI : MonoBehaviour
     {
-        phoneStation.OnStateChange += PhoneStation_OnStateChange;
-        itemUITemplate.gameObject.SetActive(false);
-        gameObject.SetActive(false);
-    }
+        [SerializeField] private Transform itemUITemplate;
+        [SerializeField] private PhoneStation phoneStation;
+        [SerializeField] private Transform itemUIContainer;
+        [SerializeField] private TextMeshProUGUI timerText;
 
-    private void PhoneStation_OnStateChange(object sender, PhoneStation.State state)
-    {
-        if (state is PhoneStation.State.OnCall)
+        private Order _order;
+        private void Start()
         {
-            _order = phoneStation.Order;
-            UpdateVisual();
-            Show();
+            phoneStation.OnStateChange += PhoneStation_OnStateChange;
+            itemUITemplate.gameObject.SetActive(false);
+            gameObject.SetActive(false);
         }
-        else
-        {
-            Hide();
-        }
-    }
 
-    private void Show()
-    {
-        gameObject.SetActive(true);
-    }
+        private void PhoneStation_OnStateChange(object sender, PhoneStation.State state)
+        {
+            if (state is PhoneStation.State.OnCall)
+            {
+                _order = phoneStation.Order;
+                UpdateVisual();
+                Show();
+            }
+            else
+            {
+                Hide();
+            }
+        }
+
+        private void Show()
+        {
+            gameObject.SetActive(true);
+        }
     
-    private void Hide()
-    {
-        gameObject.SetActive(false);
-    }
-    
-    private void UpdateVisual()
-    {
-        foreach (Transform child in itemUIContainer)
+        private void Hide()
         {
-            if (child == itemUITemplate) continue;
-            Destroy(child.gameObject);
+            gameObject.SetActive(false);
         }
+    
+        private void UpdateVisual()
+        {
+            foreach (Transform child in itemUIContainer)
+            {
+                if (child == itemUITemplate) continue;
+                Destroy(child.gameObject);
+            }
         
-        foreach ((ProductSo item, int quantity) in _order.Items)
-        {
-            Transform itemUI = Instantiate(itemUITemplate, itemUIContainer);
-            itemUI.gameObject.SetActive(true);
-            OrderItemUI orderItemUI = itemUI.GetComponent<OrderItemUI>();
-            orderItemUI.SetItem(item, quantity);
-        }
+            foreach ((ProductSo item, int quantity) in _order.Items)
+            {
+                Transform itemUI = Instantiate(itemUITemplate, itemUIContainer);
+                itemUI.gameObject.SetActive(true);
+                OrderItemUI orderItemUI = itemUI.GetComponent<OrderItemUI>();
+                orderItemUI.SetItem(item, quantity);
+            }
         
-        timerText.text = GetTimerText();
-    }
+            timerText.text = GetTimerText();
+        }
     
-    private string GetTimerText()
-    {
-        TimeSpan timeSpan = TimeSpan.FromSeconds(_order.TimeLimit);
-        return $"{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
+        private string GetTimerText()
+        {
+            TimeSpan timeSpan = TimeSpan.FromSeconds(_order.TimeLimit);
+            return $"{timeSpan.Minutes:D2}:{timeSpan.Seconds:D2}";
+        }
     }
 }

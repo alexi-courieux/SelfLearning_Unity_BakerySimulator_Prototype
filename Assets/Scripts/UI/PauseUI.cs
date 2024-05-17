@@ -1,41 +1,44 @@
 using System;
-using DefaultNamespace;
 using UnityEngine;
 using UnityEngine.UI;
+using Logger = Utils.Logger;
 
-public class PauseUI : MonoBehaviour
+namespace AshLight.BakerySim.UI
 {
-    [SerializeField] private Button resumeButton;
-    [SerializeField] private Button optionsButton;
-    [SerializeField] private Button mainMenuButton;
-    [SerializeField] private Button quitButton;
+    public class PauseUI : MonoBehaviour
+    {
+        [SerializeField] private Button resumeButton;
+        [SerializeField] private Button optionsButton;
+        [SerializeField] private Button mainMenuButton;
+        [SerializeField] private Button quitButton;
 
-    private void Start()
-    {
-        GameManager.Instance.OnGamePaused += GameManager_OnGamePaused;
-        GameManager.Instance.OnGameResumed += GameManager_OnGameResumed;
+        private void Start()
+        {
+            GameManager.Instance.OnGamePaused += GameManager_OnGamePaused;
+            GameManager.Instance.OnGameResumed += GameManager_OnGameResumed;
         
-        resumeButton.onClick.AddListener(GameManager.Instance.TogglePause);
-        optionsButton.onClick.AddListener(() => Logger.LogInfo("Options"));
-        mainMenuButton.onClick.AddListener(() => Logger.LogInfo("Main Menu"));
-        quitButton.onClick.AddListener(Application.Quit);
+            resumeButton.onClick.AddListener(GameManager.Instance.TogglePause);
+            optionsButton.onClick.AddListener(() => Logger.LogInfo("Options"));
+            mainMenuButton.onClick.AddListener(() => Logger.LogInfo("Main Menu"));
+            quitButton.onClick.AddListener(Application.Quit);
         
-        gameObject.SetActive(false);
-    }
+            gameObject.SetActive(false);
+        }
     
-    private void OnDestroy()
-    {
-        GameManager.Instance.OnGamePaused -= GameManager_OnGamePaused;
-        GameManager.Instance.OnGameResumed -= GameManager_OnGameResumed;
-    }
+        private void OnDestroy()
+        {
+            GameManager.Instance.OnGamePaused -= GameManager_OnGamePaused;
+            GameManager.Instance.OnGameResumed -= GameManager_OnGameResumed;
+        }
 
-    private void GameManager_OnGamePaused(object sender, EventArgs e)
-    {
-        gameObject.SetActive(true);
-    }
+        private void GameManager_OnGamePaused(object sender, EventArgs e)
+        {
+            gameObject.SetActive(true);
+        }
     
-    private void GameManager_OnGameResumed(object sender, EventArgs e)
-    {
-        gameObject.SetActive(false);
+        private void GameManager_OnGameResumed(object sender, EventArgs e)
+        {
+            gameObject.SetActive(false);
+        }
     }
 }

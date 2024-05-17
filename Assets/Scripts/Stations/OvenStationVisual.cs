@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace DefaultNamespace
+namespace AshLight.BakerySim.Stations
 {
     public class OvenStationVisual : MonoBehaviour
     {

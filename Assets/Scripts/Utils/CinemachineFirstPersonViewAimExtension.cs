@@ -1,12 +1,15 @@
 using Cinemachine;
 
-public class CinemachineFirstPersonViewAimExtension : CinemachineExtension
+namespace Utils
 {
-    protected override void PostPipelineStageCallback(CinemachineVirtualCameraBase vcam, CinemachineCore.Stage stage, ref CameraState state, float deltaTime)
+    public class CinemachineFirstPersonViewAimExtension : CinemachineExtension
     {
-        if (stage == CinemachineCore.Stage.Aim)
+        protected override void PostPipelineStageCallback(CinemachineVirtualCameraBase vcam, CinemachineCore.Stage stage, ref CameraState state, float deltaTime)
         {
-            state.RawOrientation = vcam.Follow.rotation;
+            if (stage == CinemachineCore.Stage.Aim)
+            {
+                state.RawOrientation = vcam.Follow.rotation;
+            }
         }
     }
 }

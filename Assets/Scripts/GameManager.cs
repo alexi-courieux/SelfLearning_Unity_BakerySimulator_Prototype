@@ -1,15 +1,15 @@
 ﻿using System;
 using UnityEngine;
 
-namespace DefaultNamespace
+namespace AshLight.BakerySim
 {
     public class GameManager : MonoBehaviour
     {
         public static GameManager Instance { get; private set; }
-        
+
         public EventHandler OnGamePaused;
         public EventHandler OnGameResumed;
-        
+
         private bool _isGamePaused;
 
         private void Awake()

@@ -1,7 +1,10 @@
-/// <summary>
-/// Interface for objects that can display items to customers
-/// </summary>
-public interface IDisplayItems
+namespace AshLight.BakerySim
 {
-    public ProductSo[] GetItemsSo();
+    /// <summary>
+    /// Interface for objects that can display items to customers
+    /// </summary>
+    public interface IDisplayItems
+    {
+        public ProductSo[] GetItemsSo();
+    }
 }
