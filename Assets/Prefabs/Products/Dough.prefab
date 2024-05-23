@@ -109,8 +109,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7e7e0e7598d453294c589d05476e266, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  freshnessDecayRate: 0.003
-  referenceTemperature: 65
+  product: {fileID: -7771643871074207748}
 --- !u!1001 &5806093553766805333
 PrefabInstance:
   m_ObjectHideFlags: 0

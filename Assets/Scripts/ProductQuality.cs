@@ -1,27 +1,19 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace AshLight.BakerySim
 {
     [RequireComponent(typeof(Product))]
     public class ProductQuality : MonoBehaviour, IHaveFreshness, IHaveDoneness, IHaveTemperature
     {
+        [SerializeField] private Product product;
+        
         private float _freshness = 1f;
         private float _doneness;
         private float _temperature = 65f;
-        
-        [SerializeField] 
-        [Tooltip("How much freshess the item loses per second.")]
-        [Range(0f,1f)]
-        private float freshnessDecayRate = 0.001f;
-    
-        [SerializeField] 
-        [Tooltip("The expected temperature of the item. (°F)")]
-        private float referenceTemperature = 65f;
 
-        private void Start()
+        private void Update()
         {
-            StartCoroutine(DecayFreshness());
+            DecayFreshness();
         }
 
         public float GetFreshness()
@@ -54,17 +46,10 @@ namespace AshLight.BakerySim
             _temperature = temperature;
         }
     
-        private IEnumerator DecayFreshness()
+        private void DecayFreshness()
         {
-            while (_freshness > 0f)
-            {
-                yield return new WaitForSeconds(1f);
-                _freshness -= freshnessDecayRate;
-                if (_freshness < 0f)
-                {
-                    _freshness = 0f;
-                }
-            }
+            if (_freshness <= 0f) return;
+            _freshness -= product.ProductSo.freshnessDecayRate * Time.deltaTime;
         }
     }
 }
