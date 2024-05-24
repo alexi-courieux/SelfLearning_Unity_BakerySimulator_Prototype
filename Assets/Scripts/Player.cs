@@ -85,7 +85,7 @@ namespace AshLight.BakerySim
         private void Move()
         {
             Vector3 finalMovement = Vector3.zero;
-            Vector2 movementInput = InputManager.Instance.GetMovementVectorNormalized();
+            Vector2 movementInput = InputManager.Instance.GetMovementVector();
             OnPlayerMove?.Invoke(this, movementInput.magnitude);
             Transform cameraTransform = _camera.transform;
             Vector3 moveDirection =

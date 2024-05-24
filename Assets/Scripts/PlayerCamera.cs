@@ -62,7 +62,7 @@ namespace AshLight.BakerySim
 
         private void RotateCamera()
         {
-            Vector2 rotationVector = InputManager.Instance.GetRotationVectorNormalized();
+            Vector2 rotationVector = InputManager.Instance.GetRotationVector();
 
             float rotationH = rotationVector.x * rotationSpeedH * Time.deltaTime;
             cameraFollowTarget.Rotate(Vector3.up, rotationH, Space.World);

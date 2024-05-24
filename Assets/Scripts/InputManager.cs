@@ -43,14 +43,14 @@ namespace AshLight.BakerySim
             _inputActions.Dispose();
         }
 
-        public Vector2 GetMovementVectorNormalized()
+        public Vector2 GetMovementVector()
         {
-            return _inputActions.Player.Move.ReadValue<Vector2>().normalized;
+            return _inputActions.Player.Move.ReadValue<Vector2>();
         }
 
-        public Vector2 GetRotationVectorNormalized()
+        public Vector2 GetRotationVector()
         {
-            return _inputActions.Player.Rotate.ReadValue<Vector2>().normalized;
+            return _inputActions.Player.Rotate.ReadValue<Vector2>();
         }
 
         private void Interact_OnPerformed(InputAction.CallbackContext obj)
