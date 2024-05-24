@@ -13,19 +13,24 @@ namespace AshLight.BakerySim
         
         public bool haveMarketExtension;
         [Min(0)]
-        public float buyPrice;
+        public float buyPrice = -1f;
         [Min(0)]
-        public float sellPrice;
+        public float sellPrice = -1f;
         
         public bool haveQualityExtension;
         [Tooltip("How much freshness the item loses per second.")]
         [Range(0f,1f)]
-        public float freshnessDecayRate;
+        public float freshnessDecayRate = -1f;
         
 
         public bool CanBeSold()
         {
-            return haveMarketExtension && sellPrice > 0f;
+            return sellPrice > 0f;
+        }
+        
+        public bool CanBeBought()
+        {
+            return buyPrice > 0f;
         }
     }
     
@@ -70,6 +75,9 @@ namespace AshLight.BakerySim
             if (GUILayout.Button("Remove"))
             {
                 product.haveMarketExtension = false;
+                product.buyPrice = -1f;
+                product.sellPrice = -1f;
+                EditorUtility.SetDirty(product);
             }
             
             GUILayout.EndVertical();
@@ -86,6 +94,8 @@ namespace AshLight.BakerySim
             if (GUILayout.Button("Remove"))
             {
                 product.haveQualityExtension = false;
+                product.freshnessDecayRate = -1f;
+                EditorUtility.SetDirty(product);
             }
             
             GUILayout.EndVertical();

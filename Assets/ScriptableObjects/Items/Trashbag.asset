@@ -16,7 +16,7 @@ MonoBehaviour:
   sprite: {fileID: 0}
   itemName: Trashbag
   haveMarketExtension: 0
-  buyPrice: 0
-  sellPrice: -5
+  buyPrice: -1
+  sellPrice: -1
   haveQualityExtension: 0
-  freshnessDecayRate: 0
+  freshnessDecayRate: -1

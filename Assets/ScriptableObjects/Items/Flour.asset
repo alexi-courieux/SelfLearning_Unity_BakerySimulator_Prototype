@@ -19,4 +19,4 @@ MonoBehaviour:
   buyPrice: 1
   sellPrice: 1
   haveQualityExtension: 0
-  freshnessDecayRate: 0
+  freshnessDecayRate: -1
