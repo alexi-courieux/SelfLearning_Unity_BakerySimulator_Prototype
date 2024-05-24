@@ -19,7 +19,7 @@ namespace AshLight.BakerySim
     {
         public override void OnInspectorGUI()
         {
-            DrawDefaultInspector();
+            bool dirty = DrawDefaultInspector();
             RecipesDictionarySo recipes = (RecipesDictionarySo) target;
             if (GUILayout.Button("Autofill"))
             {
@@ -41,7 +41,7 @@ namespace AshLight.BakerySim
                 AssetDatabase.SaveAssets();
             }
             
-            if (GUI.changed)
+            if (dirty || GUI.changed)
             {
                 EditorUtility.SetDirty(target);
             }
