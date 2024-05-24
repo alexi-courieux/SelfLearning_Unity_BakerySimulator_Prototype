@@ -15,5 +15,8 @@ MonoBehaviour:
   prefab: {fileID: 2574118022918292818, guid: 76a44bf5b6291cd4c82a21b1d5afcef3, type: 3}
   sprite: {fileID: 21300000, guid: cfbf94fe71eb45d4b80cb540fdd99664, type: 3}
   itemName: Water
+  haveMarketExtension: 1
   buyPrice: 0
   sellPrice: 0
+  haveQualityExtension: 0
+  freshnessDecayRate: 0

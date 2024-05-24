@@ -46,7 +46,7 @@ namespace AshLight.BakerySim
         /// </summary>
         /// <typeparam name="T">Type of the item</typeparam>
         /// <returns>Array of items of the specified type</returns>
-        public new Item[] GetItems<T>() where T : Item;
+        public Item[] GetItems<T>() where T : Item;
 
         /// <summary>
         /// Remove a specific item from the parent

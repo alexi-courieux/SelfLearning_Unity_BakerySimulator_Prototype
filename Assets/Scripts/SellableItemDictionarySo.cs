@@ -27,6 +27,11 @@ namespace AshLight.BakerySim
                     .ToArray();
                 AssetDatabase.SaveAssets();
             }
+            
+            if (GUI.changed)
+            {
+                EditorUtility.SetDirty(target);
+            }
         }
     }
 #endif

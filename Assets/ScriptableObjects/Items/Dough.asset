@@ -15,5 +15,8 @@ MonoBehaviour:
   prefab: {fileID: 1116257768256646283, guid: 598a3493683245b4f816412fa92c5a19, type: 3}
   sprite: {fileID: 21300000, guid: d847b54fb321bba438f5573f8a647430, type: 3}
   itemName: Dough
+  haveMarketExtension: 1
   buyPrice: 5
   sellPrice: 0
+  haveQualityExtension: 1
+  freshnessDecayRate: 0.0016666667

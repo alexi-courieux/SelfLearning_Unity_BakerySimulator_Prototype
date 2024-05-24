@@ -11,13 +11,13 @@ namespace AshLight.BakerySim
         public Sprite sprite;
         public string itemName;
         
-        public bool marketExtension;
+        public bool haveMarketExtension;
         [Min(0)]
         public float buyPrice;
         [Min(0)]
         public float sellPrice;
         
-        public bool qualityExtension;
+        public bool haveQualityExtension;
         [Tooltip("How much freshness the item loses per second.")]
         [Range(0f,1f)]
         public float freshnessDecayRate;
@@ -25,7 +25,7 @@ namespace AshLight.BakerySim
 
         public bool CanBeSold()
         {
-            return sellPrice > 0f;
+            return haveMarketExtension && sellPrice > 0f;
         }
     }
     
@@ -42,6 +42,11 @@ namespace AshLight.BakerySim
             DrawMarketProperties();
             DrawQualityProperties();
             DrawExtensionSelector();
+            
+            if (GUI.changed)
+            {
+                EditorUtility.SetDirty(product);
+            }
         }
         
         private void DrawBaseProperties()
@@ -55,7 +60,7 @@ namespace AshLight.BakerySim
         
         private void DrawMarketProperties()
         {
-            if (!product.marketExtension) return;
+            if (!product.haveMarketExtension) return;
             
             GUILayout.BeginVertical("Market Extension", "window");
             
@@ -64,7 +69,7 @@ namespace AshLight.BakerySim
 
             if (GUILayout.Button("Remove"))
             {
-                product.marketExtension = false;
+                product.haveMarketExtension = false;
             }
             
             GUILayout.EndVertical();
@@ -72,7 +77,7 @@ namespace AshLight.BakerySim
         
         private void DrawQualityProperties()
         {
-            if (!product.qualityExtension) return;
+            if (!product.haveQualityExtension) return;
             
             GUILayout.BeginVertical("Quality Extension", "window");
             
@@ -80,7 +85,7 @@ namespace AshLight.BakerySim
 
             if (GUILayout.Button("Remove"))
             {
-                product.qualityExtension = false;
+                product.haveQualityExtension = false;
             }
             
             GUILayout.EndVertical();
@@ -90,18 +95,18 @@ namespace AshLight.BakerySim
         {
             int selected = 0;
             var options = new List<string> {"-- Select Extension --"};
-            if (!product.qualityExtension) options.Add("Quality");
-            if (!product.marketExtension) options.Add("Market");
+            if (!product.haveQualityExtension) options.Add("Quality");
+            if (!product.haveMarketExtension) options.Add("Market");
             
             selected = EditorGUILayout.Popup("Extension", selected, options.ToArray());
             
             switch (options[selected])
             {
                 case "Quality":
-                    product.qualityExtension = true;
+                    product.haveQualityExtension = true;
                     break;
                 case "Market":
-                    product.marketExtension = true;
+                    product.haveMarketExtension = true;
                     break;
             }
         }
