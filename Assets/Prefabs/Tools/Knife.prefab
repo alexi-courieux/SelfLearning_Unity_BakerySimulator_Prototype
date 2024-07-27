@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 760782476679041896}
   - component: {fileID: 5710742048902438492}
   - component: {fileID: 69996784563224144}
+  - component: {fileID: 7831613981445958745}
   m_Layer: 6
   m_Name: Knife
   m_TagString: Untagged
@@ -67,8 +68,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.425636, y: 0.1845907, z: 0.19418406}
-  m_Center: {x: 0.0020662546, y: 0.0034682155, z: -0.00000011920929}
+  m_Size: {x: 0.58862793, y: 0.1845907, z: 0.13506055}
+  m_Center: {x: 0.16155261, y: 0.0034682155, z: 0.008582234}
 --- !u!54 &69996784563224144
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -96,6 +97,22 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!208 &7831613981445958745
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5903252468404169579}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.29431394, y: 0.09229535, z: 0.06753025}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0.1615526, y: 0.003468215, z: 0.008582234}
+  m_TimeToStationary: 0.5
 --- !u!1001 &6080483004478702261
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -112,7 +129,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: c6ab874a4b6ade44ebeaa67b5ecf08a2,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.02
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c6ab874a4b6ade44ebeaa67b5ecf08a2,
         type: 3}
@@ -122,7 +139,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: c6ab874a4b6ade44ebeaa67b5ecf08a2,
         type: 3}
       propertyPath: m_LocalRotation.w
-      value: 1
+      value: -0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c6ab874a4b6ade44ebeaa67b5ecf08a2,
         type: 3}
@@ -132,7 +149,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: c6ab874a4b6ade44ebeaa67b5ecf08a2,
         type: 3}
       propertyPath: m_LocalRotation.y
-      value: -0
+      value: 0.7071068
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c6ab874a4b6ade44ebeaa67b5ecf08a2,
         type: 3}
@@ -147,7 +164,7 @@ PrefabInstance:
     - target: {fileID: -8679921383154817045, guid: c6ab874a4b6ade44ebeaa67b5ecf08a2,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
+      value: 270
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: c6ab874a4b6ade44ebeaa67b5ecf08a2,
         type: 3}

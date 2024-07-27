@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c9d35f33267e48f6bd49f7fd79ce820e, type: 3}
-  m_Name: TEST_BreadAlt
+  m_Name: Slice tomato
   m_EditorClassIdentifier: 
-  tool: {fileID: 11400000, guid: 33e3bf225f780db4ea36e3a4782ea299, type: 2}
-  input: {fileID: 11400000, guid: c93cf7768c544964d86c1ff5610cbb77, type: 2}
-  output: {fileID: 11400000, guid: d9821be180943174cb724104a17fdbc4, type: 2}
+  tool: {fileID: 11400000, guid: c29786d555e00b94cbdaf8fe13556f6d, type: 2}
+  input: {fileID: 11400000, guid: d1b450d27868e074680ccd9cc5033142, type: 2}
+  output: {fileID: 11400000, guid: a7ed504197efaa74bad4d9111debe900, type: 2}

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 2591765439755417635}
   - component: {fileID: 8869769313816630839}
   - component: {fileID: 3301199103691176406}
+  - component: {fileID: 4869980959337222881}
   m_Layer: 6
   m_Name: Bread
   m_TagString: Untagged
@@ -96,6 +97,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   productSo: {fileID: 11400000, guid: 620df60cc6f3a0a4db3a7611e399b988, type: 2}
+--- !u!208 &4869980959337222881
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5651525848514656636}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.45, y: 0.275, z: 0.405}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.03, y: 0.27, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1001 &8660759504038110767
 PrefabInstance:
   m_ObjectHideFlags: 0
