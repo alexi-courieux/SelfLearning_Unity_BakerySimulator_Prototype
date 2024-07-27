@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0fb53c489634a3e8b0275ab9c596350, type: 3}
+  m_Name: CroissantRaw
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 8537761021533349114, guid: b4c2bcf6a4bd2ad4c89707fc33beed32, type: 3}
+  sprite: {fileID: 21300000, guid: eff509fad1873a24d8c2a740ff7e8cac, type: 3}
+  itemName: Croissant (raw)
+  buyPrice: 0
+  sellPrice: 0

@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7bbe714b594a45929ca4d32a513651df, type: 3}
-  m_Name: OvenRecipe_bread
+  m_Name: Burn croissant
   m_EditorClassIdentifier: 
-  input: {fileID: 11400000, guid: c93cf7768c544964d86c1ff5610cbb77, type: 2}
-  output: {fileID: 11400000, guid: 620df60cc6f3a0a4db3a7611e399b988, type: 2}
-  timeToProcess: 5
-  burnt: 0
+  input: {fileID: 11400000, guid: a869d29a061837745960eea5bdedd1e0, type: 2}
+  output: {fileID: 0}
+  timeToProcess: 9
+  burnt: 1
